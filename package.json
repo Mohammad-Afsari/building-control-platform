@@ -10,7 +10,10 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "docker:dev": "docker compose up -d",
+    "docker:dev:logs": "docker compose logs -f",
+    "docker:dev:down": "docker compose down"
   },
   "dependencies": {
     "@radix-ui/react-select": "^2.3.3",
