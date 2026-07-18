@@ -1,0 +1,14 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "24"
+
+# Client-side routing (React Router) — unmatched paths resolve to
+# index.html so the router can take over, same as nginx.conf's
+# try_files fallback for the Docker/production image.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
