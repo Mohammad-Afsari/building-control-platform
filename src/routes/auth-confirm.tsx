@@ -11,10 +11,16 @@ import { Button } from '@/src/components/ui/button'
 type ConfirmState = 'verifying' | 'success' | 'failure'
 
 /* Client-side replacement for a server route handler — there is no
-   server in this SPA. Primary flow: the Supabase "Confirm signup"
-   email template links here with ?token_hash=...&type=email.
-   Fallback: ?code=... from the default ConfirmationURL template,
-   exchangeable only in the browser that initiated the signup (PKCE). */
+   server in this SPA. The default "Confirm signup" template's
+   {{ .ConfirmationURL }} points at Supabase's own /auth/v1/verify
+   endpoint, which verifies server-side and then redirects back here.
+   That redirect can carry the result three different ways depending
+   on project config: ?token_hash=...&type=... (still needs verifying
+   client-side), ?code=... (PKCE, needs exchanging), or #access_token=
+   ...&refresh_token=... in the hash fragment (implicit flow, session
+   is already established — supabase-js's client picks this up from
+   the URL automatically via detectSessionInUrl on init, so by the
+   time this effect runs there may already be a session to check). */
 export const AuthConfirmPage = () => {
   const [searchParams] = useSearchParams()
   const [state, setState] = useState<ConfirmState>('verifying')
@@ -32,8 +38,19 @@ export const AuthConfirmPage = () => {
     const tokenHash = searchParams.get('token_hash')
     const type = searchParams.get('type') as EmailOtpType | null
     const code = searchParams.get('code')
+    const hashParams = new URLSearchParams(window.location.hash.slice(1))
+    const hashAccessToken = hashParams.get('access_token')
+    const hashError = hashParams.get('error')
 
     const confirm = async () => {
+      if (hashAccessToken && !hashError) {
+        // supabase-js already parsed this from the URL and set the
+        // session on client init — confirm it's actually there.
+        const { data } = await supabase.auth.getSession()
+        setState(data.session ? 'success' : 'failure')
+        return
+      }
+
       if (tokenHash && type) {
         const { error } = await supabase.auth.verifyOtp({
           type,

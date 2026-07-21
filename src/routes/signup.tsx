@@ -119,7 +119,11 @@ export const SignupPage = () => {
     setLoading(false)
 
     if (error) {
-      setErrors({ form: error.message })
+      const message =
+        error.message && error.message !== '{}'
+          ? error.message
+          : 'Something went wrong creating your account. Please try again.'
+      setErrors({ form: message })
       return
     }
     // Supabase obfuscates existing confirmed accounts: it "succeeds"
