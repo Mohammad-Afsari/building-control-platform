@@ -23,6 +23,8 @@ Single-page React app built with Vite, deployed as static files (target host: Bu
 
 **Stack: React 19 + Vite + TypeScript + React Router + TanStack Query + Tailwind CSS 4 + shadcn/ui-style components + Supabase.** This is a rebuild of `building-control-storefronts` (the original Next.js implementation) as a pure SPA — see that repo's git history for original feature context where relevant.
 
+**Database schema lives in `supabase/migrations/`.** Ported from storefronts, which shares the same Supabase project. Applied by hand via the SQL Editor rather than the CLI, so the hosted database has no migration tracking rows — see [`supabase/README.md`](./supabase/README.md) before diffing or automating against it.
+
 ### Design system
 
 - **Tokens** live in `src/styles/` (`colors.css`, `spacing.css`, `typography.css`, `breakpoints.css`) — the single source of truth. They are mapped into Tailwind utilities via the `@theme inline` block in `src/index.css`; Tailwind's default palettes are wiped, so only token-backed utilities compile.
