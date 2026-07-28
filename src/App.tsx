@@ -6,6 +6,7 @@ import { ProtectedRoute } from '@/src/components/protected-route'
 import { HomePage } from '@/src/routes/home'
 import { LoginPage } from '@/src/routes/login'
 import { SignupPage } from '@/src/routes/signup'
+import { AuthConfirmPage } from '@/src/routes/auth-confirm'
 import { ApplicationsListPage } from '@/src/routes/applications/list'
 import { NewApplicationPage } from '@/src/routes/applications/new'
 import { ApplicationDetailPage } from '@/src/routes/applications/detail'
@@ -22,6 +23,7 @@ function App() {
               <Route path="/" element={<HomePage />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/signup" element={<SignupPage />} />
+              <Route path="/auth/confirm" element={<AuthConfirmPage />} />
               <Route
                 path="/applications"
                 element={
