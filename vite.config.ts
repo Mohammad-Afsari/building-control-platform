@@ -15,6 +15,9 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: ['./src/test/setup.ts'],
     css: false,
+    /* Vitest's default glob would also match e2e/*.spec.ts, which are
+       Playwright tests and fail on collection. */
+    include: ['src/**/*.test.{ts,tsx}'],
     /* The Supabase client reads these at module load. Tests mock the
        client, but these keep any unmocked import from throwing. */
     env: {
