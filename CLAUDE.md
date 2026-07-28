@@ -8,10 +8,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 npm run dev      # start development server
 npm run build    # typecheck + production build
 npm run lint     # run ESLint
+npm run test     # Vitest in watch mode
+npm run test:run # Vitest once (what CI runs)
 npm run preview  # preview the production build locally
 ```
 
-No test suite is configured.
+`npm run build` typechecks test files too, so a type error in a `.test.tsx` fails the build.
 
 Docker: `docker build --target dev .` for a dev image, `docker compose up` for local dev with hot-reload, `docker build .` (defaults to the `serve` target) for the production nginx image.
 
@@ -27,6 +29,15 @@ Single-page React app built with Vite, deployed as static files (target host: Bu
 - **Naming gotcha:** `text-body` is the 15px font-size utility; the body copy *colour* is `text-default`.
 - **UI primitives** are in `src/components/ui/` (shadcn-style: CVA variants + `cn()` + `data-slot`); composite components sit in `src/components/`.
 - There is **no dark mode** — the token set is light-only.
+
+### Testing
+
+**Vitest + React Testing Library, jsdom environment.** Tests sit next to the code they cover (`src/routes/login.test.tsx`); shared helpers are in `src/test/`.
+
+- **Supabase is always mocked in unit tests** — `src/test/supabase-mock.ts` provides `createSupabaseMock()`, and every test file mocks `@/src/lib/supabase/client` with it. Nothing here talks to a real backend; anything that needs live Postgres or GoTrue belongs in an end-to-end suite instead.
+- **Render through `renderWithProviders`** (`src/test/render.tsx`) — it supplies `HelmetProvider`, `QueryClientProvider` and a `MemoryRouter`, and takes a `route` so a component can read its own search params and hash.
+- **`StrictMode` only double-invokes effects when it is the outermost element passed to `render`.** Nesting it under any provider — even a bare `<div>` — silently disables the double invoke, which makes a test that exists to catch double-firing incapable of failing. Use `renderWithProviders(ui, { strict: true })`, which wraps at the correct level.
+- **New behaviour needs a test, and a regression fix needs one that fails without the fix.** Verify that by reverting the fix and watching the test go red — several tests in `auth-confirm.test.tsx` exist precisely because the bugs they cover shipped once already.
 
 ### Non-obvious conventions
 
