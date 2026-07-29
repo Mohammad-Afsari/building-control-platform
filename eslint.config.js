@@ -6,7 +6,15 @@ import tseslint from 'typescript-eslint'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
-  globalIgnores(['dist']),
+  // supabase/.temp holds runtime files the CLI generates on `supabase
+  // start`; the rest are test and build artefacts.
+  globalIgnores([
+    'dist',
+    'supabase/.temp',
+    'playwright-report',
+    'test-results',
+    'blob-report',
+  ]),
   {
     files: ['**/*.{ts,tsx}'],
     extends: [js.configs.recommended, tseslint.configs.recommended, reactRefresh.configs.vite],

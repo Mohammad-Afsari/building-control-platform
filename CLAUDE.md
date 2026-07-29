@@ -41,6 +41,22 @@ Single-page React app built with Vite, deployed as static files (target host: Bu
 - **`StrictMode` only double-invokes effects when it is the outermost element passed to `render`.** Nesting it under any provider — even a bare `<div>` — silently disables the double invoke, which makes a test that exists to catch double-firing incapable of failing. Use `renderWithProviders(ui, { strict: true })`, which wraps at the correct level.
 - **New behaviour needs a test, and a regression fix needs one that fails without the fix.** Verify that by reverting the fix and watching the test go red — several tests in `auth-confirm.test.tsx` exist precisely because the bugs they cover shipped once already.
 
+#### End-to-end
+
+**Playwright against a local Supabase stack**, in `e2e/`. Needs Docker running.
+
+```bash
+npx supabase start   # Postgres + GoTrue + Mailpit, applies supabase/migrations/
+npm run test:e2e     # builds the app, serves it on :4173, runs the specs
+npx supabase stop
+```
+
+- **Real backend, no shared state.** The stack is local and disposable, so tests can create users freely — unlike the hosted project, where they'd collide with real data and hit email rate limits.
+- **Email is assertable.** Outbound mail is captured by Mailpit on `:54324` instead of being delivered; `e2e/mailbox.ts` reads it over the API so a test can follow a real confirmation link. This is why the signup → confirm flow is covered end to end rather than mocked.
+- **`playwright.config.ts` reads the API URL and anon key from `supabase status`** rather than hardcoding them, and passes them to the build. If the stack isn't running, it fails with a message telling you to start it.
+- **`supabase/config.toml` deliberately diverges from the CLI defaults**: `enable_confirmations` is on (the hosted project requires it, and the suite exercises it), and `site_url`/`additional_redirect_urls` point at `:4173` so the emailed link redirects back to the app under test.
+- **`tsconfig.node.json` covers `e2e/` and `playwright.config.ts`**, since they run in Node rather than the browser. Its `nodenext` resolution wants explicit extensions, hence `./mailbox.ts` in imports.
+
 ### Non-obvious conventions
 
 **`@/` path alias maps to the repo root, not `src/`.** Imports from the `src/` subtree must be written as `@/src/lib/...`, not `@/lib/...`.

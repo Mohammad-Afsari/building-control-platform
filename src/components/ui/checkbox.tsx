@@ -19,8 +19,11 @@ const Checkbox = ({
       />
       <span
         aria-hidden="true"
+        data-slot="checkbox-indicator"
         className={cn(
-          'grid size-5 place-items-center rounded-xs border-[1.5px] border-border-strong bg-card text-on-primary transition-[background-color,border-color] duration-150',
+          /* Purely decorative, and it sits over the input — without
+             this it swallows the click the input is styled to receive. */
+          'pointer-events-none grid size-5 place-items-center rounded-xs border-[1.5px] border-border-strong bg-card text-on-primary transition-[background-color,border-color] duration-150',
           'peer-checked:border-primary peer-checked:bg-primary',
           'peer-focus-visible:border-border-focus peer-focus-visible:ring-3 peer-focus-visible:ring-primary-50',
           'peer-disabled:cursor-not-allowed peer-disabled:opacity-45',
