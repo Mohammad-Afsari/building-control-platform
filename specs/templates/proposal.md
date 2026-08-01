@@ -47,3 +47,15 @@ Anything ambiguous, marked so it gets answered rather than guessed:
 - [NEEDS CLARIFICATION: <the specific question>]
 
 Delete this section only when there is genuinely nothing unresolved.
+
+## Decisions
+
+Where answered questions end up. Replace each marker above with the
+verdict **and its reasoning** — the reasoning is what stops the
+question being reopened later:
+
+- **<the decision>.** <why, and what would make it worth revisiting>
+
+A change cannot move to `planned` while a marker is still unresolved.
+Answers live here rather than in a PR comment, because whoever
+implements this reads the change folder, not the thread.

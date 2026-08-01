@@ -111,6 +111,32 @@ guessing:
 An unresolved marker blocks planning. That is deliberate — a guess made
 here becomes a wrong assumption baked into code later.
 
+### Answering one
+
+**Resolve it by editing the proposal, not by replying in a PR comment.**
+
+Replace the marker with the decision and the reason, under a
+`## Decisions` heading:
+
+```markdown
+## Decisions
+
+- **Home link only.** "Go to dashboard" would bounce a signed-out
+  visitor to login — a worse dead end than the 404 — and there is no
+  support route yet. Revisit when both exist.
+```
+
+A comment thread is invisible to whoever implements the change three
+weeks later; the proposal is not. Recording the reasoning, not just the
+verdict, is what stops the same question being reopened.
+
+The immutability check permits this: amending a proposal is fine in a
+pull request that touches no source files. Answering during
+implementation is not.
+
+**A change cannot move to `planned` while an unresolved marker
+remains.**
+
 ## Status
 
 `proposed` → `planned` → `in-progress` → `done`

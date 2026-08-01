@@ -64,7 +64,10 @@ Copy `specs/templates/proposal.md` to
   assume are included. This is what stops an implementation sprawling.
 - **Tests required** — name the file and what it proves.
 - **Mark what you do not know.** A short spoken description will have
-  gaps; that is expected. Flag them rather than guessing.
+  gaps; that is expected. Flag them rather than guessing. They get
+  answered at the planning gate, and the answer is written back into
+  this file under a `## Decisions` heading — so a marker is a
+  placeholder for a decision, not a loose end.
 
 Leave `status: proposed`.
 
