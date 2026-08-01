@@ -58,11 +58,11 @@ the same.
 - `src/routes/not-found.test.tsx` — regression: `/login` still renders
   the login page, proving the catch-all has not shadowed real routes
 
-## Open questions
+## Decisions
 
-- [NEEDS CLARIFICATION: the design's 404 variant offers "Go to
-  dashboard" and "Contact support" alongside the home link. Neither
-  destination is built — `/applications` is behind auth and would
-  bounce a signed-out visitor to login, and there is no support route
-  at all. Should this ship with only the home link for now, or with all
-  three pointing at what exists?]
+- **Home link only.** The design's 404 variant also offers "Go to
+  dashboard" and "Contact support", but neither destination usefully
+  exists: `/applications` is behind auth and would bounce a signed-out
+  visitor straight to login — a worse dead end than the 404 itself —
+  and there is no support route at all. A button that strands you is
+  worse than no button. Revisit when both destinations are real.
