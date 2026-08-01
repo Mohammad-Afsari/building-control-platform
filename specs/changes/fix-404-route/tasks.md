@@ -2,11 +2,11 @@
 
 ## Implementation
 
-- [ ] Add `src/routes/not-found.tsx` — `NotFoundPage`, with the Logo,
+- [x] Add `src/routes/not-found.tsx` — `NotFoundPage`, with the Logo,
       the `MapPinOff` badge, the `Error 404` eyebrow, the heading
       "We can't find that page", the body copy, and a home link built
       from `Button` with `asChild`
-- [ ] Register `<Route path="*" element={<NotFoundPage />} />` as the
+- [x] Register `<Route path="*" element={<NotFoundPage />} />` as the
       last child of `<Routes>` in `src/App.tsx`
 
 ## Tests
