@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Building Control — Style Guide</title>
+<link rel="stylesheet" href="styles.css" />
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-font-smoothing: antialiased; scroll-behavior: smooth; }
+  body {
+    font-family: var(--font-sans);
+    background: var(--surface-page);
+    color: var(--text-body);
+    font-size: var(--text-body);
+    line-height: var(--leading-normal);
+    letter-spacing: var(--tracking-normal);
+  }
+
+  /* ---------- Shell: sticky side nav + content ---------- */
+  .layout { display: grid; grid-template-columns: 248px 1fr; max-width: 1280px; margin: 0 auto; }
+  @media (max-width: 880px) { .layout { grid-template-columns: 1fr; } .side { display: none; } }
+
+  .side {
+    position: sticky; top: 0; align-self: start; height: 100vh;
+    padding: 34px 24px; border-right: 1px solid var(--border-default);
+    display: flex; flex-direction: column; gap: 28px;
+  }
+  .brand { display: flex; align-items: center; gap: 11px; }
+  .brand-mark {
+    width: 34px; height: 34px;
+    display: grid; place-items: center;
+  }
+  .brand-mark img { width: 34px; height: 34px; display: block; }
+  .brand-name { font-weight: var(--weight-black); color: var(--text-heading); font-size: 16.5px; letter-spacing: var(--tracking-snug); }
+  .brand-name span { color: var(--text-muted); font-weight: var(--weight-semibold); }
+  .side-label { font-size: var(--text-micro); font-weight: var(--weight-bold); letter-spacing: var(--tracking-wide); text-transform: uppercase; color: var(--text-faint); margin-bottom: 10px; }
+  .side-nav { display: flex; flex-direction: column; gap: 2px; }
+  .side-nav a {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 11px; border-radius: var(--radius-sm);
+    color: var(--text-muted); text-decoration: none; font-weight: var(--weight-semibold); font-size: var(--text-body-sm);
+    transition: background .15s, color .15s;
+  }
+  .side-nav a svg { width: 16px; height: 16px; }
+  .side-nav a:hover { background: var(--surface-raised); color: var(--text-heading); }
+
+  .content { padding: 56px 56px 120px; min-width: 0; }
+  @media (max-width: 880px) { .content { padding: 40px 24px 80px; } }
+
+  .doc-head { margin-bottom: 56px; }
+  .eyebrow { font-size: var(--text-micro); font-weight: var(--weight-bold); letter-spacing: var(--tracking-wide); text-transform: uppercase; color: var(--primary-600); margin-bottom: 14px; }
+  h1 { font-size: var(--text-display-lg); font-weight: var(--weight-black); color: var(--text-heading); letter-spacing: var(--tracking-tight); line-height: var(--leading-tight); }
+  .doc-sub { color: var(--text-muted); font-size: var(--text-body-lg); margin-top: 14px; max-width: 56ch; }
+
+  section { margin-bottom: 64px; scroll-margin-top: 32px; }
+  .sec-head { display: flex; align-items: baseline; gap: 12px; margin-bottom: 6px; }
+  .sec-head h2 { font-size: var(--text-h2); font-weight: var(--weight-bold); color: var(--text-heading); letter-spacing: var(--tracking-snug); }
+  .sec-num { font-size: var(--text-caption); font-weight: var(--weight-bold); color: var(--text-faint); font-variant-numeric: tabular-nums; }
+  .sec-desc { color: var(--text-muted); font-size: var(--text-body); margin-bottom: 26px; max-width: 60ch; }
+
+  .group-label {
+    font-size: var(--text-micro); font-weight: var(--weight-bold); letter-spacing: var(--tracking-wide);
+    text-transform: uppercase; color: var(--text-faint); margin: 30px 0 14px;
+  }
+  .group-label:first-of-type { margin-top: 0; }
+
+  /* ---------- Colour swatches ---------- */
+  .swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(168px, 1fr)); gap: 14px; }
+  .swatch {
+    background: var(--surface-card); border: 1px solid var(--border-default);
+    border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow-sm);
+  }
+  .swatch .chip { height: 76px; width: 100%; border-bottom: 1px solid rgba(28,38,34,.06); }
+  .swatch .info { padding: 11px 13px 13px; }
+  .swatch .role { font-weight: var(--weight-bold); color: var(--text-heading); font-size: var(--text-body-sm); letter-spacing: var(--tracking-normal); }
+  .swatch .token { font-family: var(--font-mono); font-size: 11.5px; color: var(--text-muted); margin-top: 3px; }
+  .swatch .hex { font-family: var(--font-mono); font-size: 11.5px; color: var(--text-faint); margin-top: 2px; text-transform: uppercase; }
+
+  /* Status role rows */
+  .roles { display: grid; gap: 12px; }
+  .role-row {
+    display: grid; grid-template-columns: 200px 1fr; gap: 18px; align-items: center;
+    background: var(--surface-card); border: 1px solid var(--border-default);
+    border-radius: var(--radius-md); padding: 14px 16px; box-shadow: var(--shadow-sm);
+  }
+  @media (max-width: 620px) { .role-row { grid-template-columns: 1fr; } }
+  .role-name { display: flex; align-items: center; gap: 10px; }
+  .role-name .dot { width: 11px; height: 11px; border-radius: var(--radius-pill); flex: none; }
+  .role-name strong { color: var(--text-heading); font-weight: var(--weight-bold); font-size: var(--text-body-sm); }
+  .role-name small { display: block; color: var(--text-faint); font-weight: var(--weight-medium); font-size: var(--text-micro); }
+  .role-demo { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .demo-pill { display: inline-flex; align-items: center; gap: 7px; font-size: var(--text-caption); font-weight: var(--weight-bold); padding: 5px 11px 5px 9px; border-radius: var(--radius-pill); }
+  .demo-pill .pdot { width: 7px; height: 7px; border-radius: 50%; }
+  .role-tokens { display: flex; gap: 14px; margin-left: auto; }
+  .role-tokens span { font-family: var(--font-mono); font-size: 11px; color: var(--text-faint); }
+  .role-tokens b { color: var(--text-muted); font-weight: var(--weight-semibold); }
+
+  /* ---------- Typography ---------- */
+  .type-row {
+    display: grid; grid-template-columns: 1fr 240px; gap: 24px; align-items: baseline;
+    padding: 18px 0; border-bottom: 1px solid var(--border-default);
+  }
+  @media (max-width: 620px) { .type-row { grid-template-columns: 1fr; gap: 8px; } }
+  .type-specimen { color: var(--text-heading); letter-spacing: var(--tracking-tight); line-height: 1.15; }
+  .type-spec { display: flex; flex-direction: column; gap: 3px; }
+  .type-spec .name { font-weight: var(--weight-bold); color: var(--text-heading); font-size: var(--text-body-sm); }
+  .type-spec .det { font-family: var(--font-mono); font-size: 11.5px; color: var(--text-muted); }
+
+  .weights { display: flex; gap: 28px; flex-wrap: wrap; margin-top: 30px; }
+  .weight { text-align: center; }
+  .weight .glyph { font-size: 40px; color: var(--text-heading); letter-spacing: var(--tracking-snug); }
+  .weight .lbl { font-size: var(--text-micro); color: var(--text-muted); margin-top: 6px; font-family: var(--font-mono); }
+
+  /* ---------- Spacing ---------- */
+  .spacing { display: grid; gap: 10px; }
+  .space-row { display: grid; grid-template-columns: 90px 64px 1fr; gap: 16px; align-items: center; }
+  .space-row .tk { font-family: var(--font-mono); font-size: var(--text-caption); color: var(--text-body); font-weight: var(--weight-semibold); }
+  .space-row .px { font-family: var(--font-mono); font-size: var(--text-caption); color: var(--text-faint); }
+  .space-row .bar { height: 18px; background: var(--primary-200); border-radius: 4px; border: 1px solid var(--primary-300); }
+
+  /* ---------- Radius ---------- */
+  .radii { display: grid; grid-template-columns: repeat(auto-fill, minmax(132px, 1fr)); gap: 16px; }
+  .radius-card { text-align: center; }
+  .radius-box {
+    height: 92px; background: var(--primary-50); border: 1.5px solid var(--primary-300);
+    border-top-left-radius: var(--r); border-top-right-radius: var(--r);
+  }
+  .radius-card .name { font-weight: var(--weight-bold); color: var(--text-heading); font-size: var(--text-body-sm); margin-top: 10px; }
+  .radius-card .det { font-family: var(--font-mono); font-size: 11.5px; color: var(--text-muted); margin-top: 2px; }
+
+  /* ---------- Elevation ---------- */
+  .elevations { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 24px; padding: 8px 0 12px; }
+  .elev-card { background: var(--surface-card); border-radius: var(--radius-lg); padding: 22px; border: 1px solid var(--border-default); }
+  .elev-card.sm { box-shadow: var(--shadow-sm); }
+  .elev-card.md { box-shadow: var(--shadow-md); }
+  .elev-card.lg { box-shadow: var(--shadow-lg); }
+  .elev-card .name { font-weight: var(--weight-bold); color: var(--text-heading); font-size: var(--text-body-sm); }
+  .elev-card .det { font-family: var(--font-mono); font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+</style>
+</head>
+<body>
+  <div class="layout">
+
+    <aside class="side">
+      <div class="brand">
+        <div class="brand-mark"><img src="assets/logo/building-control-logo.svg" alt="Building Control" width="34" height="34" /></div>
+        <div class="brand-name">Building<span>Control</span></div>
+      </div>
+      <div>
+        <div class="side-label">Foundations</div>
+        <nav class="side-nav">
+          <a href="#colour"><i data-lucide="palette"></i> Colour</a>
+          <a href="#status"><i data-lucide="circle-dot"></i> Status roles</a>
+          <a href="#type"><i data-lucide="type"></i> Typography</a>
+          <a href="#spacing"><i data-lucide="ruler"></i> Spacing</a>
+          <a href="#radius"><i data-lucide="frame"></i> Corner radius</a>
+          <a href="#elevation"><i data-lucide="layers"></i> Elevation</a>
+        </nav>
+      </div>
+    </aside>
+
+    <main class="content">
+      <header class="doc-head">
+        <div class="eyebrow">Design System · Foundations</div>
+        <h1>Style Guide</h1>
+        <p class="doc-sub">The visual language behind Building Control — calm, clear and reassuring. These are the tokens every screen is built from.</p>
+      </header>
+
+      <!-- ============ COLOUR ============ -->
+      <section id="colour">
+        <div class="sec-head"><span class="sec-num">01</span><h2>Colour</h2></div>
+        <p class="sec-desc">A single trustworthy green carries the brand. Warm, paper-like neutrals keep the interface soft rather than clinical. Reference the semantic roles in product code — not the raw scale values.</p>
+
+        <div class="group-label">Primary — brand green</div>
+        <div class="swatches">
+          <div class="swatch"><div class="chip" style="background:var(--primary-50)"></div><div class="info"><div class="role">Primary 50</div><div class="token">--primary-50</div><div class="hex">#EAF3EE</div></div></div>
+          <div class="swatch"><div class="chip" style="background:var(--primary-100)"></div><div class="info"><div class="role">Primary 100</div><div class="token">--primary-100</div><div class="hex">#D3E7DC</div></div></div>
+          <div class="swatch"><div class="chip" style="background:var(--primary-300)"></div><div class="info"><div class="role">Primary 300</div><div class="token">--primary-300</div><div class="hex">#76B295</div></div></div>
+          <div class="swatch"><div class="chip" style="background:var(--primary-600)"></div><div class="info"><div class="role">Primary 600 · core</div><div class="token">--color-primary</div><div class="hex">#16795A</div></div></div>
+          <div class="swatch"><div class="chip" style="background:var(--primary-700)"></div><div class="info"><div class="role">Primary 700 · hover</div><div class="token">--color-primary-hover</div><div class="hex">#0F5C44</div></div></div>
+          <div class="swatch"><div class="chip" style="background:var(--primary-800)"></div><div class="info"><div class="role">Primary 800 · press</div><div class="token">--color-primary-press</div><div class="hex">#0B4634</div></div></div>
+        </div>
+
+        <div class="group-label">Neutrals — warm paper</div>
+        <div class="swatches">
+          <div class="swatch"><div class="chip" style="background:var(--neutral-0)"></div><div class="info"><div class="role">Surface · card</div><div class="token">--surface-card</div><div class="hex">#FFFFFF</div></div></div>
+          <div class="swatch"><div class="chip" style="background:var(--neutral-25)"></div><div class="info"><div class="role">Surface · raised</div><div class="token">--surface-raised</div><div class="hex">#FBFAF7</div></div></div>
+          <div class="swatch"><div class="chip" style="background:var(--neutral-50)"></div><div class="info"><div class="role">Surface · page</div><div class="token">--surface-page</div><div class="hex">#F5F4F0</div></div></div>
+          <div class="swatch"><div class="chip" style="background:var(--neutral-200)"></div><div class="info"><div class="role">Border · default</div><div class="token">--border-default</div><div class="hex">#E7E4DC</div></div></div>
+          <div class="swatch"><div class="chip" style="background:var(--neutral-300)"></div><div class="info"><div class="role">Border · strong</div><div class="token">--border-strong</div><div class="hex">#DEDAD0</div></div></div>
+        </div>
+
+        <div class="group-label">Ink — text</div>
+        <div class="swatches">
+          <div class="swatch"><div class="chip" style="background:var(--ink-900)"></div><div class="info"><div class="role">Heading</div><div class="token">--text-heading</div><div class="hex">#1C2622</div></div></div>
+          <div class="swatch"><div class="chip" style="background:var(--ink-700)"></div><div class="info"><div class="role">Body</div><div class="token">--text-body</div><div class="hex">#46504B</div></div></div>
+          <div class="swatch"><div class="chip" style="background:var(--ink-500)"></div><div class="info"><div class="role">Muted</div><div class="token">--text-muted</div><div class="hex">#6E766F</div></div></div>
+          <div class="swatch"><div class="chip" style="background:var(--ink-400)"></div><div class="info"><div class="role">Faint</div><div class="token">--text-faint</div><div class="hex">#97A09A</div></div></div>
+        </div>
+      </section>
+
+      <!-- ============ STATUS ROLES ============ -->
+      <section id="status">
+        <div class="sec-head"><span class="sec-num">02</span><h2>Status roles</h2></div>
+        <p class="sec-desc">Application states map to five semantic colour roles. Each pairs a soft background with a readable foreground and a solid dot — never colour alone, always with a label.</p>
+
+        <div class="roles">
+          <div class="role-row">
+            <div class="role-name"><span class="dot" style="background:var(--green-dot)"></span><div><strong>Success / Approved</strong><small>green</small></div></div>
+            <div class="role-demo">
+              <span class="demo-pill" style="background:var(--green-bg);color:var(--green-fg)"><span class="pdot" style="background:var(--green-dot)"></span> Approved</span>
+              <span class="role-tokens"><span><b>fg</b> #16795A</span><span><b>bg</b> #E5F2EA</span><span><b>dot</b> #1E9B6B</span></span>
+            </div>
+          </div>
+          <div class="role-row">
+            <div class="role-name"><span class="dot" style="background:var(--amber-dot)"></span><div><strong>Warning / Action needed</strong><small>amber</small></div></div>
+            <div class="role-demo">
+              <span class="demo-pill" style="background:var(--amber-bg);color:var(--amber-fg)"><span class="pdot" style="background:var(--amber-dot)"></span> Under review</span>
+              <span class="role-tokens"><span><b>fg</b> #97631A</span><span><b>bg</b> #FBF0DD</span><span><b>dot</b> #D08B26</span></span>
+            </div>
+          </div>
+          <div class="role-row">
+            <div class="role-name"><span class="dot" style="background:var(--rose-dot)"></span><div><strong>Destructive / Rejected</strong><small>rose</small></div></div>
+            <div class="role-demo">
+              <span class="demo-pill" style="background:var(--rose-bg);color:var(--rose-fg)"><span class="pdot" style="background:var(--rose-dot)"></span> Changes requested</span>
+              <span class="role-tokens"><span><b>fg</b> #B0463A</span><span><b>bg</b> #FBE9E7</span><span><b>dot</b> #D86355</span></span>
+            </div>
+          </div>
+          <div class="role-row">
+            <div class="role-name"><span class="dot" style="background:var(--blue-dot)"></span><div><strong>Info / Submitted</strong><small>blue</small></div></div>
+            <div class="role-demo">
+              <span class="demo-pill" style="background:var(--blue-bg);color:var(--blue-fg)"><span class="pdot" style="background:var(--blue-dot)"></span> Submitted</span>
+              <span class="role-tokens"><span><b>fg</b> #2B5FAE</span><span><b>bg</b> #E8F0FB</span><span><b>dot</b> #3B82F6</span></span>
+            </div>
+          </div>
+          <div class="role-row">
+            <div class="role-name"><span class="dot" style="background:var(--slate-dot)"></span><div><strong>Neutral / Draft</strong><small>slate</small></div></div>
+            <div class="role-demo">
+              <span class="demo-pill" style="background:var(--slate-bg);color:var(--slate-fg)"><span class="pdot" style="background:var(--slate-dot)"></span> Draft</span>
+              <span class="role-tokens"><span><b>fg</b> #5A6670</span><span><b>bg</b> #EEF0F1</span><span><b>dot</b> #8A949C</span></span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ TYPOGRAPHY ============ -->
+      <section id="type">
+        <div class="sec-head"><span class="sec-num">03</span><h2>Typography</h2></div>
+        <p class="sec-desc">Hanken Grotesk — a humanist grotesque that feels warm and plain-spoken at body sizes and confident in display. Headings track tight; body stays comfortable.</p>
+
+        <div class="type-row">
+          <div class="type-specimen" style="font-size:44px;font-weight:800">Plans approved</div>
+          <div class="type-spec"><span class="name">Display LG</span><span class="det">44px · 800 · -0.03em</span><span class="det">--text-display-lg</span></div>
+        </div>
+        <div class="type-row">
+          <div class="type-specimen" style="font-size:30px;font-weight:800">Your applications</div>
+          <div class="type-spec"><span class="name">Display / H1</span><span class="det">30px · 800 · -0.03em</span><span class="det">--text-display</span></div>
+        </div>
+        <div class="type-row">
+          <div class="type-specimen" style="font-size:24px;font-weight:700">Section heading</div>
+          <div class="type-spec"><span class="name">Heading 2</span><span class="det">24px · 700 · -0.02em</span><span class="det">--text-h2</span></div>
+        </div>
+        <div class="type-row">
+          <div class="type-specimen" style="font-size:19px;font-weight:700">Project address</div>
+          <div class="type-spec"><span class="name">Heading 3</span><span class="det">19px · 700 · -0.02em</span><span class="det">--text-h3</span></div>
+        </div>
+        <div class="type-row">
+          <div class="type-specimen" style="font-size:17px;font-weight:400;letter-spacing:-0.01em;color:var(--text-body)">We'll always tell you what happens next.</div>
+          <div class="type-spec"><span class="name">Body large</span><span class="det">17px · 400 · -0.01em</span><span class="det">--text-body-lg</span></div>
+        </div>
+        <div class="type-row">
+          <div class="type-specimen" style="font-size:15px;font-weight:400;letter-spacing:-0.01em;color:var(--text-body)">A surveyor will be assigned to your application shortly. There's nothing you need to do right now.</div>
+          <div class="type-spec"><span class="name">Body · base</span><span class="det">15px · 400 · -0.01em</span><span class="det">--text-body</span></div>
+        </div>
+        <div class="type-row">
+          <div class="type-specimen" style="font-size:13px;font-weight:600;letter-spacing:0.04em;text-transform:uppercase;color:var(--text-muted)">Reference number</div>
+          <div class="type-spec"><span class="name">Caption / label</span><span class="det">13px · 600 · 0.04em</span><span class="det">--text-caption</span></div>
+        </div>
+
+        <div class="weights">
+          <div class="weight"><div class="glyph" style="font-weight:400">Aa</div><div class="lbl">Regular · 400</div></div>
+          <div class="weight"><div class="glyph" style="font-weight:500">Aa</div><div class="lbl">Medium · 500</div></div>
+          <div class="weight"><div class="glyph" style="font-weight:600">Aa</div><div class="lbl">Semibold · 600</div></div>
+          <div class="weight"><div class="glyph" style="font-weight:700">Aa</div><div class="lbl">Bold · 700</div></div>
+          <div class="weight"><div class="glyph" style="font-weight:800">Aa</div><div class="lbl">Black · 800</div></div>
+        </div>
+      </section>
+
+      <!-- ============ SPACING ============ -->
+      <section id="spacing">
+        <div class="sec-head"><span class="sec-num">04</span><h2>Spacing</h2></div>
+        <p class="sec-desc">A 4px base scale. Most layout rhythm uses space-3 through space-8; page gutters use space-6.</p>
+        <div class="spacing">
+          <div class="space-row"><span class="tk">--space-1</span><span class="px">4px</span><div class="bar" style="width:4px"></div></div>
+          <div class="space-row"><span class="tk">--space-2</span><span class="px">8px</span><div class="bar" style="width:8px"></div></div>
+          <div class="space-row"><span class="tk">--space-3</span><span class="px">12px</span><div class="bar" style="width:12px"></div></div>
+          <div class="space-row"><span class="tk">--space-4</span><span class="px">16px</span><div class="bar" style="width:16px"></div></div>
+          <div class="space-row"><span class="tk">--space-5</span><span class="px">20px</span><div class="bar" style="width:20px"></div></div>
+          <div class="space-row"><span class="tk">--space-6</span><span class="px">24px</span><div class="bar" style="width:24px"></div></div>
+          <div class="space-row"><span class="tk">--space-8</span><span class="px">32px</span><div class="bar" style="width:32px"></div></div>
+          <div class="space-row"><span class="tk">--space-10</span><span class="px">40px</span><div class="bar" style="width:40px"></div></div>
+          <div class="space-row"><span class="tk">--space-12</span><span class="px">48px</span><div class="bar" style="width:48px"></div></div>
+          <div class="space-row"><span class="tk">--space-16</span><span class="px">64px</span><div class="bar" style="width:64px"></div></div>
+        </div>
+      </section>
+
+      <!-- ============ RADIUS ============ -->
+      <section id="radius">
+        <div class="sec-head"><span class="sec-num">05</span><h2>Corner radius</h2></div>
+        <p class="sec-desc">Generous but not bubbly. Cards use lg; buttons and tabs use md; pills and avatars are fully rounded.</p>
+        <div class="radii">
+          <div class="radius-card"><div class="radius-box" style="--r:6px"></div><div class="name">XS</div><div class="det">6px · --radius-xs</div></div>
+          <div class="radius-card"><div class="radius-box" style="--r:10px"></div><div class="name">SM</div><div class="det">10px · --radius-sm</div></div>
+          <div class="radius-card"><div class="radius-box" style="--r:12px"></div><div class="name">MD</div><div class="det">12px · --radius-md</div></div>
+          <div class="radius-card"><div class="radius-box" style="--r:16px"></div><div class="name">LG</div><div class="det">16px · --radius-lg</div></div>
+          <div class="radius-card"><div class="radius-box" style="--r:20px"></div><div class="name">XL</div><div class="det">20px · --radius-xl</div></div>
+          <div class="radius-card"><div class="radius-box" style="--r:999px"></div><div class="name">Pill</div><div class="det">999px · --radius-pill</div></div>
+        </div>
+      </section>
+
+      <!-- ============ ELEVATION ============ -->
+      <section id="elevation">
+        <div class="sec-head"><span class="sec-num">06</span><h2>Elevation</h2></div>
+        <p class="sec-desc">Soft, low-contrast shadows tinted with the ink hue. Cards rest at sm; hover lifts to lg.</p>
+        <div class="elevations">
+          <div class="elev-card sm"><div class="name">Shadow SM</div><div class="det">--shadow-sm · resting card</div></div>
+          <div class="elev-card md"><div class="name">Shadow MD</div><div class="det">--shadow-md · raised</div></div>
+          <div class="elev-card lg"><div class="name">Shadow LG</div><div class="det">--shadow-lg · hover / modal</div></div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+  <script>lucide.createIcons();</script>
+</body>
+</html>

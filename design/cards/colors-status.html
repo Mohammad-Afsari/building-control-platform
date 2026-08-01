@@ -1,0 +1,23 @@
+<!-- @dsCard group="Colors" viewport="700x190" name="Status roles" subtitle="Five semantic states — pill, foreground, background, dot" -->
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8" />
+<link rel="stylesheet" href="../styles.css" />
+<style>
+  body { margin:0; font-family:var(--font-sans); background:var(--surface-page); padding:18px 20px; }
+  .roles { display:grid; gap:8px; }
+  .r { display:flex; align-items:center; gap:14px; }
+  .pill { display:inline-flex; align-items:center; gap:7px; font-size:12.5px; font-weight:700; padding:5px 11px 5px 9px; border-radius:var(--radius-pill); width:150px; }
+  .pill .d { width:7px; height:7px; border-radius:50%; }
+  .lbl { font-size:12px; color:var(--text-muted); font-weight:600; width:150px; }
+  .tk { font-family:var(--font-mono); font-size:11px; color:var(--text-faint); }
+  .tk b { color:var(--text-muted); font-weight:600; }
+</style></head>
+<body>
+  <div class="roles">
+    <div class="r"><span class="pill" style="background:var(--green-bg);color:var(--green-fg)"><span class="d" style="background:var(--green-dot)"></span> Approved</span><span class="lbl">Success / Approved</span><span class="tk"><b>fg</b> #16795A · <b>bg</b> #E5F2EA · <b>dot</b> #1E9B6B</span></div>
+    <div class="r"><span class="pill" style="background:var(--amber-bg);color:var(--amber-fg)"><span class="d" style="background:var(--amber-dot)"></span> Under review</span><span class="lbl">Warning / Action</span><span class="tk"><b>fg</b> #97631A · <b>bg</b> #FBF0DD · <b>dot</b> #D08B26</span></div>
+    <div class="r"><span class="pill" style="background:var(--rose-bg);color:var(--rose-fg)"><span class="d" style="background:var(--rose-dot)"></span> Rejected</span><span class="lbl">Destructive / Rejected</span><span class="tk"><b>fg</b> #B0463A · <b>bg</b> #FBE9E7 · <b>dot</b> #D86355</span></div>
+    <div class="r"><span class="pill" style="background:var(--blue-bg);color:var(--blue-fg)"><span class="d" style="background:var(--blue-dot)"></span> Submitted</span><span class="lbl">Info / Submitted</span><span class="tk"><b>fg</b> #2B5FAE · <b>bg</b> #E8F0FB · <b>dot</b> #3B82F6</span></div>
+    <div class="r"><span class="pill" style="background:var(--slate-bg);color:var(--slate-fg)"><span class="d" style="background:var(--slate-dot)"></span> Draft</span><span class="lbl">Neutral / Draft</span><span class="tk"><b>fg</b> #5A6670 · <b>bg</b> #EEF0F1 · <b>dot</b> #8A949C</span></div>
+  </div>
+</body></html>

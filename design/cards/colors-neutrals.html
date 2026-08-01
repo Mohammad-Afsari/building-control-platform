@@ -1,0 +1,30 @@
+<!-- @dsCard group="Colors" viewport="700x150" name="Neutrals & ink" subtitle="Warm paper surfaces, borders, and text inks" -->
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8" />
+<link rel="stylesheet" href="../styles.css" />
+<style>
+  body { margin:0; font-family:var(--font-sans); background:var(--surface-page); padding:20px; }
+  .row { display:grid; grid-template-columns:repeat(5,1fr); gap:10px; }
+  .row + .row { margin-top:10px; }
+  .sw { border-radius:var(--radius-md); overflow:hidden; border:1px solid var(--border-default); background:var(--surface-card); }
+  .sw .c { height:48px; }
+  .sw .t { padding:7px 9px; }
+  .sw .n { font-size:11.5px; font-weight:700; color:var(--text-heading); }
+  .sw .h { font-family:var(--font-mono); font-size:10px; color:var(--text-muted); margin-top:2px; text-transform:uppercase; }
+</style></head>
+<body>
+  <div class="row">
+    <div class="sw"><div class="c" style="background:var(--neutral-0)"></div><div class="t"><div class="n">Card</div><div class="h">#FFFFFF</div></div></div>
+    <div class="sw"><div class="c" style="background:var(--neutral-25)"></div><div class="t"><div class="n">Raised</div><div class="h">#FBFAF7</div></div></div>
+    <div class="sw"><div class="c" style="background:var(--neutral-50)"></div><div class="t"><div class="n">Page</div><div class="h">#F5F4F0</div></div></div>
+    <div class="sw"><div class="c" style="background:var(--neutral-200)"></div><div class="t"><div class="n">Border</div><div class="h">#E7E4DC</div></div></div>
+    <div class="sw"><div class="c" style="background:var(--neutral-300)"></div><div class="t"><div class="n">Border+</div><div class="h">#DEDAD0</div></div></div>
+  </div>
+  <div class="row">
+    <div class="sw"><div class="c" style="background:var(--ink-900)"></div><div class="t"><div class="n">Heading</div><div class="h">#1C2622</div></div></div>
+    <div class="sw"><div class="c" style="background:var(--ink-700)"></div><div class="t"><div class="n">Body</div><div class="h">#46504B</div></div></div>
+    <div class="sw"><div class="c" style="background:var(--ink-500)"></div><div class="t"><div class="n">Muted</div><div class="h">#6E766F</div></div></div>
+    <div class="sw"><div class="c" style="background:var(--ink-400)"></div><div class="t"><div class="n">Faint</div><div class="h">#97A09A</div></div></div>
+    <div class="sw" style="visibility:hidden"></div>
+  </div>
+</body></html>

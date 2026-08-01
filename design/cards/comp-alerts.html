@@ -1,0 +1,28 @@
+<!-- @dsCard group="Components" viewport="700x200" name="Alerts & banners" subtitle="Info, success, warning, danger, neutral" -->
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8" />
+<link rel="stylesheet" href="../styles.css" />
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>
+  body { margin:0; font-family:var(--font-sans); background:var(--surface-page); padding:20px 22px; }
+  .stack { display:flex; flex-direction:column; gap:11px; }
+</style></head>
+<body>
+  <div class="stack">
+    <div class="bc-alert bc-alert--warning">
+      <div class="bc-alert-icon"><i data-lucide="bell-ring"></i></div>
+      <div class="bc-alert-body"><div class="bc-alert-title">2 applications need something from you.</div><div class="bc-alert-text">We've listed exactly what's missing on each one.</div></div>
+      <a class="bc-alert-action" href="#">Review <i data-lucide="arrow-right"></i></a>
+    </div>
+    <div class="bc-alert bc-alert--success">
+      <div class="bc-alert-icon"><i data-lucide="badge-check"></i></div>
+      <div class="bc-alert-body"><div class="bc-alert-title">Your plans have been approved.</div><div class="bc-alert-text">Your completion certificate is ready to download.</div></div>
+    </div>
+    <div class="bc-alert bc-alert--danger">
+      <div class="bc-alert-icon"><i data-lucide="alert-octagon"></i></div>
+      <div class="bc-alert-body"><div class="bc-alert-title">Three changes are needed before we can approve.</div><div class="bc-alert-text">We've explained each one in plain English.</div></div>
+      <a class="bc-alert-action" href="#">See feedback <i data-lucide="arrow-right"></i></a>
+    </div>
+  </div>
+  <script>lucide.createIcons();</script>
+</body></html>

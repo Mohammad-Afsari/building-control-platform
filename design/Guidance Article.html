@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Building Control — Full plans vs building notice</title>
+<link rel="stylesheet" href="styles.css" />
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-font-smoothing: antialiased; scroll-behavior: smooth; }
+  body { font-family: var(--font-sans); background: var(--surface-page); color: var(--text-body);
+    font-size: var(--text-body); line-height: var(--leading-normal); letter-spacing: var(--tracking-normal); }
+  a { color: inherit; text-decoration: none; }
+  .container { max-width: var(--container-max); margin: 0 auto; padding-left: 28px; padding-right: 28px; }
+
+  /* header */
+  .site-head { background: var(--surface-card); border-bottom: 1px solid var(--border-default); position: sticky; top: 0; z-index: 30; }
+  /* nav — mobile first */
+  .site-head-inner { height: 60px; display: flex; align-items: center; gap: 14px; }
+  .logo { display: flex; align-items: center; gap: 10px; margin-right: auto; }
+  .logo img { width: 32px; height: 32px; display: block; }
+  .logo .wm { font-size: 16px; letter-spacing: -0.022em; white-space: nowrap; }
+  .logo .wm b { font-weight: 800; color: var(--text-heading); }
+  .logo .wm i { font-style: normal; font-weight: 600; color: var(--text-muted); }
+  .nav-links { display: none; }
+  .nav-link { display: flex; align-items: center; gap: 7px; padding: 8px 13px; border-radius: var(--radius-sm);
+    color: var(--text-muted); font-weight: var(--weight-semibold); font-size: var(--text-body-sm); transition: background .15s, color .15s; }
+  .nav-link svg { width: 16px; height: 16px; }
+  .nav-link:hover { background: var(--surface-raised); color: var(--text-heading); }
+  .nav-link.active { background: var(--primary-50); color: var(--primary-700); }
+  .nav-right { display: none; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-family: inherit; font-weight: var(--weight-bold); font-size: var(--text-body-sm);
+    border: 1px solid transparent; border-radius: var(--radius-md); padding: 11px 16px; cursor: pointer; text-decoration: none; transition: background .15s; }
+  .btn svg { width: 16px; height: 16px; }
+  .btn-primary { background: var(--color-primary); color: #fff; box-shadow: 0 1px 2px rgba(11,70,52,.25), 0 8px 18px -8px rgba(11,70,52,.45); }
+  .btn-primary:hover { background: var(--color-primary-hover); }
+
+  /* hamburger + mobile drawer */
+  .nav-toggle { display: inline-grid; place-items: center; width: 42px; height: 42px; border-radius: var(--radius-sm);
+    border: 1px solid var(--border-default); background: var(--surface-card); color: var(--text-heading); cursor: pointer; flex: none; }
+  .nav-toggle svg { width: 21px; height: 21px; }
+  .nav-toggle .ic-close { display: none; }
+  .nav-toggle[aria-expanded="true"] .ic-open { display: none; }
+  .nav-toggle[aria-expanded="true"] .ic-close { display: block; }
+  .mobile-menu { display: none; flex-direction: column; gap: 3px; padding: 10px 20px 18px;
+    border-top: 1px solid var(--border-default); background: var(--surface-card); }
+  .mobile-menu.is-open { display: flex; }
+  .m-link { display: flex; align-items: center; gap: 11px; padding: 13px 14px; border-radius: var(--radius-md);
+    font-size: var(--text-body-lg); font-weight: var(--weight-semibold); color: var(--text-body); }
+  .m-link svg { width: 19px; height: 19px; color: var(--text-faint); }
+  .m-link.active { background: var(--primary-50); color: var(--primary-700); }
+  .m-link.active svg { color: var(--primary-600); }
+  .mobile-menu .btn { margin-top: 10px; padding: 14px 18px; font-size: var(--text-body-lg); }
+
+  /* ≥ 760px — desktop nav */
+  @media (min-width: 760px) {
+    .site-head-inner { height: 64px; gap: 28px; }
+    .logo img { width: 34px; height: 34px; }
+    .logo .wm { font-size: 16.5px; }
+    .nav-links { display: flex; align-items: center; gap: 4px; margin-right: auto; }
+    .nav-right { display: flex; align-items: center; gap: 8px; }
+    .nav-toggle { display: none; }
+    .mobile-menu { display: none !important; }
+  }
+
+  /* article layout */
+  .article-wrap { max-width: 760px; margin: 0 auto; padding: 36px 28px 80px; }
+
+  .crumbs { display: flex; align-items: center; gap: 8px; font-size: var(--text-caption); color: var(--text-muted); margin-bottom: 26px; flex-wrap: wrap; }
+  .crumbs a { font-weight: var(--weight-semibold); }
+  .crumbs a:hover { color: var(--text-heading); }
+  .crumbs svg { width: 14px; height: 14px; color: var(--text-faint); }
+  .crumbs .here { color: var(--text-heading); font-weight: var(--weight-semibold); }
+
+  .article-head { padding-bottom: 24px; border-bottom: 1px solid var(--border-default); margin-bottom: 32px; }
+  .topic-tag { display: inline-flex; align-items: center; gap: 7px; font-size: var(--text-micro); font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-wide); text-transform: uppercase; color: var(--primary-700); background: var(--primary-50);
+    border: 1px solid var(--primary-100); padding: 5px 11px; border-radius: var(--radius-pill); margin-bottom: 16px; }
+  .topic-tag svg { width: 13px; height: 13px; }
+  .article-head h1 { font-size: clamp(28px, 4vw, 38px); font-weight: var(--weight-black); color: var(--text-heading);
+    letter-spacing: var(--tracking-tight); line-height: 1.1; text-wrap: balance; }
+  .article-meta { display: flex; align-items: center; gap: 16px; margin-top: 16px; font-size: var(--text-caption); color: var(--text-faint); }
+  .article-meta span { display: inline-flex; align-items: center; gap: 6px; }
+  .article-meta svg { width: 14px; height: 14px; }
+
+  /* prose */
+  .prose { color: var(--text-body); }
+  .prose .lead { font-size: var(--text-body-lg); color: var(--text-heading); line-height: 1.55; margin-bottom: 26px; }
+  .prose h2 { font-size: var(--text-h3); font-weight: var(--weight-bold); color: var(--text-heading); letter-spacing: var(--tracking-snug);
+    margin: 34px 0 12px; scroll-margin-top: 80px; }
+  .prose h2:first-child { margin-top: 0; }
+  .prose p { font-size: var(--text-body); line-height: 1.65; margin-bottom: 16px; }
+  .prose ul { margin: 0 0 16px; padding-left: 4px; list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .prose ul li { display: flex; gap: 11px; font-size: var(--text-body); line-height: 1.55; }
+  .prose ul li svg { width: 18px; height: 18px; color: var(--color-success); flex: none; margin-top: 2px; }
+  .prose strong { color: var(--text-heading); font-weight: var(--weight-bold); }
+
+  /* callout */
+  .callout { display: flex; gap: 13px; background: var(--color-info-bg); border: 1px solid #CFE0F6; border-radius: var(--radius-md);
+    padding: 16px 18px; margin: 24px 0; }
+  .callout svg { width: 19px; height: 19px; color: var(--color-info-dot); flex: none; margin-top: 1px; }
+  .callout .c-body { font-size: var(--text-body-sm); color: var(--blue-fg); line-height: 1.55; }
+  .callout .c-body strong { color: var(--blue-fg); font-weight: var(--weight-bold); }
+
+  /* comparison cards inside prose */
+  .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 24px 0; }
+  @media (max-width: 560px) { .compare { grid-template-columns: 1fr; } }
+  .compare-card { border: 1px solid var(--border-default); border-radius: var(--radius-md); padding: 18px; background: var(--surface-card); }
+  .compare-card h3 { font-size: var(--text-body); font-weight: var(--weight-bold); color: var(--text-heading); margin-bottom: 6px; }
+  .compare-card p { font-size: var(--text-caption); color: var(--text-muted); line-height: 1.5; margin: 0; }
+
+  /* was this helpful */
+  .helpful { margin-top: 44px; padding: 26px; background: var(--surface-card); border: 1px solid var(--border-default);
+    border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); text-align: center; }
+  .helpful h3 { font-size: var(--text-h3); font-weight: var(--weight-bold); color: var(--text-heading); letter-spacing: var(--tracking-snug); }
+  .helpful p { font-size: var(--text-body-sm); color: var(--text-muted); margin-top: 5px; }
+  .helpful-btns { display: flex; align-items: center; justify-content: center; gap: 12px; margin-top: 18px; }
+  .h-btn { display: inline-flex; align-items: center; gap: 8px; font-family: inherit; font-size: var(--text-body-sm); font-weight: var(--weight-bold);
+    color: var(--text-heading); background: var(--surface-card); border: 1px solid var(--border-strong); border-radius: var(--radius-md);
+    padding: 11px 20px; cursor: pointer; transition: background .15s, border-color .15s, color .15s; }
+  .h-btn svg { width: 17px; height: 17px; }
+  .h-btn:hover { background: var(--surface-raised); border-color: var(--neutral-400); }
+  .h-btn.yes:hover { border-color: var(--color-success-dot); color: var(--color-success); }
+  .h-btn.no:hover { border-color: var(--color-destructive-dot); color: var(--color-destructive); }
+  .helpful-thanks { display: none; align-items: center; justify-content: center; gap: 9px; margin-top: 6px;
+    font-size: var(--text-body-sm); font-weight: var(--weight-semibold); color: var(--color-success); }
+  .helpful-thanks.is-shown { display: flex; }
+  .helpful-thanks svg { width: 18px; height: 18px; }
+  .helpful-followup { display: none; margin-top: 16px; }
+  .helpful-followup.is-shown { display: block; }
+  .helpful-followup textarea { width: 100%; font-family: inherit; font-size: var(--text-body-sm); color: var(--text-heading);
+    border: 1px solid var(--border-strong); border-radius: var(--radius-sm); padding: 11px 13px; resize: vertical; min-height: 72px; }
+  .helpful-followup textarea:focus { outline: none; border-color: var(--border-focus); box-shadow: 0 0 0 3px var(--primary-50); }
+
+  /* related */
+  .related { margin-top: 36px; }
+  .related h4 { font-size: var(--text-micro); font-weight: var(--weight-bold); letter-spacing: var(--tracking-wide); text-transform: uppercase;
+    color: var(--text-faint); margin-bottom: 12px; }
+  .related-list { display: flex; flex-direction: column; gap: 2px; }
+  .related-list a { display: flex; align-items: center; gap: 9px; padding: 11px 0; font-size: var(--text-body-sm); font-weight: var(--weight-semibold);
+    color: var(--text-body); border-top: 1px solid var(--border-default); }
+  .related-list a:hover { color: var(--primary-700); }
+  .related-list a svg { width: 15px; height: 15px; color: var(--text-faint); margin-left: auto; }
+  .related-list a:hover svg { color: var(--primary-600); }
+</style>
+</head>
+<body>
+
+  <header class="site-head">
+    <div class="container site-head-inner">
+      <a class="logo" href="Landing Page.html"><img src="assets/logo/building-control-logo.svg" alt="Building Control" /><span class="wm"><b>Building</b>&hairsp;<i>Control</i></span></a>
+      <nav class="nav-links">
+        <a class="nav-link" href="Applicant Dashboard.html"><i data-lucide="layout-grid"></i> Dashboard</a>
+      </nav>
+      <div class="nav-right">
+        <a class="btn btn-primary" href="Application Wizard.html"><i data-lucide="plus"></i> Start an application</a>
+      </div>
+      <button class="nav-toggle" id="navToggle" aria-label="Menu" aria-controls="mobileMenu" aria-expanded="false">
+        <i data-lucide="menu" class="ic-open"></i><i data-lucide="x" class="ic-close"></i>
+      </button>
+    </div>
+    <nav class="mobile-menu" id="mobileMenu">
+      <a class="m-link" href="Applicant Dashboard.html"><i data-lucide="layout-grid"></i> Dashboard</a>
+      <a class="btn btn-primary" href="Application Wizard.html"><i data-lucide="plus"></i> Start an application</a>
+    </nav>
+  </header>
+
+  <article class="article-wrap">
+    <nav class="crumbs">
+      <a href="Guidance Centre.html">Guidance</a>
+      <i data-lucide="chevron-right"></i>
+      <a href="Guidance Centre.html">Application types</a>
+      <i data-lucide="chevron-right"></i>
+      <span class="here">Full plans vs building notice</span>
+    </nav>
+
+    <header class="article-head">
+      <span class="topic-tag"><i data-lucide="list-checks"></i> Application types</span>
+      <h1>Full plans or building notice — which should I choose?</h1>
+      <div class="article-meta">
+        <span><i data-lucide="clock"></i> 4 min read</span>
+        <span><i data-lucide="refresh-cw"></i> Updated June 2026</span>
+      </div>
+    </header>
+
+    <div class="prose">
+      <p class="lead">There are two main ways to apply for building regulations approval. Both are perfectly valid — the right one just depends on how much detail you want checked before work starts.</p>
+
+      <h2>The short version</h2>
+      <p>If you'd like your plans checked and approved <strong>before</strong> any work begins, choose <strong>full plans</strong>. If your project is small and straightforward and you're happy for it to be checked <strong>as the work happens</strong>, a <strong>building notice</strong> may be quicker to get going.</p>
+
+      <div class="compare">
+        <div class="compare-card">
+          <h3>Full plans</h3>
+          <p>You submit detailed drawings. We check them and issue approval before you build. Fewer surprises on site.</p>
+        </div>
+        <div class="compare-card">
+          <h3>Building notice</h3>
+          <p>You give notice and start sooner. Work is checked through site inspections as it progresses.</p>
+        </div>
+      </div>
+
+      <h2>When full plans is the better choice</h2>
+      <ul>
+        <li><i data-lucide="check"></i> Larger or more complex projects, like a two-storey extension</li>
+        <li><i data-lucide="check"></i> When a lender, insurer or buyer may want to see formal approval</li>
+        <li><i data-lucide="check"></i> When you want certainty about costs before building begins</li>
+      </ul>
+
+      <h2>When a building notice can work</h2>
+      <ul>
+        <li><i data-lucide="check"></i> Small, familiar jobs such as removing a load-bearing wall</li>
+        <li><i data-lucide="check"></i> When an experienced builder is managing the work</li>
+        <li><i data-lucide="check"></i> When you'd rather not wait for plans to be checked first</li>
+      </ul>
+
+      <div class="callout">
+        <i data-lucide="info"></i>
+        <div class="c-body"><strong>Not sure?</strong> You can start an application and change the route later with your surveyor. Choosing one now doesn't lock you in.</div>
+      </div>
+
+      <h2>What happens next</h2>
+      <p>Once you've chosen, you'll add your project details and any documents, see a clear fee, and submit. We'll confirm we've received everything and tell you exactly what happens next — no jargon, no guessing.</p>
+    </div>
+
+    <!-- was this helpful -->
+    <div class="helpful">
+      <div id="helpfulPrompt">
+        <h3>Was this helpful?</h3>
+        <p>Your feedback helps us write clearer guidance.</p>
+        <div class="helpful-btns">
+          <button class="h-btn yes" id="btnYes"><i data-lucide="thumbs-up"></i> Yes, thanks</button>
+          <button class="h-btn no" id="btnNo"><i data-lucide="thumbs-down"></i> Not really</button>
+        </div>
+      </div>
+      <div class="helpful-thanks" id="helpfulThanks"><i data-lucide="check-circle-2"></i> Thanks for your feedback.</div>
+      <div class="helpful-followup" id="helpfulFollowup">
+        <textarea placeholder="Optional — tell us what was missing or confusing."></textarea>
+      </div>
+    </div>
+
+    <!-- related -->
+    <div class="related">
+      <h4>Related guidance</h4>
+      <div class="related-list">
+        <a href="Guidance Article.html">Do I need building regulations approval at all? <i data-lucide="arrow-right"></i></a>
+        <a href="Guidance Article.html">What is regularisation? <i data-lucide="arrow-right"></i></a>
+        <a href="Guidance Article.html">How fees are calculated <i data-lucide="arrow-right"></i></a>
+      </div>
+    </div>
+  </article>
+
+  <script>
+    lucide.createIcons();
+    const navToggle = document.getElementById('navToggle');
+    const mobileMenu = document.getElementById('mobileMenu');
+    navToggle.addEventListener('click', () => {
+      const open = mobileMenu.classList.toggle('is-open');
+      navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    const prompt = document.getElementById('helpfulPrompt');
+    const thanks = document.getElementById('helpfulThanks');
+    const followup = document.getElementById('helpfulFollowup');
+    function respond(showFollowup) {
+      prompt.style.display = 'none';
+      thanks.classList.add('is-shown');
+      if (showFollowup) followup.classList.add('is-shown');
+      lucide.createIcons();
+    }
+    document.getElementById('btnYes').addEventListener('click', () => respond(false));
+    document.getElementById('btnNo').addEventListener('click', () => respond(true));
+  </script>
+</body>
+</html>

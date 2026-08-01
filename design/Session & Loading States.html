@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Building Control — Session & loading states</title>
+<link rel="stylesheet" href="styles.css" />
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-font-smoothing: antialiased; }
+  body { font-family: var(--font-sans); background: var(--surface-page); color: var(--text-body);
+    font-size: var(--text-body); line-height: var(--leading-normal); letter-spacing: var(--tracking-normal); }
+
+  .variant-label { max-width: var(--container-max); margin: 0 auto; padding: 22px 28px 0; display: flex; align-items: center; gap: 9px;
+    font-size: var(--text-caption); font-weight: var(--weight-bold); color: var(--text-muted); }
+  .variant-label .tag { font-family: var(--font-mono); font-size: var(--text-micro); font-weight: var(--weight-bold);
+    padding: 3px 9px; border-radius: var(--radius-pill); background: var(--color-neutral-bg); color: var(--color-neutral); }
+  .canvas-divider { height: 1px; background: var(--border-default); max-width: var(--container-max); margin: 18px auto 0; }
+  .block-gap { height: 10px; background: var(--surface-sunken); border-top: 1px solid var(--border-default); border-bottom: 1px solid var(--border-default); margin-top: 40px; }
+
+  /* shared header */
+  .site-head { background: var(--surface-card); border-bottom: 1px solid var(--border-default); }
+  .site-head-inner { max-width: var(--container-max); margin: 0 auto; height: 64px; padding: 0 28px; display: flex; align-items: center; gap: 28px; }
+  .logo { display: flex; align-items: center; gap: 11px; text-decoration: none; }
+  .logo img { width: 34px; height: 34px; display: block; }
+  .logo .wm { font-size: 16.5px; letter-spacing: -0.022em; white-space: nowrap; }
+  .logo .wm b { font-weight: 800; color: var(--text-heading); }
+  .logo .wm i { font-style: normal; font-weight: 600; color: var(--text-muted); }
+  .nav-links { display: flex; align-items: center; gap: 4px; margin-left: 4px; }
+  .nav-link { display: flex; align-items: center; gap: 7px; padding: 8px 13px; border-radius: var(--radius-sm);
+    color: var(--text-muted); font-weight: var(--weight-semibold); font-size: var(--text-body-sm); text-decoration: none; }
+  .nav-link svg { width: 16px; height: 16px; }
+  .nav-link.active { background: var(--primary-50); color: var(--primary-700); }
+  .nav-right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+  .avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--primary-100); color: var(--primary-700);
+    display: grid; place-items: center; font-weight: var(--weight-bold); font-size: var(--text-body-sm); border: 1px solid var(--border-strong); }
+
+  /* ============ skeleton primitives ============ */
+  .sk { position: relative; overflow: hidden; background: var(--neutral-100); border-radius: var(--radius-xs); }
+  .sk::after { content: ""; position: absolute; inset: 0; transform: translateX(-100%);
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,.65), transparent);
+    animation: shimmer 1.5s infinite; }
+  @keyframes shimmer { 100% { transform: translateX(100%); } }
+  @media (prefers-reduced-motion: reduce) { .sk::after { animation: none; } }
+  .sk-line { height: 12px; border-radius: 5px; }
+  .sk-pill { height: 24px; width: 110px; border-radius: var(--radius-pill); }
+  .sk-circle { border-radius: 50%; }
+  .sk-block { border-radius: var(--radius-sm); }
+  .sk-soft { background: var(--neutral-100); }
+
+  /* ============ session expired ============ */
+  .session-stage { min-height: 600px; display: grid; place-items: center; padding: 56px 24px;
+    background:
+      radial-gradient(120% 70% at 50% -8%, var(--primary-50) 0%, rgba(234,243,238,0) 55%),
+      var(--surface-page); }
+  /* dimmed dashboard behind the modal hint */
+  .session-card { width: 100%; max-width: 412px; background: var(--surface-card); border: 1px solid var(--border-default);
+    border-radius: var(--radius-xl); box-shadow: var(--shadow-lg); padding: 36px 34px 30px; text-align: center; }
+  .session-badge { width: 64px; height: 64px; border-radius: 50%; margin: 0 auto 20px; display: grid; place-items: center;
+    background: var(--color-action-needed-bg); color: var(--color-action-needed); }
+  .session-badge svg { width: 30px; height: 30px; }
+  .session-card h1 { font-size: var(--text-h2); font-weight: var(--weight-black); color: var(--text-heading); letter-spacing: var(--tracking-snug); }
+  .session-card p { color: var(--text-muted); font-size: var(--text-body); margin-top: 11px; line-height: 1.55; max-width: 34ch; margin-inline: auto; }
+  .session-actions { margin-top: 26px; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 9px; width: 100%; font-family: inherit; font-weight: var(--weight-bold);
+    font-size: var(--text-body-lg); border: 1px solid transparent; border-radius: var(--radius-md); padding: 13px 20px; cursor: pointer;
+    text-decoration: none; transition: background .15s, transform .1s; }
+  .btn svg { width: 18px; height: 18px; }
+  .btn-primary { background: var(--color-primary); color: #fff; box-shadow: 0 1px 2px rgba(11,70,52,.25), 0 8px 18px -8px rgba(11,70,52,.45); }
+  .btn-primary:hover { background: var(--color-primary-hover); }
+  .btn-primary:active { transform: translateY(1px); }
+  .session-foot { margin-top: 18px; font-size: var(--text-caption); color: var(--text-faint); display: flex; align-items: center; justify-content: center; gap: 7px; }
+  .session-foot svg { width: 14px; height: 14px; }
+
+  /* ============ page scaffolding for skeletons ============ */
+  .wrap { max-width: var(--container-max); margin: 0 auto; padding: 36px 28px 64px; }
+  .sk-page-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 26px; }
+
+  /* dashboard skeleton */
+  .sk-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
+  @media (max-width: 760px) { .sk-grid { grid-template-columns: 1fr; } }
+  .sk-card { background: var(--surface-card); border: 1px solid var(--border-default); border-radius: var(--radius-lg);
+    padding: 22px; box-shadow: var(--shadow-sm); }
+  .sk-card-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+  .sk-track { display: flex; gap: 5px; margin: 18px 0 16px; }
+  .sk-track span { flex: 1; height: 5px; border-radius: 4px; background: var(--neutral-100); }
+  .sk-card-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+
+  /* detail skeleton */
+  .sk-detail { display: grid; grid-template-columns: 1fr 320px; gap: 20px; align-items: start; }
+  @media (max-width: 800px) { .sk-detail { grid-template-columns: 1fr; } }
+  .sk-panel { background: var(--surface-card); border: 1px solid var(--border-default); border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); }
+  .sk-panel-pad { padding: 24px 26px; }
+  .sk-panel-row { display: flex; align-items: flex-start; gap: 14px; padding: 18px 26px; }
+  .sk-panel-row + .sk-panel-row { border-top: 1px solid var(--border-default); }
+  .sk-timeline { display: flex; flex-direction: column; gap: 22px; }
+  .sk-tl-row { display: flex; gap: 14px; }
+  .sk-side { display: flex; flex-direction: column; gap: 16px; }
+  .sk-aria { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+</style>
+</head>
+<body>
+
+  <!-- ================= 1 · SESSION EXPIRED ================= -->
+  <div class="variant-label"><span class="tag">Variant 1</span> Session expired — logged out for security</div>
+  <div class="canvas-divider"></div>
+
+  <div class="session-stage">
+    <div class="session-card" role="alertdialog" aria-labelledby="seTitle">
+      <div class="session-badge"><i data-lucide="clock-alert"></i></div>
+      <h1 id="seTitle">Your session has expired</h1>
+      <p>For your security, we logged you out after a period of inactivity. Please log in again to pick up where you left off.</p>
+      <div class="session-actions">
+        <a class="btn btn-primary" href="Log In.html"><i data-lucide="log-in"></i> Log in again</a>
+      </div>
+      <div class="session-foot"><i data-lucide="shield-check"></i> Your information stays safe and saved.</div>
+    </div>
+  </div>
+
+  <div class="block-gap"></div>
+
+  <!-- ================= 2 · DASHBOARD SKELETON ================= -->
+  <div class="variant-label"><span class="tag">Variant 2</span> Loading skeleton — dashboard (application list)</div>
+  <div class="canvas-divider"></div>
+
+  <header class="site-head">
+    <div class="site-head-inner">
+      <a class="logo" href="#"><img src="assets/logo/building-control-logo.svg" alt="Building Control" /><span class="wm"><b>Building</b>&hairsp;<i>Control</i></span></a>
+      <div class="nav-links">
+        <a class="nav-link active" href="#"><i data-lucide="layout-grid"></i> Dashboard</a>
+      </div>
+      <div class="nav-right"><div class="avatar">SD</div></div>
+    </div>
+  </header>
+
+  <main class="wrap" aria-busy="true">
+    <span class="sk-aria" role="status">Loading your applications…</span>
+    <div class="sk-page-head">
+      <div>
+        <div class="sk sk-line" style="width:120px;height:11px;margin-bottom:12px"></div>
+        <div class="sk sk-line" style="width:240px;height:26px;border-radius:7px"></div>
+      </div>
+      <div class="sk sk-block" style="width:190px;height:48px;border-radius:11px"></div>
+    </div>
+
+    <div class="sk-grid" id="skGrid"></div>
+  </main>
+
+  <div class="block-gap"></div>
+
+  <!-- ================= 3 · DETAIL SKELETON ================= -->
+  <div class="variant-label"><span class="tag">Variant 3</span> Loading skeleton — application detail</div>
+  <div class="canvas-divider"></div>
+
+  <header class="site-head">
+    <div class="site-head-inner">
+      <a class="logo" href="#"><img src="assets/logo/building-control-logo.svg" alt="Building Control" /><span class="wm"><b>Building</b>&hairsp;<i>Control</i></span></a>
+      <div class="nav-links">
+        <a class="nav-link active" href="#"><i data-lucide="layout-grid"></i> Dashboard</a>
+      </div>
+      <div class="nav-right"><div class="avatar">SD</div></div>
+    </div>
+  </header>
+
+  <main class="wrap" aria-busy="true">
+    <span class="sk-aria" role="status">Loading application…</span>
+    <!-- back + title -->
+    <div class="sk sk-line" style="width:160px;height:11px;margin-bottom:20px"></div>
+    <div class="sk-page-head" style="align-items:center">
+      <div>
+        <div class="sk sk-pill" style="margin-bottom:14px"></div>
+        <div class="sk sk-line" style="width:300px;height:28px;border-radius:7px;margin-bottom:10px"></div>
+        <div class="sk sk-line" style="width:220px;height:13px"></div>
+      </div>
+      <div class="sk sk-block" style="width:150px;height:44px;border-radius:11px"></div>
+    </div>
+
+    <div class="sk-detail" style="margin-top:24px">
+      <!-- main column -->
+      <div class="sk-side">
+        <!-- progress panel -->
+        <div class="sk-panel sk-panel-pad">
+          <div class="sk sk-line" style="width:130px;height:13px;margin-bottom:20px"></div>
+          <div class="sk-track">
+            <span></span><span></span><span></span><span></span>
+          </div>
+          <div class="sk sk-line" style="width:60%;height:12px;margin-top:16px"></div>
+        </div>
+        <!-- timeline panel -->
+        <div class="sk-panel sk-panel-pad">
+          <div class="sk sk-line" style="width:110px;height:13px;margin-bottom:22px"></div>
+          <div class="sk-timeline" id="skTimeline"></div>
+        </div>
+      </div>
+      <!-- side column -->
+      <div class="sk-side">
+        <div class="sk-panel sk-panel-pad">
+          <div class="sk sk-line" style="width:120px;height:13px;margin-bottom:18px"></div>
+          <div class="sk sk-line" style="width:100%;margin-bottom:11px"></div>
+          <div class="sk sk-line" style="width:80%;margin-bottom:11px"></div>
+          <div class="sk sk-line" style="width:90%"></div>
+        </div>
+        <div class="sk-panel sk-panel-pad">
+          <div class="sk sk-line" style="width:90px;height:13px;margin-bottom:18px"></div>
+          <div style="display:flex;align-items:center;gap:12px">
+            <div class="sk sk-circle" style="width:40px;height:40px"></div>
+            <div style="flex:1">
+              <div class="sk sk-line" style="width:70%;margin-bottom:8px"></div>
+              <div class="sk sk-line" style="width:50%;height:10px"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    lucide.createIcons();
+
+    // dashboard skeleton cards
+    const skCard = () => `
+      <div class="sk-card">
+        <div class="sk-card-top">
+          <div class="sk sk-pill"></div>
+          <div class="sk sk-line" style="width:90px;height:11px"></div>
+        </div>
+        <div class="sk sk-line" style="width:62%;height:18px;border-radius:6px;margin-bottom:10px"></div>
+        <div class="sk sk-line" style="width:84%;height:12px"></div>
+        <div class="sk-track"><span></span><span></span><span></span><span></span></div>
+        <div class="sk-card-foot">
+          <div class="sk sk-line" style="width:55%;height:12px"></div>
+          <div class="sk sk-line" style="width:54px;height:12px"></div>
+        </div>
+      </div>`;
+    document.getElementById('skGrid').innerHTML = skCard().repeat(4);
+
+    // detail timeline rows
+    const tlRow = (w) => `
+      <div class="sk-tl-row">
+        <div class="sk sk-circle" style="width:30px;height:30px;flex:none"></div>
+        <div style="flex:1;padding-top:3px">
+          <div class="sk sk-line" style="width:${w}%;margin-bottom:8px"></div>
+          <div class="sk sk-line" style="width:40%;height:10px"></div>
+        </div>
+      </div>`;
+    document.getElementById('skTimeline').innerHTML = [70,55,64,48].map(tlRow).join('');
+  </script>
+</body>
+</html>

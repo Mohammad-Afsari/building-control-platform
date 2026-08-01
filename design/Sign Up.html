@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Building Control — Create your account</title>
+<link rel="stylesheet" href="styles.css" />
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-font-smoothing: antialiased; }
+  body { font-family: var(--font-sans); color: var(--text-body); letter-spacing: var(--tracking-normal);
+    background:
+      radial-gradient(120% 80% at 50% -10%, var(--primary-50) 0%, rgba(234,243,238,0) 55%),
+      var(--surface-page);
+    min-height: 100vh; display: grid; place-items: center; padding: 32px 20px; }
+
+  .auth { width: 100%; max-width: 408px; }
+
+  /* logo */
+  .auth-brand { display: flex; flex-direction: column; align-items: center; gap: 12px; margin-bottom: 26px; }
+  .auth-brand img { width: 52px; height: 52px; display: block; }
+  .auth-brand .wm { font-size: 19px; letter-spacing: -0.022em; white-space: nowrap; }
+  .auth-brand .wm b { font-weight: 800; color: var(--text-heading); }
+  .auth-brand .wm i { font-style: normal; font-weight: 600; color: var(--text-muted); }
+
+  .card { background: var(--surface-card); border: 1px solid var(--border-default); border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-md); padding: 34px 34px 30px; }
+  @media (max-width: 440px) { .card { padding: 26px 22px; } }
+
+  .card-head { text-align: center; margin-bottom: 24px; }
+  .card-head h1 { font-size: var(--text-h2); font-weight: var(--weight-black); color: var(--text-heading); letter-spacing: var(--tracking-snug); }
+  .card-head p { color: var(--text-muted); font-size: var(--text-body-sm); margin-top: 6px; }
+
+  form { display: flex; flex-direction: column; gap: 18px; }
+
+  .pw-wrap { position: relative; }
+  .pw-wrap .bc-input { padding-right: 44px; }
+  .pw-toggle { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); width: 32px; height: 32px;
+    border: none; background: none; cursor: pointer; color: var(--text-faint); display: grid; place-items: center; border-radius: var(--radius-xs); }
+  .pw-toggle:hover { color: var(--text-body); background: var(--surface-sunken); }
+  .pw-toggle svg { width: 17px; height: 17px; }
+
+  .field-msg { display: none; align-items: center; gap: 6px; font-size: var(--text-caption); color: var(--color-destructive); font-weight: var(--weight-semibold); margin-top: 7px; }
+  .field-msg.is-shown { display: flex; }
+  .field-msg svg { width: 14px; height: 14px; flex: none; }
+
+  /* strength meter */
+  .strength { margin-top: 9px; }
+  .strength-bars { display: flex; gap: 5px; }
+  .strength-bars span { flex: 1; height: 4px; border-radius: 4px; background: var(--border-default); transition: background .2s; }
+  .strength-label { font-size: var(--text-caption); font-weight: var(--weight-semibold); color: var(--text-faint); margin-top: 6px; }
+  .strength[data-level="1"] .strength-bars span:nth-child(-n+1) { background: var(--color-destructive-dot); }
+  .strength[data-level="1"] .strength-label { color: var(--color-destructive); }
+  .strength[data-level="2"] .strength-bars span:nth-child(-n+2) { background: var(--color-action-needed-dot); }
+  .strength[data-level="2"] .strength-label { color: var(--color-action-needed); }
+  .strength[data-level="3"] .strength-bars span:nth-child(-n+3) { background: var(--color-success-dot); }
+  .strength[data-level="3"] .strength-label { color: var(--color-success); }
+  .strength[data-level="4"] .strength-bars span { background: var(--color-success-dot); }
+  .strength[data-level="4"] .strength-label { color: var(--color-success); }
+
+  /* terms checkbox */
+  .terms { display: flex; align-items: flex-start; gap: 11px; cursor: pointer; user-select: none; }
+  .terms input { position: absolute; opacity: 0; pointer-events: none; }
+  .checkbox { width: 20px; height: 20px; border-radius: 6px; border: 1.5px solid var(--border-strong); background: var(--surface-card);
+    flex: none; margin-top: 1px; display: grid; place-items: center; color: #fff; transition: background .15s, border-color .15s; }
+  .checkbox svg { width: 13px; height: 13px; opacity: 0; transition: opacity .1s; }
+  .terms input:checked + .checkbox { background: var(--color-primary); border-color: var(--color-primary); }
+  .terms input:checked + .checkbox svg { opacity: 1; }
+  .terms input:focus-visible + .checkbox { box-shadow: 0 0 0 3px var(--primary-50); border-color: var(--border-focus); }
+  .terms.is-error .checkbox { border-color: var(--color-destructive); }
+  .terms-text { font-size: var(--text-caption); color: var(--text-body); line-height: 1.5; }
+  .terms-text a { color: var(--text-link); font-weight: var(--weight-bold); text-decoration: none; }
+  .terms-text a:hover { text-decoration: underline; }
+
+  /* submit + loading */
+  .bc-btn--block { width: 100%; padding: 13px 18px; font-size: var(--text-body-lg); margin-top: 4px; position: relative; }
+  .bc-btn .btn-label { display: inline-flex; align-items: center; gap: 8px; }
+  .bc-btn.is-loading { pointer-events: none; }
+  .bc-btn.is-loading .btn-label { visibility: hidden; }
+  .spinner { display: none; position: absolute; inset: 0; margin: auto; width: 19px; height: 19px;
+    border: 2.5px solid rgba(255,255,255,.45); border-top-color: #fff; border-radius: 50%; animation: spin .65s linear infinite; }
+  .bc-btn.is-loading .spinner { display: block; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .auth-alt { text-align: center; margin-top: 24px; font-size: var(--text-body-sm); color: var(--text-muted); }
+  .auth-alt a { color: var(--text-link); font-weight: var(--weight-bold); text-decoration: none; }
+  .auth-alt a:hover { text-decoration: underline; }
+
+  .auth-foot { text-align: center; margin-top: 22px; font-size: var(--text-caption); color: var(--text-faint); }
+  .auth-foot a { color: var(--text-muted); text-decoration: none; }
+  .auth-foot a:hover { color: var(--text-body); }
+
+  /* ---- success state ---- */
+  .success { display: none; text-align: center; padding: 10px 0 6px; }
+  .success.is-shown { display: block; }
+  .success-badge { width: 64px; height: 64px; border-radius: 50%; background: var(--color-success-bg); color: var(--color-success);
+    display: grid; place-items: center; margin: 0 auto 18px; }
+  .success-badge svg { width: 30px; height: 30px; }
+  .success h2 { font-size: var(--text-h2); font-weight: var(--weight-black); color: var(--text-heading); letter-spacing: var(--tracking-snug); }
+  .success p { color: var(--text-muted); font-size: var(--text-body-sm); margin-top: 10px; line-height: 1.55; }
+  .success p b { color: var(--text-heading); font-weight: var(--weight-bold); }
+  .success-actions { margin-top: 24px; display: flex; flex-direction: column; gap: 10px; }
+  .success-actions .bc-btn { text-decoration: none; }
+  .success-resend { font-size: var(--text-caption); color: var(--text-faint); margin-top: 16px; }
+  .success-resend a { color: var(--text-link); font-weight: var(--weight-bold); text-decoration: none; }
+  .success-resend a:hover { text-decoration: underline; }
+  .bc-btn--secondary.bc-btn--block { text-decoration: none; }
+</style>
+</head>
+<body>
+  <div class="auth">
+    <div class="auth-brand">
+      <img src="assets/logo/building-control-logo.svg" alt="Building Control" />
+      <span class="wm"><b>Building</b>&hairsp;<i>Control</i></span>
+    </div>
+
+    <div class="card">
+      <!-- ============ FORM STATE ============ -->
+      <div id="formState">
+        <div class="card-head">
+          <h1>Create your account</h1>
+          <p>Submit and track building regulations applications.</p>
+        </div>
+
+        <form id="signupForm" novalidate>
+          <div class="bc-field">
+            <label class="bc-label" for="name">Full name</label>
+            <input class="bc-input" id="name" name="name" type="text" autocomplete="name" placeholder="e.g. Sarah Davies" />
+            <div class="field-msg" id="nameMsg"><i data-lucide="alert-circle"></i> <span>Enter your full name.</span></div>
+          </div>
+
+          <div class="bc-field">
+            <label class="bc-label" for="email">Email address</label>
+            <input class="bc-input" id="email" name="email" type="email" autocomplete="email" placeholder="you@example.com" />
+            <div class="field-msg" id="emailMsg"><i data-lucide="alert-circle"></i> <span>Enter a valid email address.</span></div>
+          </div>
+
+          <div class="bc-field">
+            <label class="bc-label" for="password">Password</label>
+            <div class="pw-wrap">
+              <input class="bc-input" id="password" name="new-password" type="password" autocomplete="new-password" placeholder="At least 8 characters" />
+              <button class="pw-toggle" type="button" id="pwToggle" aria-label="Show password"><i data-lucide="eye"></i></button>
+            </div>
+            <div class="strength" id="strength" data-level="0">
+              <div class="strength-bars"><span></span><span></span><span></span><span></span></div>
+              <div class="strength-label" id="strengthLabel">Use 8+ characters with a mix of letters and numbers.</div>
+            </div>
+            <div class="field-msg" id="pwMsg"><i data-lucide="alert-circle"></i> <span>Password must be at least 8 characters.</span></div>
+          </div>
+
+          <div class="bc-field">
+            <label class="bc-label" for="confirm">Confirm password</label>
+            <input class="bc-input" id="confirm" name="confirm" type="password" autocomplete="new-password" placeholder="Re-enter your password" />
+            <div class="field-msg" id="confirmMsg"><i data-lucide="alert-circle"></i> <span>Passwords don't match.</span></div>
+          </div>
+
+          <label class="terms" id="termsWrap">
+            <input type="checkbox" id="terms" />
+            <span class="checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+            <span class="terms-text">I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.</span>
+          </label>
+          <div class="field-msg" id="termsMsg" style="margin-top:-10px"><i data-lucide="alert-circle"></i> <span>Please agree to the terms to continue.</span></div>
+
+          <button class="bc-btn bc-btn--primary bc-btn--block" type="submit" id="submitBtn">
+            <span class="btn-label">Create account <i data-lucide="arrow-right"></i></span>
+            <span class="spinner" aria-hidden="true"></span>
+          </button>
+        </form>
+      </div>
+
+      <!-- ============ SUCCESS STATE ============ -->
+      <div class="success" id="successState" aria-live="polite">
+        <div class="success-badge"><i data-lucide="mail-check"></i></div>
+        <h2>Check your email</h2>
+        <p>We've sent a verification link to <b id="sentTo">you@example.com</b>.<br />Click the link to activate your account.</p>
+        <div class="success-actions">
+          <a class="bc-btn bc-btn--primary bc-btn--block" href="Log In.html"><span class="btn-label">Go to log in <i data-lucide="arrow-right"></i></span></a>
+        </div>
+        <p class="success-resend">Didn't get it? Check your spam folder or <a href="#" id="resend">resend the email</a>.</p>
+      </div>
+    </div>
+
+    <p class="auth-alt" id="altLink">Already have an account? <a href="Log In.html">Log in</a></p>
+    <p class="auth-foot"><a href="Landing Page.html">← Back to home</a></p>
+  </div>
+
+  <script>
+    lucide.createIcons();
+
+    const form = document.getElementById('signupForm');
+    const name = document.getElementById('name');
+    const email = document.getElementById('email');
+    const password = document.getElementById('password');
+    const confirm = document.getElementById('confirm');
+    const terms = document.getElementById('terms');
+    const termsWrap = document.getElementById('termsWrap');
+    const btn = document.getElementById('submitBtn');
+    const strength = document.getElementById('strength');
+    const strengthLabel = document.getElementById('strengthLabel');
+    const msgs = {
+      name: document.getElementById('nameMsg'), email: document.getElementById('emailMsg'),
+      pw: document.getElementById('pwMsg'), confirm: document.getElementById('confirmMsg'),
+      terms: document.getElementById('termsMsg'),
+    };
+
+    // show / hide password
+    document.getElementById('pwToggle').addEventListener('click', function () {
+      const show = password.type === 'password';
+      password.type = show ? 'text' : 'password';
+      this.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+      this.innerHTML = show ? '<i data-lucide="eye-off"></i>' : '<i data-lucide="eye"></i>';
+      lucide.createIcons();
+    });
+
+    // strength meter
+    const LABELS = ['Use 8+ characters with a mix of letters and numbers.', 'Weak — add more characters.', 'Okay — add numbers or symbols.', 'Good password.', 'Strong password.'];
+    function scorePassword(v) {
+      if (!v) return 0;
+      let s = 0;
+      if (v.length >= 8) s++;
+      if (v.length >= 12) s++;
+      if (/[0-9]/.test(v) && /[a-zA-Z]/.test(v)) s++;
+      if (/[^a-zA-Z0-9]/.test(v)) s++;
+      return Math.max(1, Math.min(4, s));
+    }
+    password.addEventListener('input', () => {
+      const lvl = scorePassword(password.value);
+      strength.dataset.level = lvl;
+      strengthLabel.textContent = LABELS[lvl];
+      clearErr(password, msgs.pw);
+    });
+
+    function clearErr(field, msg) { field.classList.remove('is-error'); msg.classList.remove('is-shown'); }
+    name.addEventListener('input', () => clearErr(name, msgs.name));
+    email.addEventListener('input', () => clearErr(email, msgs.email));
+    confirm.addEventListener('input', () => clearErr(confirm, msgs.confirm));
+    terms.addEventListener('change', () => { termsWrap.classList.remove('is-error'); msgs.terms.classList.remove('is-shown'); });
+
+    function setLoading(on) { btn.classList.toggle('is-loading', on); btn.disabled = on; }
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      let firstBad = null;
+      const mark = (cond, field, msg, wrap) => {
+        if (cond) return;
+        (wrap || field).classList.add('is-error');
+        msg.classList.add('is-shown');
+        if (!firstBad) firstBad = field;
+      };
+      mark(name.value.trim().length >= 2, name, msgs.name);
+      mark(/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email.value.trim()), email, msgs.email);
+      mark(password.value.length >= 8, password, msgs.pw);
+      mark(confirm.value === password.value && confirm.value.length > 0, confirm, msgs.confirm);
+      mark(terms.checked, terms, msgs.terms, termsWrap);
+      if (firstBad) { if (firstBad !== terms) firstBad.focus(); return; }
+
+      setLoading(true);
+      setTimeout(() => {
+        document.getElementById('sentTo').textContent = email.value.trim();
+        document.getElementById('formState').style.display = 'none';
+        document.getElementById('successState').classList.add('is-shown');
+        document.getElementById('altLink').style.display = 'none';
+        lucide.createIcons();
+      }, 1300);
+    });
+
+    // resend (fake)
+    document.getElementById('resend').addEventListener('click', (e) => {
+      e.preventDefault();
+      e.target.textContent = 'email sent ✓';
+      setTimeout(() => { e.target.textContent = 'resend the email'; }, 2400);
+    });
+  </script>
+</body>
+</html>

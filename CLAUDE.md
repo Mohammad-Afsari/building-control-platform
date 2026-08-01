@@ -27,6 +27,7 @@ Single-page React app built with Vite, deployed as static files (target host: Bu
 
 ### Design system
 
+- **Mockups live in [`design/`](./design/)** — a snapshot of the Claude Design project, committed so anything implementing a change can see the intended appearance. **They are a visual spec, not an implementation:** they use their own class names (`bc-btn`, `bc-input`) and stylesheet, and their scripts fake behaviour. Recreate the rendered output with this repo's components and tokens; never transplant a class name or a rule from `design/styles.css`. `design/tokens/` is reference only — `src/styles/` is what actually compiles. See [`design/README.md`](./design/README.md), which also records the export date, since the mirror goes stale silently.
 - **Tokens** live in `src/styles/` (`colors.css`, `spacing.css`, `typography.css`, `breakpoints.css`) — the single source of truth. They are mapped into Tailwind utilities via the `@theme inline` block in `src/index.css`; Tailwind's default palettes are wiped, so only token-backed utilities compile.
 - **Naming gotcha:** `text-body` is the 15px font-size utility; the body copy *colour* is `text-default`.
 - **UI primitives** are in `src/components/ui/` (shadcn-style: CVA variants + `cn()` + `data-slot`); composite components sit in `src/components/`.

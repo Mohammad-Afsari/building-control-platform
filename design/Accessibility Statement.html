@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Building Control — Accessibility statement</title>
+<link rel="stylesheet" href="styles.css" />
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-font-smoothing: antialiased; scroll-behavior: smooth; }
+  body { font-family: var(--font-sans); background: var(--surface-page); color: var(--text-body);
+    font-size: var(--text-body); line-height: var(--leading-normal); letter-spacing: var(--tracking-normal); }
+  a { color: inherit; text-decoration: none; }
+  .container { max-width: 920px; margin: 0 auto; padding-left: 28px; padding-right: 28px; }
+
+  /* nav — mobile first */
+  .site-head { background: var(--surface-card); border-bottom: 1px solid var(--border-default); position: sticky; top: 0; z-index: 30; }
+  .site-head-inner { height: 60px; display: flex; align-items: center; gap: 14px; max-width: 920px; margin: 0 auto; padding: 0 28px; }
+  .logo { display: flex; align-items: center; gap: 10px; margin-right: auto; }
+  .logo img { width: 32px; height: 32px; display: block; }
+  .logo .wm { font-size: 16px; letter-spacing: -0.022em; white-space: nowrap; }
+  .logo .wm b { font-weight: 800; color: var(--text-heading); }
+  .logo .wm i { font-style: normal; font-weight: 600; color: var(--text-muted); }
+  .nav-links { display: none; }
+  .nav-link { display: flex; align-items: center; gap: 7px; padding: 8px 13px; border-radius: var(--radius-sm);
+    color: var(--text-muted); font-weight: var(--weight-semibold); font-size: var(--text-body-sm); transition: background .15s, color .15s; }
+  .nav-link svg { width: 16px; height: 16px; }
+  .nav-link:hover { background: var(--surface-raised); color: var(--text-heading); }
+  .nav-link.active { background: var(--primary-50); color: var(--primary-700); }
+  .nav-right { display: none; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-family: inherit; font-weight: var(--weight-bold); font-size: var(--text-body-sm);
+    border: 1px solid transparent; border-radius: var(--radius-md); padding: 11px 16px; cursor: pointer; text-decoration: none; transition: background .15s; }
+  .btn svg { width: 16px; height: 16px; }
+  .btn-primary { background: var(--color-primary); color: #fff; box-shadow: 0 1px 2px rgba(11,70,52,.25), 0 8px 18px -8px rgba(11,70,52,.45); }
+  .btn-primary:hover { background: var(--color-primary-hover); }
+  .nav-toggle { display: inline-grid; place-items: center; width: 42px; height: 42px; border-radius: var(--radius-sm);
+    border: 1px solid var(--border-default); background: var(--surface-card); color: var(--text-heading); cursor: pointer; flex: none; }
+  .nav-toggle svg { width: 21px; height: 21px; }
+  .nav-toggle .ic-close { display: none; }
+  .nav-toggle[aria-expanded="true"] .ic-open { display: none; }
+  .nav-toggle[aria-expanded="true"] .ic-close { display: block; }
+  .mobile-menu { display: none; flex-direction: column; gap: 3px; padding: 10px 20px 18px; border-top: 1px solid var(--border-default); background: var(--surface-card); }
+  .mobile-menu.is-open { display: flex; }
+  .m-link { display: flex; align-items: center; gap: 11px; padding: 13px 14px; border-radius: var(--radius-md);
+    font-size: var(--text-body-lg); font-weight: var(--weight-semibold); color: var(--text-body); }
+  .m-link svg { width: 19px; height: 19px; color: var(--text-faint); }
+  .m-link.active { background: var(--primary-50); color: var(--primary-700); }
+  .m-link.active svg { color: var(--primary-600); }
+  .mobile-menu .btn { margin-top: 10px; padding: 14px 18px; font-size: var(--text-body-lg); }
+  @media (min-width: 760px) {
+    .site-head-inner { height: 64px; gap: 28px; }
+    .logo img { width: 34px; height: 34px; }
+    .logo .wm { font-size: 16.5px; }
+    .nav-links { display: flex; align-items: center; gap: 4px; margin-right: auto; }
+    .nav-right { display: flex; align-items: center; gap: 8px; }
+    .nav-toggle { display: none; }
+    .mobile-menu { display: none !important; }
+  }
+
+  /* skip link for keyboard users */
+  .skip-link { position: absolute; left: 16px; top: -48px; z-index: 60; background: var(--color-primary); color: #fff;
+    font-weight: var(--weight-bold); font-size: var(--text-body-sm); padding: 10px 16px; border-radius: var(--radius-sm); transition: top .15s; }
+  .skip-link:focus { top: 12px; outline: none; box-shadow: 0 0 0 3px var(--primary-100); }
+
+  /* document layout — legibility first */
+  .doc { max-width: 720px; margin: 0 auto; padding: 44px 28px 96px; }
+  .crumbs { display: flex; align-items: center; gap: 8px; font-size: var(--text-caption); color: var(--text-muted); margin-bottom: 26px; flex-wrap: wrap; }
+  .crumbs a { font-weight: var(--weight-semibold); }
+  .crumbs a:hover { color: var(--text-heading); }
+  .crumbs svg { width: 14px; height: 14px; color: var(--text-faint); }
+  .crumbs .here { color: var(--text-heading); font-weight: var(--weight-semibold); }
+
+  .doc-head { padding-bottom: 28px; border-bottom: 1px solid var(--border-default); margin-bottom: 8px; }
+  .doc-head h1 { font-size: clamp(30px, 4.5vw, 42px); font-weight: var(--weight-black); color: var(--text-heading);
+    letter-spacing: var(--tracking-tight); line-height: 1.1; text-wrap: balance; }
+  .doc-meta { display: flex; align-items: center; gap: 8px; margin-top: 16px; font-size: var(--text-caption); color: var(--text-faint); }
+  .doc-meta svg { width: 15px; height: 15px; }
+
+  /* on this page */
+  .toc { background: var(--surface-card); border: 1px solid var(--border-default); border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm); padding: 20px 22px; margin: 28px 0 8px; }
+  .toc h2 { font-size: var(--text-micro); font-weight: var(--weight-bold); letter-spacing: var(--tracking-wide);
+    text-transform: uppercase; color: var(--text-faint); margin-bottom: 12px; }
+  .toc ol { list-style: none; counter-reset: toc; display: flex; flex-direction: column; gap: 2px; }
+  .toc li a { display: flex; align-items: baseline; gap: 11px; padding: 8px 6px; border-radius: var(--radius-sm);
+    font-size: var(--text-body); font-weight: var(--weight-semibold); color: var(--text-body); transition: background .15s, color .15s; }
+  .toc li a:hover { background: var(--surface-raised); color: var(--primary-700); }
+  .toc li a::before { counter-increment: toc; content: counter(toc); font-variant-numeric: tabular-nums;
+    font-size: var(--text-caption); font-weight: var(--weight-bold); color: var(--primary-600); min-width: 16px; }
+
+  /* prose — generous, legible */
+  .prose { margin-top: 12px; }
+  .prose section { padding-top: 40px; scroll-margin-top: 84px; }
+  .prose h2 { font-size: var(--text-h2); font-weight: var(--weight-bold); color: var(--text-heading);
+    letter-spacing: var(--tracking-snug); line-height: 1.2; margin-bottom: 16px; }
+  .prose h3 { font-size: var(--text-h3); font-weight: var(--weight-bold); color: var(--text-heading); margin: 26px 0 10px; }
+  .prose p { font-size: var(--text-body-lg); line-height: 1.7; margin-bottom: 18px; color: var(--text-body); }
+  .prose p:last-child { margin-bottom: 0; }
+  .prose a.inline { color: var(--text-link); font-weight: var(--weight-semibold); text-decoration: underline; text-underline-offset: 2px; }
+  .prose a.inline:hover { color: var(--primary-800); }
+  .prose strong { color: var(--text-heading); font-weight: var(--weight-bold); }
+  .prose ul { list-style: none; margin: 0 0 18px; display: flex; flex-direction: column; gap: 12px; }
+  .prose ul li { display: flex; gap: 12px; font-size: var(--text-body-lg); line-height: 1.6; }
+  .prose ul li svg { width: 20px; height: 20px; flex: none; margin-top: 3px; }
+  .prose ul.check li svg { color: var(--color-success); }
+  .prose ul.warn li svg { color: var(--color-action-needed); }
+
+  /* compliance status banner */
+  .status { display: flex; gap: 14px; align-items: flex-start; background: var(--color-success-bg); border: 1px solid var(--primary-100);
+    border-radius: var(--radius-lg); padding: 18px 20px; margin-bottom: 8px; }
+  .status svg { width: 24px; height: 24px; color: var(--color-success); flex: none; margin-top: 1px; }
+  .status .s-body { font-size: var(--text-body); line-height: 1.55; }
+  .status .s-body strong { color: var(--primary-800); font-weight: var(--weight-bold); }
+  .status .s-body .s-title { font-size: var(--text-body-lg); font-weight: var(--weight-bold); color: var(--text-heading); margin-bottom: 3px; }
+
+  /* contact block */
+  .contact-block { background: var(--surface-card); border: 1px solid var(--border-default); border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm); padding: 22px 24px; margin-top: 22px; }
+  .contact-block .cb-row { display: flex; align-items: center; gap: 14px; }
+  .contact-block .cb-row + .cb-row { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border-default); }
+  .cb-ic { width: 40px; height: 40px; border-radius: var(--radius-sm); flex: none; display: grid; place-items: center; background: var(--primary-50); color: var(--primary-700); border: 1px solid var(--primary-100); }
+  .cb-ic svg { width: 19px; height: 19px; }
+  .cb-row .cb-meta .cb-label { display: block; font-size: var(--text-caption); color: var(--text-muted); }
+  .cb-row .cb-meta .cb-val { display: block; font-size: var(--text-body); font-weight: var(--weight-bold); color: var(--text-heading); margin-top: 2px; }
+  .cb-row .cb-meta .cb-val a { color: var(--text-link); }
+  .cb-row .cb-meta .cb-val a:hover { text-decoration: underline; }
+
+  .doc-foot { margin-top: 56px; padding-top: 24px; border-top: 1px solid var(--border-default); font-size: var(--text-caption); color: var(--text-faint); line-height: 1.6; }
+</style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-head">
+    <div class="site-head-inner">
+      <a class="logo" href="Landing Page.html"><img src="assets/logo/building-control-logo.svg" alt="Building Control" /><span class="wm"><b>Building</b>&hairsp;<i>Control</i></span></a>
+      <nav class="nav-links">
+        <a class="nav-link" href="Applicant Dashboard.html"><i data-lucide="layout-grid"></i> Dashboard</a>
+      </nav>
+      <div class="nav-right">
+        <a class="btn btn-primary" href="Application Wizard.html"><i data-lucide="plus"></i> Start an application</a>
+      </div>
+      <button class="nav-toggle" id="navToggle" aria-label="Menu" aria-controls="mobileMenu" aria-expanded="false">
+        <i data-lucide="menu" class="ic-open"></i><i data-lucide="x" class="ic-close"></i>
+      </button>
+    </div>
+    <nav class="mobile-menu" id="mobileMenu">
+      <a class="m-link" href="Applicant Dashboard.html"><i data-lucide="layout-grid"></i> Dashboard</a>
+      <a class="btn btn-primary" href="Application Wizard.html"><i data-lucide="plus"></i> Start an application</a>
+    </nav>
+  </header>
+
+  <main class="doc" id="main">
+    <nav class="crumbs">
+      <a href="Landing Page.html">Home</a>
+      <i data-lucide="chevron-right"></i>
+      <span class="here">Accessibility statement</span>
+    </nav>
+
+    <div class="doc-head">
+      <h1>Accessibility statement</h1>
+      <div class="doc-meta"><i data-lucide="refresh-cw"></i> Last updated 4 June 2026</div>
+    </div>
+
+    <nav class="toc" aria-label="On this page">
+      <h2>On this page</h2>
+      <ol>
+        <li><a href="#status">Compliance status</a></li>
+        <li><a href="#issues">Known issues</a></li>
+        <li><a href="#report">Reporting a problem</a></li>
+        <li><a href="#alternative">Requesting an alternative format</a></li>
+        <li><a href="#enforcement">Enforcement</a></li>
+      </ol>
+    </nav>
+
+    <div class="prose">
+      <p style="margin-top:32px">This website is run by Building Control. We want as many people as possible to be able to use it — whoever you are, and however you access the web. That means you should be able to change colours and contrast, zoom in without the text spilling off the screen, navigate by keyboard, and use a screen reader.</p>
+
+      <section id="status">
+        <h2>Compliance status</h2>
+        <div class="status">
+          <i data-lucide="shield-check"></i>
+          <div class="s-body">
+            <div class="s-title">Fully compliant</div>
+            This website is <strong>fully compliant with the Web Content Accessibility Guidelines (WCAG) 2.2 level AA</strong>.
+          </div>
+        </div>
+        <p>We test the service regularly against these standards, both with automated tools and with people using assistive technology, and we fix issues as part of our normal release process.</p>
+      </section>
+
+      <section id="issues">
+        <h2>Known issues</h2>
+        <p>We're not aware of any accessibility issues that prevent you from using the service. The areas below are ones we're actively monitoring and improving:</p>
+        <ul class="warn">
+          <li><i data-lucide="alert-triangle"></i> <span>Some older PDF guidance documents may not be fully tagged for screen readers. We're replacing these with accessible web pages.</span></li>
+          <li><i data-lucide="alert-triangle"></i> <span>On the application map, selecting a site by mouse is currently easier than by keyboard. A postcode and grid-reference alternative is always available.</span></li>
+        </ul>
+        <p>If you find a problem that isn't listed here, please tell us — see <a class="inline" href="#report">reporting a problem</a> below.</p>
+      </section>
+
+      <section id="report">
+        <h2>Reporting a problem</h2>
+        <p>We're always looking to improve. If you find something that's hard to use, or you need help with anything on this site, get in touch and we'll do our best to put it right.</p>
+        <div class="contact-block">
+          <div class="cb-row">
+            <span class="cb-ic"><i data-lucide="mail"></i></span>
+            <span class="cb-meta"><span class="cb-label">Email</span><span class="cb-val"><a href="mailto:accessibility@buildingcontrol.gov.uk">accessibility@buildingcontrol.gov.uk</a></span></span>
+          </div>
+          <div class="cb-row">
+            <span class="cb-ic"><i data-lucide="phone"></i></span>
+            <span class="cb-meta"><span class="cb-label">Phone</span><span class="cb-val">0800 000 0000 — Monday to Friday, 9am to 5pm</span></span>
+          </div>
+        </div>
+        <p style="margin-top:18px">We aim to respond within <strong>5 working days</strong>.</p>
+      </section>
+
+      <section id="alternative">
+        <h2>Requesting content in an alternative format</h2>
+        <p>If you need information on this website in a different format — such as accessible PDF, large print, easy read, audio recording, or braille — let us know and we'll help.</p>
+        <p>When you contact us, please tell us:</p>
+        <ul class="check">
+          <li><i data-lucide="check"></i> <span>The web address (URL) of the content you need</span></li>
+          <li><i data-lucide="check"></i> <span>Your name and email address</span></li>
+          <li><i data-lucide="check"></i> <span>The format you need — for example, large print or audio</span></li>
+        </ul>
+        <p>We'll consider your request and get back to you within <strong>10 working days</strong>.</p>
+      </section>
+
+      <section id="enforcement">
+        <h2>Enforcement</h2>
+        <p>If you contact us with a complaint and you're not happy with our response, you can contact the relevant accessibility monitoring body, who are responsible for enforcing the accessibility regulations.</p>
+        <p>This statement was prepared on 4 June 2026. It was last reviewed on 4 June 2026.</p>
+      </section>
+
+      <p class="doc-foot">Building Control is committed to making its service accessible, in line with the Public Sector Bodies (Websites and Mobile Applications) Accessibility Regulations 2018. This is a demonstration statement.</p>
+    </div>
+  </main>
+
+  <script>
+    lucide.createIcons();
+    const navToggle = document.getElementById('navToggle');
+    const mobileMenu = document.getElementById('mobileMenu');
+    navToggle.addEventListener('click', () => {
+      const open = mobileMenu.classList.toggle('is-open');
+      navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,27 @@
+<!-- @dsCard group="Components" viewport="700x90" name="Top navigation" subtitle="Brand, primary links, utility actions, avatar" -->
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8" />
+<link rel="stylesheet" href="../styles.css" />
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>
+  body { margin:0; font-family:var(--font-sans); background:var(--surface-page); }
+</style></head>
+<body>
+  <nav class="bc-nav">
+    <div class="bc-nav-inner">
+      <div class="bc-brand"><div class="bc-brand-mark"><img src="../assets/logo/building-control-logo.svg" alt="Building Control" width="34" height="34" /></div><div class="bc-brand-name">Building<span>Control</span></div></div>
+      <div class="bc-nav-links">
+        <a class="bc-nav-link is-active" href="#"><i data-lucide="layout-grid"></i> Dashboard</a>
+      </div>
+      <div class="bc-nav-right">
+        <button class="bc-icon-btn"><i data-lucide="bell"></i></button>
+        <div class="bc-avatar">SD</div>
+      </div>
+      <button class="bc-nav-toggle" aria-label="Menu" aria-expanded="false"><i data-lucide="menu" class="ic-open"></i><i data-lucide="x" class="ic-close"></i></button>
+    </div>
+    <nav class="bc-mobile-menu">
+      <a class="bc-m-link is-active" href="#"><i data-lucide="layout-grid"></i> Dashboard</a>
+    </nav>
+  </nav>
+  <script>lucide.createIcons();</script>
+</body></html>

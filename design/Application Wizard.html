@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Building Control — Start a new application</title>
+<link rel="stylesheet" href="styles.css" />
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-font-smoothing: antialiased; }
+  body { font-family: var(--font-sans); background: var(--surface-page); color: var(--text-body);
+    font-size: var(--text-body); line-height: var(--leading-normal); letter-spacing: var(--tracking-normal); }
+
+  /* ---- top nav (reuse system) ---- */
+  .wiz-top { background: var(--surface-card); border-bottom: 1px solid var(--border-default); }
+  .wiz-top-inner { max-width: var(--container-max); margin: 0 auto; height: 60px; padding: 0 28px; display: flex; align-items: center; gap: 11px; }
+  .wiz-top-mark { width: 30px; height: 30px; display: grid; place-items: center; }
+  .wiz-top-mark img { width: 30px; height: 30px; display: block; }
+  .wiz-top-name { font-weight: var(--weight-black); color: var(--text-heading); font-size: 15px; letter-spacing: var(--tracking-snug); }
+  .wiz-top-name span { color: var(--text-muted); font-weight: var(--weight-semibold); }
+  .wiz-save { margin-left: auto; display: inline-flex; align-items: center; gap: 7px; font-size: var(--text-body-sm);
+    color: var(--text-muted); font-weight: var(--weight-semibold); }
+  .wiz-save svg { width: 15px; height: 15px; color: var(--color-success); }
+
+  /* ---- shell ---- */
+  .wiz { max-width: 960px; margin: 0 auto; padding: 30px 28px 100px; }
+
+  /* ---- mobile refinements ---- */
+  @media (max-width: 600px) {
+    .wiz { padding: 20px 16px 80px; }
+    .wiz-title { font-size: 26px; }
+    .wiz-stepper-card { padding: 18px 14px; }
+    .wiz-card-head { padding: 22px 20px 0; }
+    .wiz-card-content { padding: 20px; }
+    .wiz-card-foot { padding: 16px 20px; }
+    .wiz-top-inner { gap: 9px; }
+    .wiz-save { font-size: 12px; }
+    .wiz-stepper-card .bc-step-label { font-size: 11px; max-width: 9ch; }
+  }
+  @media (max-width: 400px) {
+    .wiz-save span, .wiz-save { display: none; }
+    .wiz-stepper-card .bc-step-label { font-size: 10px; }
+  }
+
+  .wiz-backbar { margin-bottom: 22px; }
+  .wiz-back { display: inline-flex; align-items: center; gap: 7px; font-size: var(--text-body-sm); font-weight: var(--weight-semibold);
+    color: var(--text-muted); text-decoration: none; padding: 7px 10px 7px 7px; border-radius: var(--radius-sm); transition: background .15s, color .15s; }
+  .wiz-back svg { width: 17px; height: 17px; }
+  .wiz-back:hover { background: var(--surface-sunken); color: var(--text-heading); }
+
+  .wiz-head { margin-bottom: 26px; }
+  .wiz-eyebrow { font-size: var(--text-micro); font-weight: var(--weight-bold); letter-spacing: var(--tracking-wide);
+    text-transform: uppercase; color: var(--primary-600); margin-bottom: 9px; }
+  .wiz-title { font-size: var(--text-display); font-weight: var(--weight-black); color: var(--text-heading);
+    letter-spacing: var(--tracking-tight); line-height: var(--leading-tight); }
+
+  /* ---- stepper card ---- */
+  .wiz-stepper-card { background: var(--surface-card); border: 1px solid var(--border-default); border-radius: var(--radius-lg);
+    padding: 24px 30px; box-shadow: var(--shadow-sm); margin-bottom: 20px; }
+  .wiz-stepper-card .bc-stepper { max-width: 720px; margin: 0 auto; }
+  /* clickable completed steps */
+  .bc-step--done { cursor: pointer; }
+  .bc-step--done .bc-step-label { transition: color .15s; }
+  .bc-step--done:hover .bc-step-label { color: var(--color-primary); }
+
+  /* ---- two-column body ---- */
+  .wiz-body { display: grid; grid-template-columns: 1fr 320px; gap: 20px; align-items: start; }
+  @media (max-width: 800px) { .wiz-body { grid-template-columns: 1fr; } }
+
+  .wiz-card { background: var(--surface-card); border: 1px solid var(--border-default); border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md); display: flex; flex-direction: column; min-height: 360px; }
+  .wiz-card-head { padding: 26px 30px 0; }
+  .wiz-step-count { font-size: var(--text-caption); font-weight: var(--weight-bold); color: var(--primary-600);
+    letter-spacing: var(--tracking-wide); text-transform: uppercase; margin-bottom: 8px; }
+  .wiz-step-title { font-size: var(--text-h2); font-weight: var(--weight-bold); color: var(--text-heading); letter-spacing: var(--tracking-snug); }
+  .wiz-step-desc { color: var(--text-muted); font-size: var(--text-body); margin-top: 7px; max-width: 48ch; }
+
+  .wiz-card-content { padding: 24px 30px; flex: 1; }
+  /* placeholder slot styling */
+  .wiz-slot { border: 1.5px dashed var(--border-strong); border-radius: var(--radius-md); background: var(--surface-raised);
+    min-height: 180px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; text-align: center; padding: 30px; }
+  .wiz-slot .s-icon { display: inline-flex; }
+  .wiz-slot svg { width: 26px; height: 26px; color: var(--text-faint); }
+
+  /* ---- step 1: name field ---- */
+  .wiz-field-lg .bc-label { font-size: var(--text-body-lg); margin-bottom: 2px; }
+  .wiz-input-row { position: relative; }
+  .wiz-input-row .bc-input { font-size: var(--text-body-lg); padding: 14px 64px 14px 15px; }
+  .wiz-counter { position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+    font-size: var(--text-caption); font-weight: var(--weight-semibold); color: var(--text-faint);
+    font-variant-numeric: tabular-nums; pointer-events: none; }
+  .wiz-counter.is-near { color: var(--color-action-needed); }
+  .wiz-eg { margin-top: 24px; }
+  .wiz-eg-label { font-size: var(--text-caption); font-weight: var(--weight-bold); letter-spacing: var(--tracking-wide);
+    text-transform: uppercase; color: var(--text-faint); margin-bottom: 11px; }
+  .wiz-eg-chips { display: flex; flex-wrap: wrap; gap: 9px; }
+  .wiz-chip { display: inline-flex; align-items: center; gap: 7px; font-family: var(--font-sans);
+    font-size: var(--text-body-sm); font-weight: var(--weight-semibold); color: var(--text-body); white-space: nowrap;
+    background: var(--surface-raised); border: 1px solid var(--border-default); border-radius: var(--radius-pill);
+    padding: 8px 14px; cursor: pointer; transition: background .15s, border-color .15s, color .15s; }
+  .wiz-chip svg { width: 14px; height: 14px; color: var(--text-faint); transition: color .15s; }
+  .wiz-chip:hover { background: var(--primary-50); border-color: var(--primary-200); color: var(--primary-800); }
+  .wiz-chip:hover svg { color: var(--primary-600); }
+
+  /* ---- step 2: find the site ---- */
+  .wiz-pc-row { display: flex; gap: 10px; align-items: flex-start; }
+  .wiz-pc-row .bc-field { flex: 1; }
+  .wiz-pc-row .bc-input { text-transform: uppercase; letter-spacing: 0.06em; font-weight: var(--weight-semibold); }
+  .wiz-pc-row .bc-input::placeholder { text-transform: none; letter-spacing: var(--tracking-normal); font-weight: var(--weight-regular); }
+  .wiz-find-btn { margin-top: 29px; }
+  .wiz-result { margin-top: 20px; }
+  .wiz-result-count { display: flex; align-items: center; gap: 7px; font-size: var(--text-caption); font-weight: var(--weight-semibold);
+    color: var(--color-success); margin-bottom: 10px; }
+  .wiz-result-count svg { width: 15px; height: 15px; }
+  .wiz-selected { display: flex; align-items: center; gap: 12px; margin-top: 18px; padding: 14px 16px;
+    background: var(--color-success-bg); border: 1px solid var(--primary-100); border-radius: var(--radius-md); }
+  .wiz-selected-icon { width: 36px; height: 36px; border-radius: var(--radius-sm); flex: none; display: grid; place-items: center;
+    background: var(--surface-card); color: var(--color-success); }
+  .wiz-selected-icon svg { width: 19px; height: 19px; }
+  .wiz-selected-label { font-size: var(--text-micro); font-weight: var(--weight-bold); letter-spacing: var(--tracking-wide);
+    text-transform: uppercase; color: var(--primary-700); }
+  .wiz-selected-addr { font-size: var(--text-body-sm); font-weight: var(--weight-bold); color: var(--text-heading); margin-top: 1px; }
+  .wiz-selected-change { margin-left: auto; font-size: var(--text-caption); font-weight: var(--weight-bold); color: var(--text-link);
+    background: none; border: none; cursor: pointer; font-family: inherit; }
+  .wiz-selected-change:hover { text-decoration: underline; }
+
+  .wiz-divider { display: flex; align-items: center; gap: 14px; margin: 26px 0; color: var(--text-faint);
+    font-size: var(--text-caption); font-weight: var(--weight-semibold); }
+  .wiz-divider::before, .wiz-divider::after { content: ""; flex: 1; height: 1px; background: var(--border-default); }
+
+  .wiz-mini-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 560px) { .wiz-mini-cards { grid-template-columns: 1fr; } }
+  .wiz-mini { border: 1px solid var(--border-default); border-radius: var(--radius-md); background: var(--surface-raised); padding: 16px 17px; }
+  .wiz-mini-head { display: flex; align-items: center; gap: 9px; margin-bottom: 12px; min-height: 30px; }
+  .wiz-mini-head .ic { width: 30px; height: 30px; border-radius: var(--radius-sm); flex: none; display: grid; place-items: center;
+    background: var(--primary-100); color: var(--primary-700); }
+  .wiz-mini-head .ic svg { width: 16px; height: 16px; }
+  .wiz-mini-title { font-size: var(--text-body-sm); font-weight: var(--weight-bold); color: var(--text-heading); line-height: 1.2; }
+  .wiz-mini-desc { font-size: var(--text-caption); color: var(--text-muted); line-height: 1.45; margin-bottom: 12px; }
+  .wiz-mini-link { display: inline-flex; align-items: center; gap: 6px; font-size: var(--text-caption); font-weight: var(--weight-bold);
+    color: var(--text-link); background: none; border: none; cursor: pointer; font-family: inherit; padding: 0; }
+  .wiz-mini-link svg { width: 14px; height: 14px; }
+  .wiz-mini-link:hover { text-decoration: underline; }
+  .wiz-en-row { display: flex; gap: 8px; }
+  .wiz-en-row .bc-field { flex: 1; gap: 4px; }
+  .wiz-en-row .bc-label { font-size: var(--text-micro); }
+  .wiz-en-row .bc-input { padding: 8px 10px; font-size: var(--text-body-sm); }
+
+  .wiz-note { display: flex; align-items: flex-start; gap: 9px; margin-top: 22px; padding: 12px 14px;
+    background: var(--color-info-bg); border-radius: var(--radius-sm); font-size: var(--text-caption); color: var(--blue-fg); line-height: 1.45; }
+  .wiz-note svg { width: 16px; height: 16px; flex: none; margin-top: 1px; color: var(--color-info-dot); }
+
+  /* ---- step 3: application type ---- */
+  .wiz-search-field { position: relative; margin-bottom: 18px; }
+  .wiz-search-field > svg { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); width: 17px; height: 17px; color: var(--text-faint); pointer-events: none; }
+  .wiz-search-field .bc-input { padding-left: 38px; }
+  .wiz-radio-list { display: flex; flex-direction: column; gap: 10px; }
+  .wiz-radio { display: flex; align-items: flex-start; gap: 13px; padding: 15px 16px; border: 1px solid var(--border-default);
+    border-radius: var(--radius-md); background: var(--surface-card); cursor: pointer; width: 100%; text-align: left; font-family: inherit;
+    transition: border-color .15s, background .15s, box-shadow .15s; }
+  .wiz-radio:hover { border-color: var(--neutral-400); background: var(--surface-raised); }
+  .wiz-radio.is-selected { border-color: var(--color-primary); background: var(--primary-50); box-shadow: inset 0 0 0 1px var(--color-primary); }
+  .wiz-radio.is-hidden { display: none; }
+  .wiz-radio-dot { width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--border-strong); flex: none; margin-top: 1px;
+    display: grid; place-items: center; transition: border-color .15s; }
+  .wiz-radio.is-selected .wiz-radio-dot { border-color: var(--color-primary); }
+  .wiz-radio-dot::after { content: ""; width: 10px; height: 10px; border-radius: 50%; background: var(--color-primary); transform: scale(0); transition: transform .15s ease; }
+  .wiz-radio.is-selected .wiz-radio-dot::after { transform: scale(1); }
+  .wiz-radio-body { display: flex; flex-direction: column; }
+  .wiz-radio-title { display: block; font-size: var(--text-body); font-weight: var(--weight-bold); color: var(--text-heading); }
+  .wiz-radio-desc { display: block; font-size: var(--text-caption); color: var(--text-muted); margin-top: 2px; line-height: 1.4; }
+
+  .wiz-subhead { font-size: var(--text-body-sm); font-weight: var(--weight-bold); color: var(--text-heading); margin: 26px 0 12px; }
+  .wiz-cat-group { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  @media (max-width: 560px) { .wiz-cat-group { grid-template-columns: 1fr; } }
+  .wiz-cat { display: flex; flex-direction: column; gap: 3px; padding: 12px 14px; border: 1px solid var(--border-default);
+    border-radius: var(--radius-md); background: var(--surface-card); cursor: pointer; text-align: left; font-family: inherit;
+    transition: border-color .15s, background .15s, box-shadow .15s; }
+  .wiz-cat:hover { border-color: var(--neutral-400); }
+  .wiz-cat.is-selected { border-color: var(--color-primary); background: var(--primary-50); box-shadow: inset 0 0 0 1px var(--color-primary); }
+  .wiz-cat-name { font-size: var(--text-body-sm); font-weight: var(--weight-bold); color: var(--text-heading); display: flex; align-items: center; justify-content: space-between; gap: 7px; }
+  .wiz-cat-check { width: 16px; height: 16px; color: var(--color-primary); opacity: 0; transition: opacity .15s; }
+  .wiz-cat.is-selected .wiz-cat-check { opacity: 1; }
+  .wiz-cat-sub { font-size: var(--text-micro); color: var(--text-muted); }
+  .wiz-empty-search { padding: 26px; text-align: center; color: var(--text-muted); font-size: var(--text-body-sm);
+    border: 1.5px dashed var(--border-strong); border-radius: var(--radius-md); }
+
+  /* helper-panel CTA + explainer */
+  .wiz-helper-cta:empty { display: none; }
+  .wiz-helper-cta { margin-top: 18px; }
+  .wiz-help-btn { width: 100%; }
+  .wiz-help-explain { display: none; margin-top: 12px; padding: 14px 15px; background: var(--surface-card);
+    border: 1px solid var(--primary-100); border-radius: var(--radius-md); font-size: var(--text-caption); color: var(--primary-800); line-height: 1.5; }
+  .wiz-help-explain.is-open { display: block; }
+  .wiz-help-explain strong { font-weight: var(--weight-bold); }
+  .wiz-help-explain p + p { margin-top: 9px; }
+
+  /* ---- step 4: check your answers ---- */
+  .wiz-aside { display: flex; flex-direction: column; gap: 16px; }
+  .wiz-summary { display: flex; flex-direction: column; border: 1px solid var(--border-default); border-radius: var(--radius-md); overflow: hidden; }
+  .wiz-sum-row { display: flex; align-items: flex-start; gap: 14px; padding: 16px 18px; background: var(--surface-card); }
+  .wiz-sum-row + .wiz-sum-row { border-top: 1px solid var(--border-default); }
+  .wiz-sum-icon { width: 34px; height: 34px; border-radius: var(--radius-sm); flex: none; display: grid; place-items: center;
+    background: var(--surface-sunken); color: var(--text-muted); }
+  .wiz-sum-icon svg { width: 17px; height: 17px; }
+  .wiz-sum-body { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+  .wiz-sum-label { font-size: var(--text-micro); font-weight: var(--weight-bold); letter-spacing: var(--tracking-wide); text-transform: uppercase; color: var(--text-faint); }
+  .wiz-sum-value { font-size: var(--text-body); font-weight: var(--weight-semibold); color: var(--text-heading); margin-top: 3px; line-height: 1.35; }
+  .wiz-sum-sub { font-size: var(--text-caption); color: var(--text-muted); margin-top: 2px; }
+  .wiz-sum-note { display: flex; align-items: center; gap: 6px; font-size: var(--text-micro); color: var(--blue-fg); margin-top: 7px; }
+  .wiz-sum-note svg { width: 13px; height: 13px; color: var(--color-info-dot); flex: none; }
+  .wiz-sum-change { align-self: center; font-size: var(--text-caption); font-weight: var(--weight-bold); color: var(--text-link);
+    background: none; border: 1px solid var(--border-strong); border-radius: var(--radius-sm); padding: 7px 14px; cursor: pointer; font-family: inherit;
+    transition: background .15s, border-color .15s; }
+  .wiz-sum-change:hover { background: var(--surface-raised); border-color: var(--neutral-400); }
+  .wiz-sum-locked { align-self: center; display: inline-flex; align-items: center; gap: 6px; font-size: var(--text-caption);
+    font-weight: var(--weight-semibold); color: var(--text-faint); padding: 7px 4px; }
+  .wiz-sum-locked svg { width: 14px; height: 14px; }
+
+  .wiz-sumpanel { background: var(--surface-card); border: 1px solid var(--border-default); border-radius: var(--radius-lg); padding: 20px; box-shadow: var(--shadow-sm); }
+  .wiz-sumpanel-title { font-size: var(--text-body-sm); font-weight: var(--weight-bold); color: var(--text-heading); display: flex; align-items: center; gap: 8px; margin-bottom: 15px; }
+  .wiz-sumpanel-title svg { width: 17px; height: 17px; color: var(--primary-600); }
+  .wiz-kv { display: flex; flex-direction: column; gap: 11px; }
+  .wiz-kv-row { display: flex; justify-content: space-between; gap: 14px; font-size: var(--text-caption); }
+  .wiz-kv-row .k { color: var(--text-muted); }
+  .wiz-kv-row .v { color: var(--text-heading); font-weight: var(--weight-semibold); text-align: right; }
+  .wiz-kv-divider { height: 1px; background: var(--border-default); margin: 3px 0; }
+  .wiz-kv-total .k, .wiz-kv-total .v { font-size: var(--text-body-sm); font-weight: var(--weight-bold); color: var(--text-heading); }
+
+  .wiz-la { background: var(--surface-card); border: 1px solid var(--border-default); border-radius: var(--radius-lg); padding: 18px 20px; box-shadow: var(--shadow-sm); }
+  .wiz-la-label { font-size: var(--text-micro); font-weight: var(--weight-bold); letter-spacing: var(--tracking-wide); text-transform: uppercase; color: var(--text-faint); margin-bottom: 11px; }
+  .wiz-la-head { display: flex; align-items: center; gap: 12px; }
+  .wiz-la-mark { width: 40px; height: 40px; border-radius: var(--radius-sm); flex: none; display: grid; place-items: center; background: var(--primary-100); color: var(--primary-700); }
+  .wiz-la-mark svg { width: 20px; height: 20px; }
+  .wiz-la-name { display: block; font-size: var(--text-body-sm); font-weight: var(--weight-bold); color: var(--text-heading); }
+  .wiz-la-team { display: block; font-size: var(--text-caption); color: var(--text-muted); }
+  .wiz-la-contact { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border-default); display: flex; flex-direction: column; gap: 9px; }
+  .wiz-la-line { display: flex; align-items: center; gap: 9px; font-size: var(--text-caption); color: var(--text-body); }
+  .wiz-la-line svg { width: 15px; height: 15px; color: var(--text-faint); flex: none; }
+
+  /* success state */
+  .wiz-created { max-width: 540px; margin: 8px auto 0; }
+  .wiz-success { text-align: center; padding: 48px 34px; }
+  .wiz-success-badge { width: 64px; height: 64px; border-radius: 50%; background: var(--color-success-bg); color: var(--color-success); display: grid; place-items: center; margin: 0 auto 18px; }
+  .wiz-success-badge svg { width: 32px; height: 32px; }
+  .wiz-success h2 { font-size: var(--text-h2); font-weight: var(--weight-black); color: var(--text-heading); letter-spacing: var(--tracking-snug); }
+  .wiz-success p { color: var(--text-muted); margin-top: 9px; }
+  .wiz-success-ref { display: inline-flex; align-items: center; gap: 8px; margin-top: 20px; padding: 10px 16px; background: var(--surface-sunken);
+    border-radius: var(--radius-sm); font-family: var(--font-mono); font-weight: var(--weight-bold); color: var(--text-heading); font-variant-numeric: tabular-nums; }
+  .wiz-success-ref svg { width: 16px; height: 16px; color: var(--text-muted); }
+  .wiz-success-actions { margin-top: 26px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+  .wiz-success-actions .bc-btn { text-decoration: none; }
+  .wiz-slot .s-main { font-size: var(--text-body-sm); font-weight: var(--weight-bold); color: var(--text-muted); }
+  .wiz-slot .s-sub { font-size: var(--text-caption); color: var(--text-faint); max-width: 38ch; }
+
+  .wiz-card-foot { display: flex; align-items: center; justify-content: space-between; gap: 14px;
+    padding: 18px 30px; border-top: 1px solid var(--border-default); }
+  .wiz-foot-back { display: inline-flex; align-items: center; gap: 7px; font-size: var(--text-body-sm); font-weight: var(--weight-bold);
+    color: var(--text-muted); background: none; border: none; cursor: pointer; font-family: inherit; padding: 8px 4px; border-radius: var(--radius-sm); transition: color .15s; }
+  .wiz-foot-back svg { width: 16px; height: 16px; }
+  .wiz-foot-back:hover { color: var(--text-heading); }
+  .wiz-foot-back:disabled { opacity: 0; pointer-events: none; }
+
+  /* ---- helper panel ---- */
+  .wiz-helper { background: var(--primary-50); border: 1px solid var(--primary-100); border-radius: var(--radius-lg); padding: 22px 22px 24px; }
+  .wiz-helper-title { display: flex; align-items: center; gap: 9px; font-size: var(--text-body); font-weight: var(--weight-bold);
+    color: var(--primary-800); margin-bottom: 14px; }
+  .wiz-helper-title svg { width: 18px; height: 18px; color: var(--primary-600); }
+  .wiz-helper-list { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+  .wiz-helper-list li { display: flex; gap: 10px; font-size: var(--text-body-sm); color: var(--primary-800); line-height: 1.45; }
+  .wiz-helper-list li svg { width: 16px; height: 16px; color: var(--primary-600); flex: none; margin-top: 2px; }
+  .wiz-helper-note { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--primary-100);
+    font-size: var(--text-caption); color: var(--primary-700); display: flex; gap: 8px; }
+  .wiz-helper-note svg { width: 15px; height: 15px; flex: none; margin-top: 1px; }
+</style>
+</head>
+<body>
+
+  <header class="wiz-top">
+    <div class="wiz-top-inner">
+      <div class="wiz-top-mark"><img src="assets/logo/building-control-logo.svg" alt="Building Control" width="30" height="30" /></div>
+      <div class="wiz-top-name">Building<span>Control</span></div>
+      <span class="wiz-save"><i data-lucide="check-circle-2"></i> Draft saved automatically</span>
+    </div>
+  </header>
+
+  <main class="wiz">
+    <div class="wiz-backbar">
+      <a class="wiz-back" href="Applicant Dashboard.html"><i data-lucide="arrow-left"></i> Back to your applications</a>
+    </div>
+
+    <div class="wiz-head">
+      <div class="wiz-eyebrow">New application</div>
+      <h1 class="wiz-title">Start a new application</h1>
+    </div>
+
+    <!-- Stepper -->
+    <div class="wiz-stepper-card">
+      <div class="bc-stepper" id="stepper">
+        <div class="bc-step" data-step="0"><div class="bc-step-dot">1</div><div class="bc-step-label">Application name</div></div>
+        <div class="bc-step" data-step="1"><div class="bc-step-dot">2</div><div class="bc-step-label">Site location</div></div>
+        <div class="bc-step" data-step="2"><div class="bc-step-dot">3</div><div class="bc-step-label">Application type</div></div>
+        <div class="bc-step" data-step="3"><div class="bc-step-dot">4</div><div class="bc-step-label">Check answers</div></div>
+      </div>
+    </div>
+
+    <!-- Two-column body -->
+    <div class="wiz-body">
+      <section class="wiz-card">
+        <div class="wiz-card-head">
+          <div class="wiz-step-count" id="stepCount">Step 1 of 4</div>
+          <h2 class="wiz-step-title" id="stepTitle">Application name</h2>
+          <p class="wiz-step-desc" id="stepDesc">Give your application a name you'll recognise later.</p>
+        </div>
+        <div class="wiz-card-content" id="cardContent"></div>
+        <div class="wiz-card-foot">
+          <button class="wiz-foot-back" id="btnBack" disabled><i data-lucide="arrow-left"></i> Back</button>
+          <button class="bc-btn bc-btn--primary" id="btnContinue">Continue <i data-lucide="arrow-right"></i></button>
+        </div>
+      </section>
+
+      <!-- Right column — swappable per step -->
+      <aside class="wiz-aside" id="wizAside"></aside>
+    </div>
+  </main>
+
+  <script>
+    const NAME_MAX = 60;
+    const data = {
+      name: "",
+      site: { postcode: "", found: false, address: "", easting: "", northing: "" },
+      type: { kind: "", category: "" },
+    };
+
+    const STEPS = [
+      {
+        count: "Step 1 of 4", title: "Application name", icon: "square-pen",
+        desc: "Give your application a name you'll recognise later. It's just for you — you can change it any time.",
+        helper: [
+          ["lightbulb", "A simple name like \u201cKitchen extension\u201d or your address works well."],
+          ["users", "Builders: name it so your client recognises it too."],
+        ],
+        mount(c) {
+          c.innerHTML =
+            '<div class="bc-field wiz-field-lg">' +
+              '<label class="bc-label" for="appName">What would you like to call this application?</label>' +
+              '<div class="wiz-input-row">' +
+                '<input class="bc-input" id="appName" type="text" maxlength="' + NAME_MAX + '" autocomplete="off" ' +
+                  'placeholder="e.g. Kitchen extension at 14 Elm Grove" value="' + escapeAttr(data.name) + '" />' +
+                '<span class="wiz-counter" id="nameCount"></span>' +
+              '</div>' +
+              '<span class="bc-hint">This is a nickname for your records — not the official application reference.</span>' +
+            '</div>' +
+            '<div class="wiz-eg">' +
+              '<div class="wiz-eg-label">Need inspiration? Try one of these</div>' +
+              '<div class="wiz-eg-chips">' +
+                ['Kitchen extension', 'Loft conversion', 'Garage conversion', '14 Elm Grove']
+                  .map(t => '<button type="button" class="wiz-chip" data-eg="' + escapeAttr(t) + '"><i data-lucide="plus"></i> ' + t + '</button>').join('') +
+              '</div>' +
+            '</div>';
+
+          const input = c.querySelector('#appName');
+          const counter = c.querySelector('#nameCount');
+          const sync = () => {
+            data.name = input.value;
+            const n = input.value.length;
+            counter.textContent = n + '/' + NAME_MAX;
+            counter.classList.toggle('is-near', n >= NAME_MAX - 10);
+            updateContinue();
+          };
+          input.addEventListener('input', sync);
+          c.querySelectorAll('.wiz-chip').forEach(chip =>
+            chip.addEventListener('click', () => { input.value = chip.dataset.eg; input.focus(); sync(); }));
+          sync();
+          setTimeout(() => input.focus(), 30);
+        },
+        valid: () => data.name.trim().length >= 2,
+      },
+      {
+        count: "Step 2 of 4", title: "Find the site", icon: "map-pin",
+        desc: "Tell us where the work is taking place. We'll use this to route your application to the right team.",
+        helper: [
+          ["home", "The full postcode of the property where the work will happen."],
+          ["file-text", "It should match the council tax or Land Registry record."],
+          ["map", "No postcode? You can search by map or enter a grid reference instead."],
+        ],
+        mount(c) {
+          const st = data.site;
+          function fakeAddresses(pc) {
+            const P = pc.toUpperCase().trim();
+            return [
+              "8 Maple Court, Bristol, " + P,
+              "10 Maple Court, Bristol, " + P,
+              "12 Maple Court, Bristol, " + P,
+              "Flat 1, 14 Maple Court, Bristol, " + P,
+              "Flat 2, 14 Maple Court, Bristol, " + P,
+            ];
+          }
+          function paint() {
+            const addrs = st.found ? fakeAddresses(st.postcode) : [];
+            c.innerHTML =
+              '<div class="bc-field"><label class="bc-label" for="pc">Property postcode</label>' +
+              '<div class="wiz-pc-row">' +
+                '<div class="bc-field"><div class="wiz-input-row">' +
+                  '<input class="bc-input" id="pc" type="text" autocomplete="off" placeholder="e.g. BS1 4ND" value="' + escapeAttr(st.postcode) + '" /></div></div>' +
+                '<button type="button" class="bc-btn bc-btn--secondary wiz-find-btn" id="findBtn"><i data-lucide="search"></i> Find address</button>' +
+              '</div>' +
+              '<span class="bc-hint">Enter the postcode, then choose the exact address from the list.</span></div>' +
+              (st.found && !st.address ?
+                '<div class="wiz-result"><div class="wiz-result-count"><i data-lucide="check-circle-2"></i> ' + addrs.length + ' addresses found for ' + escapeAttr(st.postcode.toUpperCase()) + '</div>' +
+                '<div class="bc-field"><label class="bc-label" for="addr">Select the address</label>' +
+                '<div class="bc-select-wrap"><select class="bc-select" id="addr">' +
+                  '<option value="" selected disabled>Choose an address…</option>' +
+                  addrs.map(a => '<option value="' + escapeAttr(a) + '">' + a + '</option>').join('') +
+                '</select><i data-lucide="chevron-down"></i></div></div></div>'
+                : '') +
+              (st.address ?
+                '<div class="wiz-selected"><div class="wiz-selected-icon"><i data-lucide="map-pin"></i></div>' +
+                '<div><div class="wiz-selected-label">Selected site</div><div class="wiz-selected-addr">' + st.address + '</div></div>' +
+                '<button type="button" class="wiz-selected-change" id="changeAddr">Change</button></div>'
+                : '') +
+              '<div class="wiz-divider">or, if you don\u2019t have a postcode</div>' +
+              '<div class="wiz-mini-cards">' +
+                '<div class="wiz-mini"><div class="wiz-mini-head"><span class="ic"><i data-lucide="map"></i></span><span class="wiz-mini-title">Don\u2019t have a postcode?</span></div>' +
+                '<div class="wiz-mini-desc">Find the site on a map or by place name instead.</div>' +
+                '<button type="button" class="wiz-mini-link" id="gridSearch">Search by grid reference <i data-lucide="arrow-right"></i></button></div>' +
+                '<div class="wiz-mini"><div class="wiz-mini-head"><span class="ic"><i data-lucide="crosshair"></i></span><span class="wiz-mini-title">Have a grid reference?</span></div>' +
+                '<div class="wiz-en-row">' +
+                  '<div class="bc-field"><label class="bc-label" for="easting">Easting</label><input class="bc-input" id="easting" inputmode="numeric" placeholder="358900" value="' + escapeAttr(st.easting) + '" /></div>' +
+                  '<div class="bc-field"><label class="bc-label" for="northing">Northing</label><input class="bc-input" id="northing" inputmode="numeric" placeholder="172600" value="' + escapeAttr(st.northing) + '" /></div>' +
+                '</div></div>' +
+              '</div>' +
+              '<div class="wiz-note"><i data-lucide="info"></i> <span>The site location can\u2019t be changed once the application is created, so please double-check it\u2019s correct.</span></div>';
+            bind();
+            lucide.createIcons();
+            updateContinue();
+          }
+          function bind() {
+            const pc = c.querySelector('#pc');
+            const findBtn = c.querySelector('#findBtn');
+            const setFindState = () => { findBtn.disabled = pc.value.trim().length < 5; findBtn.classList.toggle('is-disabled', pc.value.trim().length < 5); };
+            pc.addEventListener('input', () => {
+              st.postcode = pc.value;
+              if (st.found || st.address) {
+                st.found = false; st.address = "";
+                const r = c.querySelector('.wiz-result'); if (r) r.remove();
+                const sel = c.querySelector('.wiz-selected'); if (sel) sel.remove();
+              }
+              setFindState();
+              updateContinue();
+            });
+            setFindState();
+            findBtn.addEventListener('click', () => { if (pc.value.trim().length >= 5) { st.postcode = pc.value; st.found = true; st.address = ""; paint(); } });
+            const addr = c.querySelector('#addr');
+            if (addr) addr.addEventListener('change', () => { st.address = addr.value; st.found = false; paint(); });
+            const changeAddr = c.querySelector('#changeAddr');
+            if (changeAddr) changeAddr.addEventListener('click', () => { st.address = ""; st.found = true; paint(); });
+            const easting = c.querySelector('#easting');
+            const northing = c.querySelector('#northing');
+            const enSync = () => { st.easting = easting.value; st.northing = northing.value; updateContinue(); };
+            easting.addEventListener('input', enSync);
+            northing.addEventListener('input', enSync);
+            const gridSearch = c.querySelector('#gridSearch');
+            if (gridSearch) gridSearch.addEventListener('click', () => { easting.focus(); });
+          }
+          paint();
+        },
+        valid: () => { const s = data.site; return !!s.address || (s.easting.trim().length >= 5 && s.northing.trim().length >= 5); },
+      },
+      {
+        count: "Step 3 of 4", title: "Select your application type", icon: "list-checks",
+        desc: "Choose the type of building-control application, then tell us the category of work.",
+        helper: [
+          ["ruler", "A rough idea of the work — e.g. extension, loft, conversion."],
+          ["help-circle", "Not sure which route? Use \u201cHelp me choose\u201d below."],
+        ],
+        helperCta:
+          '<button type="button" class="bc-btn bc-btn--secondary wiz-help-btn" id="helpChoose"><i data-lucide="compass"></i> Help me choose</button>' +
+          '<div class="wiz-help-explain" id="helpExplain">' +
+            '<p><strong>Full Plans</strong> — best when you want your drawings checked and approved before work starts. Fewer surprises on site.</p>' +
+            '<p><strong>Building Notice</strong> — lets you start sooner without detailed plans, for smaller, straightforward jobs.</p>' +
+            '<p>Still unsure? Your surveyor can switch the route later.</p>' +
+          '</div>',
+        mount(c) {
+          const t = data.type;
+          // ⬇️ Placeholder list — swap these four for the real building-control types.
+          const TYPES = [
+            ["full-plans", "Full Plans", "Submit detailed drawings for full approval before work starts."],
+            ["building-notice", "Building Notice", "Start work quickly without detailed plans — for simpler projects."],
+            ["regularisation", "Regularisation", "Get retrospective approval for work already carried out."],
+            ["demolition-notice", "Demolition Notice", "Tell us before you demolish a building or structure."],
+          ];
+          // ⬇️ Placeholder categories — swap as needed.
+          const CATS = [
+            ["domestic", "Domestic", "Homes & households"],
+            ["commercial", "Commercial", "Business premises"],
+            ["other", "Other", "Something else"],
+          ];
+
+          c.innerHTML =
+            '<div class="wiz-search-field"><i data-lucide="search"></i>' +
+              '<input class="bc-input" id="typeSearch" type="text" autocomplete="off" placeholder="Search application types…" /></div>' +
+            '<div class="wiz-radio-list" id="typeList" role="radiogroup" aria-label="Application type">' +
+              TYPES.map(([id, title, desc]) =>
+                '<button type="button" class="wiz-radio' + (t.kind === id ? ' is-selected' : '') + '" role="radio" aria-checked="' + (t.kind === id) + '" data-kind="' + id + '" data-text="' + escapeAttr((title + ' ' + desc).toLowerCase()) + '">' +
+                  '<span class="wiz-radio-dot"></span>' +
+                  '<span class="wiz-radio-body"><span class="wiz-radio-title">' + title + '</span><span class="wiz-radio-desc">' + desc + '</span></span>' +
+                '</button>').join('') +
+            '</div>' +
+            '<div class="wiz-empty-search" id="typeEmpty" style="display:none">No application types match that search. <strong>Clear the search</strong> to see them all.</div>' +
+            '<div class="wiz-subhead">Application category</div>' +
+            '<div class="wiz-cat-group" id="catGroup" role="radiogroup" aria-label="Application category">' +
+              CATS.map(([id, name, sub]) =>
+                '<button type="button" class="wiz-cat' + (t.category === id ? ' is-selected' : '') + '" role="radio" aria-checked="' + (t.category === id) + '" data-cat="' + id + '">' +
+                  '<span class="wiz-cat-name">' + name + ' <i class="wiz-cat-check" data-lucide="check-circle-2"></i></span>' +
+                  '<span class="wiz-cat-sub">' + sub + '</span>' +
+                '</button>').join('') +
+            '</div>';
+
+          const search = c.querySelector('#typeSearch');
+          const rows = [...c.querySelectorAll('.wiz-radio')];
+          const empty = c.querySelector('#typeEmpty');
+          search.addEventListener('input', () => {
+            const q = search.value.trim().toLowerCase();
+            let shown = 0;
+            rows.forEach(r => { const m = !q || r.dataset.text.includes(q); r.classList.toggle('is-hidden', !m); if (m) shown++; });
+            empty.style.display = shown === 0 ? 'block' : 'none';
+          });
+          rows.forEach(r => r.addEventListener('click', () => {
+            t.kind = r.dataset.kind;
+            rows.forEach(x => { const on = x === r; x.classList.toggle('is-selected', on); x.setAttribute('aria-checked', on); });
+            updateContinue();
+          }));
+          const cats = [...c.querySelectorAll('.wiz-cat')];
+          cats.forEach(cat => cat.addEventListener('click', () => {
+            t.category = cat.dataset.cat;
+            cats.forEach(x => { const on = x === cat; x.classList.toggle('is-selected', on); x.setAttribute('aria-checked', on); });
+            updateContinue();
+          }));
+        },
+        valid: () => !!data.type.kind && !!data.type.category,
+      },
+      {
+        count: "Step 4 of 4", title: "Check your answers", icon: "clipboard-check",
+        desc: "Please review everything before you create the application. You can still change most answers.",
+        helper: [],
+        valid: () => true,
+        mount(c) {
+          const typeLabels = {
+            "full-plans": "Full Plans", "building-notice": "Building Notice",
+            "regularisation": "Regularisation", "demolition-notice": "Demolition Notice",
+          };
+          const catLabels = { "domestic": "Domestic", "commercial": "Commercial", "other": "Other" };
+          const siteValue = data.site.address
+            ? data.site.address
+            : (data.site.easting ? "Grid ref " + data.site.easting + ", " + data.site.northing : "Not provided");
+          const typeValue = (typeLabels[data.type.kind] || "—");
+          const catValue = (catLabels[data.type.category] || "—");
+
+          function row(icon, label, value, sub, changeStep, locked) {
+            return '<div class="wiz-sum-row">' +
+              '<span class="wiz-sum-icon"><i data-lucide="' + icon + '"></i></span>' +
+              '<span class="wiz-sum-body">' +
+                '<span class="wiz-sum-label">' + label + '</span>' +
+                '<span class="wiz-sum-value">' + escapeHtml(value) + '</span>' +
+                (sub ? '<span class="wiz-sum-sub">' + sub + '</span>' : '') +
+                (locked ? '<span class="wiz-sum-note"><i data-lucide="lock"></i> Can\u2019t be changed once the application is created.</span>' : '') +
+              '</span>' +
+              (locked
+                ? '<span class="wiz-sum-locked"><i data-lucide="lock"></i> Fixed</span>'
+                : '<button type="button" class="wiz-sum-change" data-goto="' + changeStep + '">Change</button>') +
+            '</div>';
+          }
+
+          c.innerHTML =
+            '<div class="wiz-summary">' +
+              row("square-pen", "Application name", data.name || "Untitled application", "", 0, false) +
+              row("map-pin", "Site location", siteValue, "", 1, true) +
+              row("list-checks", "Application type", typeValue, "Category — " + catValue, 2, false) +
+              // ⬇️ Placeholder row — no dedicated step yet; wire up when the boundary step exists.
+              row("pen-tool", "Site boundary", "Marked on map — 4 points", "Outline of the area affected by the work", 2, false) +
+            '</div>';
+
+          c.querySelectorAll('.wiz-sum-change').forEach(btn =>
+            btn.addEventListener('click', () => goTo(parseInt(btn.dataset.goto, 10))));
+        },
+        asideMount(a) {
+          const typeLabels = {
+            "full-plans": "Full Plans", "building-notice": "Building Notice",
+            "regularisation": "Regularisation", "demolition-notice": "Demolition Notice",
+          };
+          const catLabels = { "domestic": "Domestic", "commercial": "Commercial", "other": "Other" };
+          a.innerHTML =
+            '<div class="wiz-sumpanel">' +
+              '<div class="wiz-sumpanel-title"><i data-lucide="receipt-text"></i> Application summary</div>' +
+              '<div class="wiz-kv">' +
+                '<div class="wiz-kv-row"><span class="k">Type</span><span class="v">' + (typeLabels[data.type.kind] || "—") + '</span></div>' +
+                '<div class="wiz-kv-row"><span class="k">Category</span><span class="v">' + (catLabels[data.type.category] || "—") + '</span></div>' +
+                '<div class="wiz-kv-row"><span class="k">Reference</span><span class="v">On creation</span></div>' +
+                '<div class="wiz-kv-divider"></div>' +
+                '<div class="wiz-kv-row"><span class="k">Application fee</span><span class="v">Quoted next</span></div>' +
+                '<div class="wiz-kv-row wiz-kv-total"><span class="k">Due today</span><span class="v">\u00A30.00</span></div>' +
+              '</div>' +
+            '</div>' +
+            '<div class="wiz-la">' +
+              '<div class="wiz-la-label">Local authority</div>' +
+              '<div class="wiz-la-head">' +
+                '<span class="wiz-la-mark"><i data-lucide="landmark"></i></span>' +
+                '<span><span class="wiz-la-name">Bristol City Council</span><span class="wiz-la-team">Building Control team</span></span>' +
+              '</div>' +
+              '<div class="wiz-la-contact">' +
+                '<span class="wiz-la-line"><i data-lucide="map-pin"></i> Resolved from your site postcode</span>' +
+                '<span class="wiz-la-line"><i data-lucide="clock"></i> Typically responds within 5 working days</span>' +
+              '</div>' +
+            '</div>';
+        },
+      },
+    ];
+
+    function escapeAttr(s) { return String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;'); }
+    function escapeHtml(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+
+    function placeholderHtml(s) {
+      return '<div class="wiz-slot">' +
+        '<span class="s-icon"><i data-lucide="' + s.icon + '"></i></span>' +
+        '<div class="s-main">' + s.slotMain + '</div>' +
+        '<div class="s-sub">' + s.slotSub + '</div>' +
+      '</div>';
+    }
+
+    let current = 0;
+    const stepEls = [...document.querySelectorAll('#stepper .bc-step')];
+
+    const els = {
+      count: document.getElementById('stepCount'),
+      title: document.getElementById('stepTitle'),
+      desc: document.getElementById('stepDesc'),
+      content: document.getElementById('cardContent'),
+      aside: document.getElementById('wizAside'),
+      back: document.getElementById('btnBack'),
+      cont: document.getElementById('btnContinue'),
+    };
+
+    function defaultHelperHtml(s) {
+      return '<div class="wiz-helper">' +
+        '<div class="wiz-helper-title"><i data-lucide="clipboard-list"></i> What you\u2019ll need</div>' +
+        '<ul class="wiz-helper-list">' +
+          s.helper.map(([ic, txt]) => '<li><i data-lucide="' + ic + '"></i> <span>' + txt + '</span></li>').join('') +
+        '</ul>' +
+        '<div class="wiz-helper-cta" id="helperCta">' + (s.helperCta || '') + '</div>' +
+        '<div class="wiz-helper-note"><i data-lucide="save"></i> <span>Your answers are saved as you go. You can stop and come back any time.</span></div>' +
+      '</div>';
+    }
+
+    function updateContinue() {
+      const s = STEPS[current];
+      const ok = s.valid ? s.valid() : true;
+      els.cont.classList.toggle('is-disabled', !ok);
+      els.cont.disabled = !ok;
+    }
+
+    function render() {
+      const s = STEPS[current];
+      // stepper visual state
+      stepEls.forEach((el, i) => {
+        el.classList.remove('bc-step--done', 'bc-step--current');
+        const dot = el.querySelector('.bc-step-dot');
+        if (i < current) { el.classList.add('bc-step--done'); dot.innerHTML = '<i data-lucide="check"></i>'; }
+        else if (i === current) { el.classList.add('bc-step--current'); dot.textContent = i + 1; }
+        else { dot.textContent = i + 1; }
+      });
+      // content
+      els.count.textContent = s.count;
+      els.title.textContent = s.title;
+      els.desc.textContent = s.desc;
+      if (s.mount) { s.mount(els.content); }
+      else { els.content.innerHTML = placeholderHtml(s); }
+      // right column — custom per step, or the default helper panel
+      if (s.asideMount) { els.aside.innerHTML = ''; s.asideMount(els.aside); }
+      else {
+        els.aside.innerHTML = defaultHelperHtml(s);
+        const helpBtn = els.aside.querySelector('#helpChoose');
+        if (helpBtn) helpBtn.addEventListener('click', () => {
+          const ex = els.aside.querySelector('#helpExplain');
+          if (ex) ex.classList.toggle('is-open');
+        });
+      }
+      // footer
+      els.back.disabled = current === 0;
+      els.cont.innerHTML = current === STEPS.length - 1
+        ? 'Create application <i data-lucide="check"></i>'
+        : 'Continue <i data-lucide="arrow-right"></i>';
+      updateContinue();
+      lucide.createIcons();
+    }
+
+    function goTo(i) { current = Math.max(0, Math.min(STEPS.length - 1, i)); render(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+
+    function createApplication() {
+      const ref = 'BC-2026-0' + Math.floor(4000 + Math.random() * 5999);
+      const wiz = document.querySelector('.wiz');
+      wiz.innerHTML =
+        '<div class="wiz-card wiz-created"><div class="wiz-success">' +
+          '<div class="wiz-success-badge"><i data-lucide="check"></i></div>' +
+          '<h2>Application created</h2>' +
+          '<p>We\u2019ve set up <strong>' + (escapeHtml(data.name) || 'your application') + '</strong>. You can now add the details and documents.</p>' +
+          '<div class="wiz-success-ref"><i data-lucide="hash"></i> ' + ref + '</div>' +
+          '<div class="wiz-success-actions">' +
+            '<a class="bc-btn bc-btn--secondary" href="Applicant Dashboard.html"><i data-lucide="arrow-left"></i> Back to your applications</a>' +
+            '<a class="bc-btn bc-btn--primary" href="Applicant Dashboard.html">Open application <i data-lucide="arrow-right"></i></a>' +
+          '</div>' +
+        '</div></div>';
+      lucide.createIcons();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    els.cont.addEventListener('click', () => {
+      if (els.cont.disabled) return;
+      if (current < STEPS.length - 1) goTo(current + 1);
+      else createApplication();
+    });
+    els.back.addEventListener('click', () => goTo(current - 1));
+    stepEls.forEach((el, i) => el.addEventListener('click', () => { if (i < current) goTo(i); }));
+
+    render();
+  </script>
+</body>
+</html>

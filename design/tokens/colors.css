@@ -1,0 +1,100 @@
+/* ============================================================
+   Building Control — Colour tokens
+   Base scales + semantic roles. Reference semantic aliases
+   in product code (e.g. --color-action-needed), not raw hex.
+   ============================================================ */
+:root {
+  /* ---------- Brand / Primary (reassuring green) ---------- */
+  --primary-50:  #EAF3EE;
+  --primary-100: #D3E7DC;
+  --primary-200: #A9D0BC;
+  --primary-300: #76B295;
+  --primary-400: #3E9670;
+  --primary-500: #1E8760;
+  --primary-600: #16795A;  /* core brand */
+  --primary-700: #0F5C44;
+  --primary-800: #0B4634;
+  --primary-900: #073227;
+
+  /* ---------- Warm neutrals (paper) ---------- */
+  --neutral-0:   #FFFFFF;
+  --neutral-25:  #FBFAF7;
+  --neutral-50:  #F5F4F0;
+  --neutral-100: #EEEDE7;
+  --neutral-200: #E7E4DC;
+  --neutral-300: #DEDAD0;
+  --neutral-400: #C3BEB1;
+
+  /* ---------- Ink (warm near-black) ---------- */
+  --ink-900: #1C2622;
+  --ink-700: #46504B;
+  --ink-500: #6E766F;
+  --ink-400: #97A09A;
+
+  /* ---------- Status hues ---------- */
+  /* Success / Approved */
+  --green-fg:  #16795A;  --green-bg:  #E5F2EA;  --green-dot:  #1E9B6B;
+  /* Warning / Action needed */
+  --amber-fg:  #97631A;  --amber-bg:  #FBF0DD;  --amber-dot:  #D08B26;
+  /* Destructive / Rejected */
+  --rose-fg:   #B0463A;  --rose-bg:   #FBE9E7;  --rose-dot:   #D86355;
+  /* Info / Submitted */
+  --blue-fg:   #2B5FAE;  --blue-bg:   #E8F0FB;  --blue-dot:   #3B82F6;
+  /* Neutral / Draft */
+  --slate-fg:  #5A6670;  --slate-bg:  #EEF0F1;  --slate-dot:  #8A949C;
+
+  /* ============================================================
+     SEMANTIC ROLES — use these in product code
+     ============================================================ */
+
+  /* Brand actions */
+  --color-primary:        var(--primary-600);
+  --color-primary-hover:  var(--primary-700);
+  --color-primary-press:  var(--primary-800);
+  --color-primary-subtle: var(--primary-50);
+  --color-on-primary:     var(--neutral-0);
+
+  /* Surfaces */
+  --surface-page:    var(--neutral-50);
+  --surface-card:    var(--neutral-0);
+  --surface-raised:  var(--neutral-25);
+  --surface-sunken:  var(--neutral-100);
+
+  /* Borders */
+  --border-default:  var(--neutral-200);
+  --border-strong:   var(--neutral-300);
+  --border-focus:    var(--primary-600);
+
+  /* Text */
+  --text-heading:  var(--ink-900);
+  --text-body:     var(--ink-700);
+  --text-muted:    var(--ink-500);
+  --text-faint:    var(--ink-400);
+  --text-on-brand: var(--neutral-0);
+  --text-link:     var(--primary-700);
+
+  /* Status — success / approved */
+  --color-success:     var(--green-fg);
+  --color-success-bg:  var(--green-bg);
+  --color-success-dot: var(--green-dot);
+
+  /* Status — warning / action needed */
+  --color-action-needed:     var(--amber-fg);
+  --color-action-needed-bg:  var(--amber-bg);
+  --color-action-needed-dot: var(--amber-dot);
+
+  /* Status — destructive / rejected */
+  --color-destructive:     var(--rose-fg);
+  --color-destructive-bg:  var(--rose-bg);
+  --color-destructive-dot: var(--rose-dot);
+
+  /* Status — info / submitted */
+  --color-info:     var(--blue-fg);
+  --color-info-bg:  var(--blue-bg);
+  --color-info-dot: var(--blue-dot);
+
+  /* Status — neutral / draft */
+  --color-neutral:     var(--slate-fg);
+  --color-neutral-bg:  var(--slate-bg);
+  --color-neutral-dot: var(--slate-dot);
+}

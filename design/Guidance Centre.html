@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Building Control — Guidance &amp; help</title>
+<link rel="stylesheet" href="styles.css" />
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-font-smoothing: antialiased; scroll-behavior: smooth; }
+  body { font-family: var(--font-sans); background: var(--surface-page); color: var(--text-body);
+    font-size: var(--text-body); line-height: var(--leading-normal); letter-spacing: var(--tracking-normal); }
+  a { color: inherit; text-decoration: none; }
+  .container { max-width: var(--container-max); margin: 0 auto; padding-left: 28px; padding-right: 28px; }
+
+  /* header */
+  .site-head { background: var(--surface-card); border-bottom: 1px solid var(--border-default); position: sticky; top: 0; z-index: 30; }
+  /* nav — mobile first */
+  .site-head-inner { height: 60px; display: flex; align-items: center; gap: 14px; }
+  .logo { display: flex; align-items: center; gap: 10px; margin-right: auto; }
+  .logo img { width: 32px; height: 32px; display: block; }
+  .logo .wm { font-size: 16px; letter-spacing: -0.022em; white-space: nowrap; }
+  .logo .wm b { font-weight: 800; color: var(--text-heading); }
+  .logo .wm i { font-style: normal; font-weight: 600; color: var(--text-muted); }
+  .nav-links { display: none; }
+  .nav-link { display: flex; align-items: center; gap: 7px; padding: 8px 13px; border-radius: var(--radius-sm);
+    color: var(--text-muted); font-weight: var(--weight-semibold); font-size: var(--text-body-sm); transition: background .15s, color .15s; }
+  .nav-link svg { width: 16px; height: 16px; }
+  .nav-link:hover { background: var(--surface-raised); color: var(--text-heading); }
+  .nav-link.active { background: var(--primary-50); color: var(--primary-700); }
+  .nav-right { display: none; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-family: inherit; font-weight: var(--weight-bold); font-size: var(--text-body-sm);
+    border: 1px solid transparent; border-radius: var(--radius-md); padding: 11px 16px; cursor: pointer; text-decoration: none; transition: background .15s; }
+  .btn svg { width: 16px; height: 16px; }
+  .btn-primary { background: var(--color-primary); color: #fff; box-shadow: 0 1px 2px rgba(11,70,52,.25), 0 8px 18px -8px rgba(11,70,52,.45); }
+  .btn-primary:hover { background: var(--color-primary-hover); }
+
+  /* hamburger + mobile drawer */
+  .nav-toggle { display: inline-grid; place-items: center; width: 42px; height: 42px; border-radius: var(--radius-sm);
+    border: 1px solid var(--border-default); background: var(--surface-card); color: var(--text-heading); cursor: pointer; flex: none; }
+  .nav-toggle svg { width: 21px; height: 21px; }
+  .nav-toggle .ic-close { display: none; }
+  .nav-toggle[aria-expanded="true"] .ic-open { display: none; }
+  .nav-toggle[aria-expanded="true"] .ic-close { display: block; }
+  .mobile-menu { display: none; flex-direction: column; gap: 3px; padding: 10px 20px 18px;
+    border-top: 1px solid var(--border-default); background: var(--surface-card); }
+  .mobile-menu.is-open { display: flex; }
+  .m-link { display: flex; align-items: center; gap: 11px; padding: 13px 14px; border-radius: var(--radius-md);
+    font-size: var(--text-body-lg); font-weight: var(--weight-semibold); color: var(--text-body); }
+  .m-link svg { width: 19px; height: 19px; color: var(--text-faint); }
+  .m-link.active { background: var(--primary-50); color: var(--primary-700); }
+  .m-link.active svg { color: var(--primary-600); }
+  .mobile-menu .btn { margin-top: 10px; padding: 14px 18px; font-size: var(--text-body-lg); }
+
+  /* ≥ 760px — desktop nav */
+  @media (min-width: 760px) {
+    .site-head-inner { height: 64px; gap: 28px; }
+    .logo img { width: 34px; height: 34px; }
+    .logo .wm { font-size: 16.5px; }
+    .nav-links { display: flex; align-items: center; gap: 4px; margin-right: auto; }
+    .nav-right { display: flex; align-items: center; gap: 8px; }
+    .nav-toggle { display: none; }
+    .mobile-menu { display: none !important; }
+  }
+
+  /* hero search */
+  .hero { background:
+      radial-gradient(120% 130% at 50% -30%, var(--primary-50) 0%, rgba(234,243,238,0) 60%),
+      var(--surface-card);
+    border-bottom: 1px solid var(--border-default); }
+  .hero-inner { text-align: center; padding: 64px 28px 56px; max-width: 720px; margin: 0 auto; }
+  .hero .eyebrow { font-size: var(--text-micro); font-weight: var(--weight-bold); letter-spacing: var(--tracking-wide);
+    text-transform: uppercase; color: var(--primary-600); margin-bottom: 13px; }
+  .hero h1 { font-size: clamp(30px, 4vw, 42px); font-weight: var(--weight-black); color: var(--text-heading);
+    letter-spacing: var(--tracking-tight); line-height: 1.08; text-wrap: balance; }
+  .hero p { color: var(--text-muted); font-size: var(--text-body-lg); margin-top: 13px; }
+  .search { position: relative; margin-top: 28px; }
+  .search svg { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); width: 20px; height: 20px; color: var(--text-faint); pointer-events: none; }
+  .search input { width: 100%; font-family: inherit; font-size: var(--text-body-lg); color: var(--text-heading);
+    background: var(--surface-card); border: 1px solid var(--border-strong); border-radius: var(--radius-md);
+    padding: 16px 18px 16px 50px; box-shadow: var(--shadow-md); transition: border-color .15s, box-shadow .15s; }
+  .search input::placeholder { color: var(--text-faint); }
+  .search input:focus { outline: none; border-color: var(--border-focus); box-shadow: 0 0 0 3px var(--primary-50), var(--shadow-md); }
+  .quick { display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 18px; flex-wrap: wrap; font-size: var(--text-caption); color: var(--text-muted); }
+  .quick .q-label { font-weight: var(--weight-semibold); }
+  .quick a { color: var(--text-link); font-weight: var(--weight-bold); }
+  .quick a:hover { text-decoration: underline; }
+
+  /* sections */
+  .block { padding: 56px 0; }
+  .sec-head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 24px; }
+  .sec-head h2 { font-size: var(--text-h2); font-weight: var(--weight-bold); color: var(--text-heading); letter-spacing: var(--tracking-snug); }
+  .sec-head .count { font-size: var(--text-body-sm); color: var(--text-faint); font-weight: var(--weight-semibold); }
+
+  /* category cards */
+  .cat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  @media (max-width: 860px) { .cat-grid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 560px) { .cat-grid { grid-template-columns: 1fr; } }
+  .cat-card { display: flex; flex-direction: column; background: var(--surface-card); border: 1px solid var(--border-default);
+    border-radius: var(--radius-lg); padding: 24px; box-shadow: var(--shadow-sm); transition: transform .15s, box-shadow .2s, border-color .2s; }
+  .cat-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); border-color: var(--border-strong); }
+  .cat-ic { width: 48px; height: 48px; border-radius: var(--radius-md); display: grid; place-items: center; margin-bottom: 16px;
+    background: var(--primary-50); color: var(--primary-700); border: 1px solid var(--primary-100); }
+  .cat-ic svg { width: 23px; height: 23px; }
+  .cat-card h3 { font-size: var(--text-h3); font-weight: var(--weight-bold); color: var(--text-heading); letter-spacing: var(--tracking-snug); }
+  .cat-card h3 a { color: inherit; }
+  .cat-card:hover h3 a { color: var(--primary-700); }
+  .cat-card p { font-size: var(--text-body-sm); color: var(--text-muted); margin-top: 6px; line-height: 1.5; }
+  .cat-links { list-style: none; margin-top: 16px; display: flex; flex-direction: column; gap: 2px; }
+  .cat-links li a { display: flex; align-items: center; gap: 8px; padding: 8px 0; font-size: var(--text-body-sm);
+    font-weight: var(--weight-semibold); color: var(--text-body); border-top: 1px solid var(--border-default); transition: color .15s; }
+  .cat-links li a:hover { color: var(--primary-700); }
+  .cat-links li a svg { width: 14px; height: 14px; color: var(--text-faint); margin-left: auto; transition: transform .15s, color .15s; }
+  .cat-links li a:hover svg { color: var(--primary-600); transform: translateX(3px); }
+
+  /* popular questions + contact two-col */
+  .pop-wrap { display: grid; grid-template-columns: 1.5fr 1fr; gap: 24px; align-items: start; }
+  @media (max-width: 800px) { .pop-wrap { grid-template-columns: 1fr; } }
+  .pop-list { background: var(--surface-card); border: 1px solid var(--border-default); border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); overflow: hidden; }
+  .pop-item { display: flex; align-items: center; gap: 14px; padding: 17px 22px; transition: background .15s; }
+  .pop-item + .pop-item { border-top: 1px solid var(--border-default); }
+  .pop-item:hover { background: var(--surface-raised); }
+  .pop-item .q-ic { width: 34px; height: 34px; border-radius: var(--radius-sm); flex: none; display: grid; place-items: center;
+    background: var(--surface-sunken); color: var(--text-muted); }
+  .pop-item .q-ic svg { width: 17px; height: 17px; }
+  .pop-item .q-text { font-size: var(--text-body); font-weight: var(--weight-semibold); color: var(--text-heading); }
+  .pop-item .q-go { margin-left: auto; width: 17px; height: 17px; color: var(--text-faint); flex: none; transition: transform .15s, color .15s; }
+  .pop-item:hover .q-go { color: var(--primary-600); transform: translateX(3px); }
+
+  .contact-card { background: linear-gradient(160deg, var(--primary-700), var(--primary-900)); color: #fff;
+    border-radius: var(--radius-lg); padding: 26px; box-shadow: var(--shadow-md); }
+  .contact-ic { width: 46px; height: 46px; border-radius: var(--radius-md); display: grid; place-items: center;
+    background: rgba(255,255,255,.13); color: #fff; margin-bottom: 16px; }
+  .contact-ic svg { width: 22px; height: 22px; }
+  .contact-card h3 { font-size: var(--text-h3); font-weight: var(--weight-bold); color: #fff; letter-spacing: var(--tracking-snug); }
+  .contact-card p { font-size: var(--text-body-sm); color: rgba(255,255,255,.78); margin-top: 8px; line-height: 1.55; }
+  .contact-btn { display: inline-flex; align-items: center; gap: 8px; margin-top: 18px; background: #fff; color: var(--primary-800);
+    font-weight: var(--weight-bold); font-size: var(--text-body-sm); padding: 11px 17px; border-radius: var(--radius-md); }
+  .contact-btn svg { width: 16px; height: 16px; }
+  .contact-meta { margin-top: 16px; font-size: var(--text-caption); color: rgba(255,255,255,.7); display: flex; align-items: center; gap: 8px; }
+  .contact-meta svg { width: 14px; height: 14px; }
+
+  .divider { height: 1px; background: var(--border-default); }
+</style>
+</head>
+<body>
+
+  <header class="site-head">
+    <div class="container site-head-inner">
+      <a class="logo" href="Landing Page.html"><img src="assets/logo/building-control-logo.svg" alt="Building Control" /><span class="wm"><b>Building</b>&hairsp;<i>Control</i></span></a>
+      <nav class="nav-links">
+        <a class="nav-link" href="Applicant Dashboard.html"><i data-lucide="layout-grid"></i> Dashboard</a>
+      </nav>
+      <div class="nav-right">
+        <a class="btn btn-primary" href="Application Wizard.html"><i data-lucide="plus"></i> Start an application</a>
+      </div>
+      <button class="nav-toggle" id="navToggle" aria-label="Menu" aria-controls="mobileMenu" aria-expanded="false">
+        <i data-lucide="menu" class="ic-open"></i><i data-lucide="x" class="ic-close"></i>
+      </button>
+    </div>
+    <nav class="mobile-menu" id="mobileMenu">
+      <a class="m-link" href="Applicant Dashboard.html"><i data-lucide="layout-grid"></i> Dashboard</a>
+      <a class="btn btn-primary" href="Application Wizard.html"><i data-lucide="plus"></i> Start an application</a>
+    </nav>
+  </header>
+
+  <!-- hero + search -->
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="eyebrow">Guidance &amp; help</div>
+      <h1>How can we help?</h1>
+      <p>Plain-English answers about building regulations — no jargon.</p>
+      <div class="search">
+        <i data-lucide="search"></i>
+        <input type="text" id="search" placeholder="Search for help — e.g. “do I need approval for a loft?”" />
+      </div>
+      <div class="quick">
+        <span class="q-label">Popular:</span>
+        <a href="#">Do I need approval?</a>
+        <span>·</span>
+        <a href="#">How much does it cost?</a>
+        <span>·</span>
+        <a href="#">How long does it take?</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- categories -->
+  <section class="block">
+    <div class="container">
+      <div class="sec-head">
+        <h2>Browse by topic</h2>
+        <span class="count">6 topics</span>
+      </div>
+      <div class="cat-grid">
+
+        <div class="cat-card">
+          <div class="cat-ic"><i data-lucide="list-checks"></i></div>
+          <h3><a href="Guidance Article.html">Application types</a></h3>
+          <p>Which kind of application you need, and how to choose.</p>
+          <ul class="cat-links">
+            <li><a href="Guidance Article.html">Full plans vs building notice <i data-lucide="arrow-right"></i></a></li>
+            <li><a href="Guidance Article.html">What is regularisation? <i data-lucide="arrow-right"></i></a></li>
+            <li><a href="Guidance Article.html">Do I need approval at all? <i data-lucide="arrow-right"></i></a></li>
+          </ul>
+        </div>
+
+        <div class="cat-card">
+          <div class="cat-ic"><i data-lucide="file-text"></i></div>
+          <h3><a href="Guidance Article.html">Required documents</a></h3>
+          <p>What to upload, in what format, and when.</p>
+          <ul class="cat-links">
+            <li><a href="Guidance Article.html">Plans and drawings explained <i data-lucide="arrow-right"></i></a></li>
+            <li><a href="Guidance Article.html">Accepted file types &amp; sizes <i data-lucide="arrow-right"></i></a></li>
+            <li><a href="Guidance Article.html">Do I need an architect? <i data-lucide="arrow-right"></i></a></li>
+          </ul>
+        </div>
+
+        <div class="cat-card">
+          <div class="cat-ic"><i data-lucide="receipt-text"></i></div>
+          <h3><a href="Guidance Article.html">Fees &amp; charges</a></h3>
+          <p>What you'll pay, how it's worked out, and when.</p>
+          <ul class="cat-links">
+            <li><a href="Guidance Article.html">How fees are calculated <i data-lucide="arrow-right"></i></a></li>
+            <li><a href="Guidance Article.html">When do I pay? <i data-lucide="arrow-right"></i></a></li>
+            <li><a href="Guidance Article.html">Refunds &amp; part payments <i data-lucide="arrow-right"></i></a></li>
+          </ul>
+        </div>
+
+        <div class="cat-card">
+          <div class="cat-ic"><i data-lucide="clock"></i></div>
+          <h3><a href="Guidance Article.html">Timescales</a></h3>
+          <p>How long each stage usually takes.</p>
+          <ul class="cat-links">
+            <li><a href="Guidance Article.html">How long until a decision? <i data-lucide="arrow-right"></i></a></li>
+            <li><a href="Guidance Article.html">When will a surveyor visit? <i data-lucide="arrow-right"></i></a></li>
+            <li><a href="Guidance Article.html">What happens if I'm in a hurry? <i data-lucide="arrow-right"></i></a></li>
+          </ul>
+        </div>
+
+        <div class="cat-card">
+          <div class="cat-ic"><i data-lucide="flag"></i></div>
+          <h3><a href="Guidance Article.html">After you submit</a></h3>
+          <p>What happens next, and what we'll need from you.</p>
+          <ul class="cat-links">
+            <li><a href="Guidance Article.html">What happens after I apply? <i data-lucide="arrow-right"></i></a></li>
+            <li><a href="Guidance Article.html">Responding to the surveyor <i data-lucide="arrow-right"></i></a></li>
+            <li><a href="Guidance Article.html">Getting your certificate <i data-lucide="arrow-right"></i></a></li>
+          </ul>
+        </div>
+
+        <div class="cat-card">
+          <div class="cat-ic"><i data-lucide="hard-hat"></i></div>
+          <h3><a href="Guidance Article.html">For builders &amp; agents</a></h3>
+          <p>Applying on behalf of a client, and managing jobs.</p>
+          <ul class="cat-links">
+            <li><a href="Guidance Article.html">Applying for a client <i data-lucide="arrow-right"></i></a></li>
+            <li><a href="Guidance Article.html">Managing multiple sites <i data-lucide="arrow-right"></i></a></li>
+            <li><a href="Guidance Article.html">Inviting your client to view <i data-lucide="arrow-right"></i></a></li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <div class="container"><div class="divider"></div></div>
+
+  <!-- popular questions + contact -->
+  <section class="block">
+    <div class="container">
+      <div class="sec-head">
+        <h2>Popular questions</h2>
+      </div>
+      <div class="pop-wrap">
+        <div class="pop-list">
+          <a class="pop-item" href="Guidance Article.html"><span class="q-ic"><i data-lucide="help-circle"></i></span><span class="q-text">Do I need building regulations approval for my project?</span><i data-lucide="arrow-right" class="q-go"></i></a>
+          <a class="pop-item" href="Guidance Article.html"><span class="q-ic"><i data-lucide="help-circle"></i></span><span class="q-text">What's the difference between full plans and a building notice?</span><i data-lucide="arrow-right" class="q-go"></i></a>
+          <a class="pop-item" href="Guidance Article.html"><span class="q-ic"><i data-lucide="help-circle"></i></span><span class="q-text">How much will my application cost?</span><i data-lucide="arrow-right" class="q-go"></i></a>
+          <a class="pop-item" href="Guidance Article.html"><span class="q-ic"><i data-lucide="help-circle"></i></span><span class="q-text">How long does it take to get a decision?</span><i data-lucide="arrow-right" class="q-go"></i></a>
+          <a class="pop-item" href="Guidance Article.html"><span class="q-ic"><i data-lucide="help-circle"></i></span><span class="q-text">Can I start work before I get approval?</span><i data-lucide="arrow-right" class="q-go"></i></a>
+          <a class="pop-item" href="Guidance Article.html"><span class="q-ic"><i data-lucide="help-circle"></i></span><span class="q-text">What happens after I submit my application?</span><i data-lucide="arrow-right" class="q-go"></i></a>
+        </div>
+
+        <div class="contact-card">
+          <div class="contact-ic"><i data-lucide="messages-square"></i></div>
+          <h3>Still stuck?</h3>
+          <p>Can't find the answer? Our team is happy to help — in plain English, no jargon.</p>
+          <a class="contact-btn" href="#"><i data-lucide="mail"></i> Contact support</a>
+          <div class="contact-meta"><i data-lucide="clock"></i> Typically replies within 1 working day</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    lucide.createIcons();
+    // mobile nav toggle
+    const navToggle = document.getElementById('navToggle');
+    const mobileMenu = document.getElementById('mobileMenu');
+    navToggle.addEventListener('click', () => {
+      const open = mobileMenu.classList.toggle('is-open');
+      navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    // lightweight filter on category + popular cards
+    const search = document.getElementById('search');
+    search.addEventListener('keydown', (e) => { if (e.key === 'Enter') { /* demo: would route to results */ } });
+  </script>
+</body>
+</html>

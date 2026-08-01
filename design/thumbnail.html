@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8" />
+<link rel="stylesheet" href="styles.css" />
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1280px;height:854px;overflow:hidden;font-family:"Hanken Grotesk",system-ui,sans-serif}
+.page{width:1280px;height:854px;display:flex}
+.main{flex:1;height:854px;background:var(--color-primary);display:flex;align-items:center;justify-content:center;padding:0 60px}
+.name{color:var(--color-on-primary);font-weight:800;font-size:96px;letter-spacing:-0.03em;line-height:1;white-space:nowrap}
+.swatches{width:220px;height:854px;display:flex;flex-direction:column}
+.swatches div{flex:1}
+</style></head>
+<body>
+<div class="page">
+  <div class="main"><div class="name">BuildingControl</div></div>
+  <div class="swatches">
+    <div style="background:var(--blue-dot)"></div>
+    <div style="background:var(--green-dot)"></div>
+    <div style="background:var(--amber-dot)"></div>
+    <div style="background:var(--rose-fg)"></div>
+  </div>
+</div>
+</body></html>
