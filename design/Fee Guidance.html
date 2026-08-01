@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Building Control — Fees &amp; estimator</title>
+<link rel="stylesheet" href="styles.css" />
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-font-smoothing: antialiased; scroll-behavior: smooth; }
+  body { font-family: var(--font-sans); background: var(--surface-page); color: var(--text-body);
+    font-size: var(--text-body); line-height: var(--leading-normal); letter-spacing: var(--tracking-normal); }
+  a { color: inherit; text-decoration: none; }
+  .container { max-width: 920px; margin: 0 auto; padding-left: 28px; padding-right: 28px; }
+
+  /* nav — mobile first */
+  .site-head { background: var(--surface-card); border-bottom: 1px solid var(--border-default); position: sticky; top: 0; z-index: 30; }
+  .site-head-inner { height: 60px; display: flex; align-items: center; gap: 14px; max-width: 920px; margin: 0 auto; padding: 0 28px; }
+  .logo { display: flex; align-items: center; gap: 10px; margin-right: auto; }
+  .logo img { width: 32px; height: 32px; display: block; }
+  .logo .wm { font-size: 16px; letter-spacing: -0.022em; white-space: nowrap; }
+  .logo .wm b { font-weight: 800; color: var(--text-heading); }
+  .logo .wm i { font-style: normal; font-weight: 600; color: var(--text-muted); }
+  .nav-links { display: none; }
+  .nav-link { display: flex; align-items: center; gap: 7px; padding: 8px 13px; border-radius: var(--radius-sm);
+    color: var(--text-muted); font-weight: var(--weight-semibold); font-size: var(--text-body-sm); transition: background .15s, color .15s; }
+  .nav-link svg { width: 16px; height: 16px; }
+  .nav-link:hover { background: var(--surface-raised); color: var(--text-heading); }
+  .nav-link.active { background: var(--primary-50); color: var(--primary-700); }
+  .nav-right { display: none; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-family: inherit; font-weight: var(--weight-bold); font-size: var(--text-body-sm);
+    border: 1px solid transparent; border-radius: var(--radius-md); padding: 11px 16px; cursor: pointer; text-decoration: none; transition: background .15s; }
+  .btn svg { width: 16px; height: 16px; }
+  .btn-primary { background: var(--color-primary); color: #fff; box-shadow: 0 1px 2px rgba(11,70,52,.25), 0 8px 18px -8px rgba(11,70,52,.45); }
+  .btn-primary:hover { background: var(--color-primary-hover); }
+  .nav-toggle { display: inline-grid; place-items: center; width: 42px; height: 42px; border-radius: var(--radius-sm);
+    border: 1px solid var(--border-default); background: var(--surface-card); color: var(--text-heading); cursor: pointer; flex: none; }
+  .nav-toggle svg { width: 21px; height: 21px; }
+  .nav-toggle .ic-close { display: none; }
+  .nav-toggle[aria-expanded="true"] .ic-open { display: none; }
+  .nav-toggle[aria-expanded="true"] .ic-close { display: block; }
+  .mobile-menu { display: none; flex-direction: column; gap: 3px; padding: 10px 20px 18px; border-top: 1px solid var(--border-default); background: var(--surface-card); }
+  .mobile-menu.is-open { display: flex; }
+  .m-link { display: flex; align-items: center; gap: 11px; padding: 13px 14px; border-radius: var(--radius-md);
+    font-size: var(--text-body-lg); font-weight: var(--weight-semibold); color: var(--text-body); }
+  .m-link svg { width: 19px; height: 19px; color: var(--text-faint); }
+  .m-link.active { background: var(--primary-50); color: var(--primary-700); }
+  .m-link.active svg { color: var(--primary-600); }
+  .mobile-menu .btn { margin-top: 10px; padding: 14px 18px; font-size: var(--text-body-lg); }
+  @media (min-width: 760px) {
+    .site-head-inner { height: 64px; gap: 28px; }
+    .logo img { width: 34px; height: 34px; }
+    .logo .wm { font-size: 16.5px; }
+    .nav-links { display: flex; align-items: center; gap: 4px; margin-right: auto; }
+    .nav-right { display: flex; align-items: center; gap: 8px; }
+    .nav-toggle { display: none; }
+    .mobile-menu { display: none !important; }
+  }
+
+  /* page */
+  .wrap { padding: 38px 0 80px; }
+  .crumbs { display: flex; align-items: center; gap: 8px; font-size: var(--text-caption); color: var(--text-muted); margin-bottom: 22px; flex-wrap: wrap; }
+  .crumbs a { font-weight: var(--weight-semibold); }
+  .crumbs a:hover { color: var(--text-heading); }
+  .crumbs svg { width: 14px; height: 14px; color: var(--text-faint); }
+  .crumbs .here { color: var(--text-heading); font-weight: var(--weight-semibold); }
+
+  .page-head { margin-bottom: 30px; }
+  .topic-tag { display: inline-flex; align-items: center; gap: 7px; font-size: var(--text-micro); font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-wide); text-transform: uppercase; color: var(--primary-700); background: var(--primary-50);
+    border: 1px solid var(--primary-100); padding: 5px 11px; border-radius: var(--radius-pill); margin-bottom: 16px; }
+  .topic-tag svg { width: 13px; height: 13px; }
+  .page-head h1 { font-size: clamp(28px, 4vw, 38px); font-weight: var(--weight-black); color: var(--text-heading);
+    letter-spacing: var(--tracking-tight); line-height: 1.1; text-wrap: balance; }
+  .page-head .intro { color: var(--text-muted); font-size: var(--text-body-lg); margin-top: 14px; line-height: 1.55; max-width: 60ch; }
+
+  /* estimator */
+  .estimator { display: grid; grid-template-columns: 1fr; gap: 20px; }
+  @media (min-width: 820px) { .estimator { grid-template-columns: 1.1fr .9fr; align-items: start; } }
+
+  .calc-card { background: var(--surface-card); border: 1px solid var(--border-default); border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-md); padding: 26px 26px 28px; }
+  .calc-card h2 { font-size: var(--text-h3); font-weight: var(--weight-bold); color: var(--text-heading); letter-spacing: var(--tracking-snug); margin-bottom: 4px; }
+  .calc-card .calc-sub { font-size: var(--text-body-sm); color: var(--text-muted); margin-bottom: 22px; }
+  .field + .field { margin-top: 18px; }
+  .field-label { display: block; font-size: var(--text-body-sm); font-weight: var(--weight-semibold); color: var(--text-heading); margin-bottom: 8px; }
+  .select-wrap { position: relative; }
+  .select-wrap > svg { position: absolute; right: 13px; top: 50%; transform: translateY(-50%); width: 17px; height: 17px; color: var(--text-muted); pointer-events: none; }
+  select.bc-select, input.bc-num { width: 100%; font-family: inherit; font-size: var(--text-body); color: var(--text-heading);
+    background: var(--surface-card); border: 1px solid var(--border-strong); border-radius: var(--radius-sm); padding: 12px 14px; box-shadow: var(--shadow-sm);
+    transition: border-color .15s, box-shadow .15s; }
+  select.bc-select { appearance: none; padding-right: 40px; cursor: pointer; }
+  select.bc-select:focus, input.bc-num:focus { outline: none; border-color: var(--border-focus); box-shadow: 0 0 0 3px var(--primary-50); }
+  .num-wrap { position: relative; }
+  .num-wrap .prefix { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-weight: var(--weight-semibold); pointer-events: none; }
+  .num-wrap input.bc-num { padding-left: 30px; }
+  .field-hint { font-size: var(--text-caption); color: var(--text-faint); margin-top: 7px; }
+
+  /* route toggle */
+  .route { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .route-opt { border: 1px solid var(--border-default); border-radius: var(--radius-md); padding: 13px 14px; cursor: pointer; background: var(--surface-card);
+    transition: border-color .15s, background .15s, box-shadow .15s; }
+  .route-opt.sel { border-color: var(--color-primary); background: var(--primary-50); box-shadow: inset 0 0 0 1px var(--color-primary); }
+  .route-opt .r-name { display: flex; align-items: center; justify-content: space-between; gap: 7px; font-size: var(--text-body-sm); font-weight: var(--weight-bold); color: var(--text-heading); }
+  .route-opt .r-check { width: 16px; height: 16px; color: var(--color-primary); opacity: 0; transition: opacity .15s; }
+  .route-opt.sel .r-check { opacity: 1; }
+  .route-opt .r-sub { font-size: var(--text-micro); color: var(--text-muted); margin-top: 3px; }
+
+  /* result card */
+  .result-card { background: linear-gradient(160deg, var(--primary-700), var(--primary-900)); color: #fff; border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-lg); padding: 26px; position: sticky; top: 84px; }
+  .result-label { font-size: var(--text-micro); font-weight: var(--weight-bold); letter-spacing: var(--tracking-wide); text-transform: uppercase; color: var(--primary-200); }
+  .result-amount { font-size: 46px; font-weight: var(--weight-black); letter-spacing: var(--tracking-tight); line-height: 1; margin: 12px 0 6px;
+    font-variant-numeric: tabular-nums; }
+  .result-amount .vat { font-size: var(--text-body-sm); font-weight: var(--weight-semibold); color: var(--primary-200); margin-left: 8px; letter-spacing: 0; }
+  .result-breakdown { margin-top: 20px; padding-top: 18px; border-top: 1px solid rgba(255,255,255,.16); display: flex; flex-direction: column; gap: 11px; }
+  .result-row { display: flex; align-items: center; justify-content: space-between; gap: 14px; font-size: var(--text-body-sm); }
+  .result-row .k { color: rgba(255,255,255,.78); }
+  .result-row .v { font-weight: var(--weight-semibold); font-variant-numeric: tabular-nums; }
+  .result-note { display: flex; gap: 9px; margin-top: 20px; padding: 12px 14px; background: rgba(255,255,255,.08); border-radius: var(--radius-md);
+    font-size: var(--text-caption); color: rgba(255,255,255,.82); line-height: 1.5; }
+  .result-note svg { width: 16px; height: 16px; flex: none; margin-top: 1px; color: var(--primary-200); }
+  .result-cta { display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 100%; margin-top: 16px;
+    background: #fff; color: var(--primary-800); font-weight: var(--weight-bold); font-size: var(--text-body); padding: 13px 18px; border-radius: var(--radius-md); }
+  .result-cta svg { width: 17px; height: 17px; }
+
+  /* explainer */
+  .explainer { margin-top: 56px; }
+  .explainer h2 { font-size: var(--text-h2); font-weight: var(--weight-bold); color: var(--text-heading); letter-spacing: var(--tracking-snug); margin-bottom: 8px; }
+  .explainer .lead { color: var(--text-muted); font-size: var(--text-body-lg); margin-bottom: 26px; max-width: 60ch; }
+  .covers { display: grid; grid-template-columns: 1fr; gap: 14px; }
+  @media (min-width: 620px) { .covers { grid-template-columns: 1fr 1fr; } }
+  .cover-card { display: flex; gap: 14px; background: var(--surface-card); border: 1px solid var(--border-default); border-radius: var(--radius-lg); padding: 20px; box-shadow: var(--shadow-sm); }
+  .cover-ic { width: 42px; height: 42px; border-radius: var(--radius-md); flex: none; display: grid; place-items: center; background: var(--primary-50); color: var(--primary-700); border: 1px solid var(--primary-100); }
+  .cover-ic svg { width: 21px; height: 21px; }
+  .cover-card h3 { font-size: var(--text-body); font-weight: var(--weight-bold); color: var(--text-heading); }
+  .cover-card p { font-size: var(--text-body-sm); color: var(--text-muted); margin-top: 4px; line-height: 1.5; }
+
+  .fee-callout { display: flex; gap: 13px; background: var(--color-info-bg); border: 1px solid #CFE0F6; border-radius: var(--radius-md); padding: 16px 18px; margin-top: 22px; }
+  .fee-callout svg { width: 19px; height: 19px; color: var(--color-info-dot); flex: none; margin-top: 1px; }
+  .fee-callout .c-body { font-size: var(--text-body-sm); color: var(--blue-fg); line-height: 1.55; }
+  .fee-callout .c-body strong { color: var(--blue-fg); font-weight: var(--weight-bold); }
+</style>
+</head>
+<body>
+
+  <header class="site-head">
+    <div class="site-head-inner">
+      <a class="logo" href="Landing Page.html"><img src="assets/logo/building-control-logo.svg" alt="Building Control" /><span class="wm"><b>Building</b>&hairsp;<i>Control</i></span></a>
+      <nav class="nav-links">
+        <a class="nav-link" href="Applicant Dashboard.html"><i data-lucide="layout-grid"></i> Dashboard</a>
+      </nav>
+      <div class="nav-right">
+        <a class="btn btn-primary" href="Application Wizard.html"><i data-lucide="plus"></i> Start an application</a>
+      </div>
+      <button class="nav-toggle" id="navToggle" aria-label="Menu" aria-controls="mobileMenu" aria-expanded="false">
+        <i data-lucide="menu" class="ic-open"></i><i data-lucide="x" class="ic-close"></i>
+      </button>
+    </div>
+    <nav class="mobile-menu" id="mobileMenu">
+      <a class="m-link" href="Applicant Dashboard.html"><i data-lucide="layout-grid"></i> Dashboard</a>
+      <a class="btn btn-primary" href="Application Wizard.html"><i data-lucide="plus"></i> Start an application</a>
+    </nav>
+  </header>
+
+  <main class="container wrap">
+    <nav class="crumbs">
+      <a href="Guidance Centre.html">Guidance</a>
+      <i data-lucide="chevron-right"></i>
+      <span class="here">Fees &amp; charges</span>
+    </nav>
+
+    <div class="page-head">
+      <span class="topic-tag"><i data-lucide="receipt-text"></i> Fees &amp; charges</span>
+      <h1>How much will it cost?</h1>
+      <p class="intro">Building control fees vary by the <strong>type</strong> and <strong>scale</strong> of the work — a small porch costs far less than a two-storey extension. Use the estimator below for a quick guide, then see exactly what your fee pays for.</p>
+    </div>
+
+    <!-- estimator -->
+    <section class="estimator">
+      <div class="calc-card">
+        <h2>Fee estimator</h2>
+        <p class="calc-sub">Answer a couple of questions for a rough estimate.</p>
+
+        <div class="field">
+          <label class="field-label" for="workType">Type of work</label>
+          <div class="select-wrap">
+            <select class="bc-select" id="workType">
+              <!-- ⬇️ Placeholder options — swap for the real fee schedule. -->
+              <option value="porch" data-base="180">Porch or small single-storey addition</option>
+              <option value="extension" data-base="380" selected>Single-storey extension</option>
+              <option value="twostorey" data-base="520">Two-storey extension</option>
+              <option value="loft" data-base="340">Loft conversion</option>
+              <option value="internal" data-base="240">Internal structural alterations</option>
+              <option value="conversion" data-base="300">Garage conversion</option>
+            </select>
+            <i data-lucide="chevron-down"></i>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="floorArea">Approximate floor area of the work</label>
+          <div class="num-wrap">
+            <span class="prefix"><i data-lucide="ruler" style="width:16px;height:16px;color:var(--text-muted)"></i></span>
+            <input class="bc-num" id="floorArea" type="number" min="0" step="1" value="20" style="padding-left:38px" />
+          </div>
+          <p class="field-hint">In square metres (m²). A rough number is fine.</p>
+        </div>
+
+        <div class="field">
+          <label class="field-label">How would you like it assessed?</label>
+          <div class="route">
+            <div class="route-opt sel" data-route="full" data-mult="1">
+              <div class="r-name">Full plans <i data-lucide="check-circle-2" class="r-check"></i></div>
+              <div class="r-sub">Plans checked &amp; approved first</div>
+            </div>
+            <div class="route-opt" data-route="notice" data-mult="0.85">
+              <div class="r-name">Building notice <i data-lucide="check-circle-2" class="r-check"></i></div>
+              <div class="r-sub">Checked as work happens</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- result -->
+      <div class="result-card">
+        <div class="result-label">Estimated fee</div>
+        <div class="result-amount"><span id="amount">£456</span><span class="vat">inc. VAT</span></div>
+        <div class="result-breakdown">
+          <div class="result-row"><span class="k">Base charge</span><span class="v" id="rBase">£380</span></div>
+          <div class="result-row"><span class="k">Scale of work</span><span class="v" id="rScale">+ £0</span></div>
+          <div class="result-row"><span class="k">Assessment route</span><span class="v" id="rRoute">Full plans</span></div>
+        </div>
+        <div class="result-note">
+          <i data-lucide="info"></i>
+          <span>This is an <strong>estimate only</strong>. Your exact fee is confirmed when you apply, based on the full details of your project.</span>
+        </div>
+        <a class="result-cta" href="Application Wizard.html">Start an application <i data-lucide="arrow-right"></i></a>
+      </div>
+    </section>
+
+    <!-- explainer -->
+    <section class="explainer">
+      <h2>What the fee covers</h2>
+      <p class="lead">Your fee isn't just paperwork — it pays for the checks and visits that make sure your building work is safe and signed off.</p>
+      <div class="covers">
+        <div class="cover-card">
+          <div class="cover-ic"><i data-lucide="file-search"></i></div>
+          <div><h3>Checking your plans</h3><p>A surveyor reviews your drawings against the building regulations before work starts.</p></div>
+        </div>
+        <div class="cover-card">
+          <div class="cover-ic"><i data-lucide="hard-hat"></i></div>
+          <div><h3>Site inspections</h3><p>Visits at key stages of the build to check the work is being done correctly.</p></div>
+        </div>
+        <div class="cover-card">
+          <div class="cover-ic"><i data-lucide="messages-square"></i></div>
+          <div><h3>Advice along the way</h3><p>Support from your surveyor if questions come up during the work.</p></div>
+        </div>
+        <div class="cover-card">
+          <div class="cover-ic"><i data-lucide="badge-check"></i></div>
+          <div><h3>Your completion certificate</h3><p>The final sign-off you'll need when selling or remortgaging your home.</p></div>
+        </div>
+      </div>
+
+      <div class="fee-callout">
+        <i data-lucide="info"></i>
+        <div class="c-body"><strong>Paying in stages.</strong> For some application types the fee is split — a plan charge when you apply, and an inspection charge later. We'll always show this clearly before you pay.</div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    lucide.createIcons();
+
+    // mobile nav toggle
+    const navToggle = document.getElementById('navToggle');
+    const mobileMenu = document.getElementById('mobileMenu');
+    navToggle.addEventListener('click', () => {
+      const open = mobileMenu.classList.toggle('is-open');
+      navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+
+    // estimator
+    const workType = document.getElementById('workType');
+    const floorArea = document.getElementById('floorArea');
+    const routeOpts = [...document.querySelectorAll('.route-opt')];
+    const fmt = (n) => '£' + Math.round(n).toLocaleString('en-GB');
+
+    function currentRoute() { return document.querySelector('.route-opt.sel'); }
+
+    function recalc() {
+      const base = parseFloat(workType.selectedOptions[0].dataset.base);
+      const area = Math.max(0, parseFloat(floorArea.value) || 0);
+      const route = currentRoute();
+      const mult = parseFloat(route.dataset.mult);
+      // simple placeholder model: base + £6/m² over 15m², adjusted by route
+      const scale = Math.max(0, area - 15) * 6;
+      const total = (base + scale) * mult;
+
+      document.getElementById('amount').textContent = fmt(total);
+      document.getElementById('rBase').textContent = fmt(base);
+      document.getElementById('rScale').textContent = '+ ' + fmt(scale);
+      document.getElementById('rRoute').textContent = route.dataset.route === 'full' ? 'Full plans' : 'Building notice';
+    }
+
+    workType.addEventListener('change', recalc);
+    floorArea.addEventListener('input', recalc);
+    routeOpts.forEach(opt => opt.addEventListener('click', () => {
+      routeOpts.forEach(o => o.classList.remove('sel'));
+      opt.classList.add('sel');
+      recalc();
+    }));
+    recalc();
+  </script>
+</body>
+</html>

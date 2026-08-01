@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Building Control — Legal</title>
+<link rel="stylesheet" href="styles.css" />
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-font-smoothing: antialiased; scroll-behavior: smooth; }
+  body { font-family: var(--font-sans); background: var(--surface-page); color: var(--text-body);
+    font-size: var(--text-body); line-height: var(--leading-normal); letter-spacing: var(--tracking-normal); }
+  a { color: inherit; text-decoration: none; }
+
+  /* nav — mobile first */
+  .site-head { background: var(--surface-card); border-bottom: 1px solid var(--border-default); position: sticky; top: 0; z-index: 30; }
+  .site-head-inner { height: 60px; display: flex; align-items: center; gap: 14px; max-width: 960px; margin: 0 auto; padding: 0 28px; }
+  .logo { display: flex; align-items: center; gap: 10px; margin-right: auto; }
+  .logo img { width: 32px; height: 32px; display: block; }
+  .logo .wm { font-size: 16px; letter-spacing: -0.022em; white-space: nowrap; }
+  .logo .wm b { font-weight: 800; color: var(--text-heading); }
+  .logo .wm i { font-style: normal; font-weight: 600; color: var(--text-muted); }
+  .nav-links { display: none; }
+  .nav-link { display: flex; align-items: center; gap: 7px; padding: 8px 13px; border-radius: var(--radius-sm);
+    color: var(--text-muted); font-weight: var(--weight-semibold); font-size: var(--text-body-sm); transition: background .15s, color .15s; }
+  .nav-link svg { width: 16px; height: 16px; }
+  .nav-link:hover { background: var(--surface-raised); color: var(--text-heading); }
+  .nav-right { display: none; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-family: inherit; font-weight: var(--weight-bold); font-size: var(--text-body-sm);
+    border: 1px solid transparent; border-radius: var(--radius-md); padding: 11px 16px; cursor: pointer; text-decoration: none; transition: background .15s; }
+  .btn svg { width: 16px; height: 16px; }
+  .btn-primary { background: var(--color-primary); color: #fff; box-shadow: 0 1px 2px rgba(11,70,52,.25), 0 8px 18px -8px rgba(11,70,52,.45); }
+  .btn-primary:hover { background: var(--color-primary-hover); }
+  .nav-toggle { display: inline-grid; place-items: center; width: 42px; height: 42px; border-radius: var(--radius-sm);
+    border: 1px solid var(--border-default); background: var(--surface-card); color: var(--text-heading); cursor: pointer; flex: none; }
+  .nav-toggle svg { width: 21px; height: 21px; }
+  .nav-toggle .ic-close { display: none; }
+  .nav-toggle[aria-expanded="true"] .ic-open { display: none; }
+  .nav-toggle[aria-expanded="true"] .ic-close { display: block; }
+  .mobile-menu { display: none; flex-direction: column; gap: 3px; padding: 10px 20px 18px; border-top: 1px solid var(--border-default); background: var(--surface-card); }
+  .mobile-menu.is-open { display: flex; }
+  .m-link { display: flex; align-items: center; gap: 11px; padding: 13px 14px; border-radius: var(--radius-md);
+    font-size: var(--text-body-lg); font-weight: var(--weight-semibold); color: var(--text-body); }
+  .m-link svg { width: 19px; height: 19px; color: var(--text-faint); }
+  .mobile-menu .btn { margin-top: 10px; padding: 14px 18px; font-size: var(--text-body-lg); }
+  @media (min-width: 760px) {
+    .site-head-inner { height: 64px; gap: 28px; }
+    .logo img { width: 34px; height: 34px; }
+    .logo .wm { font-size: 16.5px; }
+    .nav-links { display: flex; align-items: center; gap: 4px; margin-right: auto; }
+    .nav-right { display: flex; align-items: center; gap: 8px; }
+    .nav-toggle { display: none; }
+    .mobile-menu { display: none !important; }
+  }
+
+  /* doc switcher (canvas demo — shows the template populated 3 ways) */
+  .switcher { background: var(--surface-card); border-bottom: 1px solid var(--border-default); }
+  .switcher-inner { max-width: 960px; margin: 0 auto; padding: 14px 28px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+  .switcher-label { font-size: var(--text-micro); font-weight: var(--weight-bold); letter-spacing: var(--tracking-wide); text-transform: uppercase; color: var(--text-faint); }
+  .seg { display: inline-flex; background: var(--surface-sunken); border: 1px solid var(--border-default); border-radius: var(--radius-md); padding: 4px; gap: 2px; }
+  .seg button { font-family: inherit; border: none; background: transparent; cursor: pointer; padding: 8px 15px; border-radius: var(--radius-sm);
+    font-weight: var(--weight-semibold); font-size: var(--text-body-sm); color: var(--text-muted); transition: all .15s; }
+  .seg button:hover { color: var(--text-heading); }
+  .seg button.active { background: var(--surface-card); color: var(--text-heading); box-shadow: var(--shadow-sm); }
+
+  /* document layout — legibility first */
+  .doc { max-width: 720px; margin: 0 auto; padding: 44px 28px 96px; }
+  .crumbs { display: flex; align-items: center; gap: 8px; font-size: var(--text-caption); color: var(--text-muted); margin-bottom: 26px; flex-wrap: wrap; }
+  .crumbs a { font-weight: var(--weight-semibold); }
+  .crumbs svg { width: 14px; height: 14px; color: var(--text-faint); }
+  .crumbs .here { color: var(--text-heading); font-weight: var(--weight-semibold); }
+
+  .doc-head { padding-bottom: 28px; border-bottom: 1px solid var(--border-default); }
+  .doc-head h1 { font-size: clamp(30px, 4.5vw, 42px); font-weight: var(--weight-black); color: var(--text-heading);
+    letter-spacing: var(--tracking-tight); line-height: 1.1; text-wrap: balance; }
+  .doc-meta { display: flex; align-items: center; gap: 8px; margin-top: 16px; font-size: var(--text-caption); color: var(--text-faint); }
+  .doc-meta svg { width: 15px; height: 15px; }
+
+  .toc { background: var(--surface-card); border: 1px solid var(--border-default); border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm); padding: 20px 22px; margin: 28px 0 8px; }
+  .toc h2 { font-size: var(--text-micro); font-weight: var(--weight-bold); letter-spacing: var(--tracking-wide); text-transform: uppercase; color: var(--text-faint); margin-bottom: 12px; }
+  .toc ol { list-style: none; counter-reset: toc; display: flex; flex-direction: column; gap: 2px; }
+  .toc li a { display: flex; align-items: baseline; gap: 11px; padding: 8px 6px; border-radius: var(--radius-sm);
+    font-size: var(--text-body); font-weight: var(--weight-semibold); color: var(--text-body); transition: background .15s, color .15s; }
+  .toc li a:hover { background: var(--surface-raised); color: var(--primary-700); }
+  .toc li a::before { counter-increment: toc; content: counter(toc); font-variant-numeric: tabular-nums;
+    font-size: var(--text-caption); font-weight: var(--weight-bold); color: var(--primary-600); min-width: 16px; }
+
+  .prose { margin-top: 12px; }
+  .prose section { padding-top: 40px; scroll-margin-top: 132px; }
+  .prose h2 { font-size: var(--text-h2); font-weight: var(--weight-bold); color: var(--text-heading); letter-spacing: var(--tracking-snug); line-height: 1.2; margin-bottom: 16px; }
+  .prose h3 { font-size: var(--text-h3); font-weight: var(--weight-bold); color: var(--text-heading); margin: 26px 0 10px; }
+  .prose p { font-size: var(--text-body-lg); line-height: 1.7; margin-bottom: 18px; color: var(--text-body); }
+  .prose ul { list-style: none; margin: 0 0 18px; display: flex; flex-direction: column; gap: 12px; }
+  .prose ul li { display: flex; gap: 12px; font-size: var(--text-body-lg); line-height: 1.6; }
+  .prose ul li svg { width: 20px; height: 20px; flex: none; margin-top: 3px; color: var(--primary-600); }
+  .prose strong { color: var(--text-heading); font-weight: var(--weight-bold); }
+  .prose a.inline { color: var(--text-link); font-weight: var(--weight-semibold); text-decoration: underline; text-underline-offset: 2px; }
+
+  .doc-foot { margin-top: 56px; padding-top: 24px; border-top: 1px solid var(--border-default); font-size: var(--text-caption); color: var(--text-faint); line-height: 1.6; }
+</style>
+</head>
+<body>
+
+  <header class="site-head">
+    <div class="site-head-inner">
+      <a class="logo" href="Landing Page.html"><img src="assets/logo/building-control-logo.svg" alt="Building Control" /><span class="wm"><b>Building</b>&hairsp;<i>Control</i></span></a>
+      <nav class="nav-links">
+        <a class="nav-link" href="Applicant Dashboard.html"><i data-lucide="layout-grid"></i> Dashboard</a>
+      </nav>
+      <div class="nav-right">
+        <a class="btn btn-primary" href="Application Wizard.html"><i data-lucide="plus"></i> Start an application</a>
+      </div>
+      <button class="nav-toggle" id="navToggle" aria-label="Menu" aria-controls="mobileMenu" aria-expanded="false">
+        <i data-lucide="menu" class="ic-open"></i><i data-lucide="x" class="ic-close"></i>
+      </button>
+    </div>
+    <nav class="mobile-menu" id="mobileMenu">
+      <a class="m-link" href="Applicant Dashboard.html"><i data-lucide="layout-grid"></i> Dashboard</a>
+      <a class="btn btn-primary" href="Application Wizard.html"><i data-lucide="plus"></i> Start an application</a>
+    </nav>
+  </header>
+
+  <!-- canvas demo control: same template, three documents -->
+  <div class="switcher">
+    <div class="switcher-inner">
+      <span class="switcher-label">Legal template — populated three ways</span>
+      <div class="seg" id="seg" role="tablist">
+        <button class="active" data-doc="terms" role="tab">Terms of Use</button>
+        <button data-doc="privacy" role="tab">Privacy Policy</button>
+        <button data-doc="cookies" role="tab">Cookie Policy</button>
+      </div>
+    </div>
+  </div>
+
+  <main class="doc" id="main">
+    <nav class="crumbs">
+      <a href="Landing Page.html">Home</a>
+      <i data-lucide="chevron-right"></i>
+      <span class="here" id="crumbHere">Terms of Use</span>
+    </nav>
+
+    <div class="doc-head">
+      <h1 id="docTitle">Terms of Use</h1>
+      <div class="doc-meta"><i data-lucide="refresh-cw"></i> Last updated <span id="docDate">4 June 2026</span></div>
+    </div>
+
+    <nav class="toc" aria-label="On this page">
+      <h2>On this page</h2>
+      <ol id="tocList"></ol>
+    </nav>
+
+    <div class="prose" id="prose"></div>
+  </main>
+
+  <script>
+    lucide.createIcons();
+    const navToggle = document.getElementById('navToggle');
+    const mobileMenu = document.getElementById('mobileMenu');
+    navToggle.addEventListener('click', () => {
+      const open = mobileMenu.classList.toggle('is-open');
+      navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+
+    // placeholder bodies — swap for real legal copy
+    const P = 'This is placeholder text for demonstration. Replace it with the approved legal wording before publishing. It is written at a comfortable reading width and line height so long passages stay easy to follow.';
+    const P2 = 'These terms are provided as an example only and do not constitute legal advice. The structure — numbered contents, clear headings, and generous spacing — is what the real document will follow.';
+
+    const DOCS = {
+      terms: {
+        title: 'Terms of Use', date: '4 June 2026',
+        sections: [
+          ['Using this service', [P, P2]],
+          ['Your account', [P, 'You are responsible for keeping your sign-in details secure and for activity that happens under your account. ' + P2]],
+          ['Acceptable use', [P]],
+          ['Liability', [P2, P]],
+          ['Changes to these terms', [P]],
+        ],
+      },
+      privacy: {
+        title: 'Privacy Policy', date: '4 June 2026',
+        sections: [
+          ['What we collect', [P, 'This may include your name, contact details, and the information you provide as part of an application. ' + P2]],
+          ['How we use your information', [P2]],
+          ['Sharing your information', [P, 'We share application details with the relevant local authority building control team so they can assess your application. ' + P2]],
+          ['How long we keep it', [P]],
+          ['Your rights', [P2, P]],
+        ],
+      },
+      cookies: {
+        title: 'Cookie Policy', date: '4 June 2026',
+        sections: [
+          ['What cookies are', [P]],
+          ['Cookies we use', ['We use a small number of essential cookies to keep you signed in and to remember your progress through an application. ' + P2]],
+          ['Analytics cookies', [P, P2]],
+          ['Managing cookies', ['You can control or delete cookies through your browser settings at any time. ' + P]],
+        ],
+      },
+    };
+
+    function slug(s) { return s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''); }
+
+    function render(key) {
+      const doc = DOCS[key];
+      document.getElementById('docTitle').textContent = doc.title;
+      document.getElementById('crumbHere').textContent = doc.title;
+      document.getElementById('docDate').textContent = doc.date;
+      // toc
+      document.getElementById('tocList').innerHTML = doc.sections
+        .map(([h]) => '<li><a href="#' + slug(h) + '">' + h + '</a></li>').join('');
+      // prose
+      const intro = '<p style="margin-top:32px">' + P + '</p>';
+      document.getElementById('prose').innerHTML = intro + doc.sections
+        .map(([h, paras]) => '<section id="' + slug(h) + '"><h2>' + h + '</h2>' + paras.map(p => '<p>' + p + '</p>').join('') + '</section>').join('')
+        + '<p class="doc-foot">This is a demonstration document for the Building Control design system. Replace all placeholder text with approved wording before use.</p>';
+      window.scrollTo({ top: 0 });
+    }
+
+    const seg = document.getElementById('seg');
+    seg.addEventListener('click', (e) => {
+      const b = e.target.closest('button'); if (!b) return;
+      [...seg.children].forEach(x => x.classList.remove('active'));
+      b.classList.add('active');
+      render(b.dataset.doc);
+    });
+    render('terms');
+  </script>
+</body>
+</html>

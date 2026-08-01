@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Building Control — Error pages</title>
+<link rel="stylesheet" href="styles.css" />
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-font-smoothing: antialiased; }
+  body { font-family: var(--font-sans); background: var(--surface-page); color: var(--text-body);
+    font-size: var(--text-body); line-height: var(--leading-normal); letter-spacing: var(--tracking-normal); }
+
+  /* canvas: two stacked variants, each a full error screen */
+  .variant-label { max-width: var(--container-max); margin: 0 auto; padding: 22px 28px 0; display: flex; align-items: center; gap: 9px;
+    font-size: var(--text-caption); font-weight: var(--weight-bold); color: var(--text-muted); }
+  .variant-label .tag { font-family: var(--font-mono); font-size: var(--text-micro); font-weight: var(--weight-bold);
+    padding: 3px 9px; border-radius: var(--radius-pill); }
+  .variant-label .tag.t404 { background: var(--color-info-bg); color: var(--color-info); }
+  .variant-label .tag.t500 { background: var(--color-action-needed-bg); color: var(--color-action-needed); }
+  .canvas-divider { height: 1px; background: var(--border-default); max-width: var(--container-max); margin: 18px auto 0; }
+
+  /* shared header */
+  .site-head { background: var(--surface-card); border-bottom: 1px solid var(--border-default); }
+  .site-head-inner { max-width: var(--container-max); margin: 0 auto; height: 64px; padding: 0 28px; display: flex; align-items: center; gap: 12px; }
+  .logo { display: flex; align-items: center; gap: 11px; text-decoration: none; }
+  .logo img { width: 34px; height: 34px; display: block; }
+  .logo .wm { font-size: 17px; letter-spacing: -0.022em; white-space: nowrap; }
+  .logo .wm b { font-weight: 800; color: var(--text-heading); }
+  .logo .wm i { font-style: normal; font-weight: 600; color: var(--text-muted); }
+  .head-actions { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+  .head-link { font-size: var(--text-body-sm); font-weight: var(--weight-semibold); color: var(--text-muted); text-decoration: none;
+    padding: 8px 13px; border-radius: var(--radius-sm); transition: background .15s, color .15s; }
+  .head-link:hover { background: var(--surface-raised); color: var(--text-heading); }
+
+  /* centered error body */
+  .err { min-height: 560px; display: grid; place-items: center; padding: 64px 28px 80px; text-align: center; }
+  .err-inner { max-width: 480px; }
+  .err-badge { width: 84px; height: 84px; border-radius: 24px; margin: 0 auto 26px; display: grid; place-items: center; position: relative; }
+  .err-badge svg { width: 38px; height: 38px; }
+  .err-badge.info { background: var(--color-info-bg); color: var(--color-info); }
+  .err-badge.warn { background: var(--color-action-needed-bg); color: var(--color-action-needed); }
+
+  .err-code { font-family: var(--font-mono); font-size: var(--text-caption); font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-wide); text-transform: uppercase; color: var(--text-faint); margin-bottom: 14px; }
+  .err h1 { font-size: clamp(28px, 4vw, 38px); font-weight: var(--weight-black); color: var(--text-heading);
+    letter-spacing: var(--tracking-tight); line-height: 1.08; text-wrap: balance; }
+  .err p { color: var(--text-muted); font-size: var(--text-body-lg); margin-top: 14px; line-height: 1.55; }
+  .err-actions { margin-top: 30px; display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap; }
+  @media (max-width: 460px) {
+    .err-actions { flex-direction: column; align-items: stretch; }
+    .err-actions .btn { width: 100%; }
+  }
+
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 9px; font-family: inherit; font-weight: var(--weight-bold);
+    font-size: var(--text-body); border: 1px solid transparent; border-radius: var(--radius-md); padding: 13px 20px; cursor: pointer;
+    text-decoration: none; transition: background .15s, border-color .15s, color .15s, transform .1s, box-shadow .15s; white-space: nowrap; }
+  .btn svg { width: 18px; height: 18px; }
+  .btn-primary { background: var(--color-primary); color: #fff; box-shadow: 0 1px 2px rgba(11,70,52,.25), 0 8px 18px -8px rgba(11,70,52,.45); }
+  .btn-primary:hover { background: var(--color-primary-hover); }
+  .btn-primary:active { transform: translateY(1px); }
+  .btn-secondary { background: var(--surface-card); color: var(--text-heading); border-color: var(--border-strong); box-shadow: var(--shadow-sm); }
+  .btn-secondary:hover { background: var(--surface-raised); border-color: var(--neutral-400); }
+
+  .err-foot { margin-top: 24px; font-size: var(--text-caption); color: var(--text-faint); }
+  .err-foot a { color: var(--text-link); font-weight: var(--weight-bold); text-decoration: none; }
+  .err-foot a:hover { text-decoration: underline; }
+
+  .err-divider-strong { height: 8px; background: var(--surface-sunken); border-top: 1px solid var(--border-default); border-bottom: 1px solid var(--border-default); }
+</style>
+</head>
+<body>
+
+  <!-- ================= 404 ================= -->
+  <div class="variant-label"><span class="tag t404">Variant 1</span> 404 — page not found</div>
+  <div class="canvas-divider"></div>
+
+  <header class="site-head">
+    <div class="site-head-inner">
+      <a class="logo" href="Landing Page.html">
+        <img src="assets/logo/building-control-logo.svg" alt="Building Control" />
+        <span class="wm"><b>Building</b>&hairsp;<i>Control</i></span>
+      </a>
+      <div class="head-actions">
+        <a class="head-link" href="#">Help</a>
+        <a class="head-link" href="Log In.html">Log in</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="err">
+    <div class="err-inner">
+      <div class="err-badge info"><i data-lucide="map-pin-off"></i></div>
+      <div class="err-code">Error 404</div>
+      <h1>We can't find that page</h1>
+      <p>The page you're looking for may have moved, or the link might be out of date. It's not something you did wrong.</p>
+      <div class="err-actions">
+        <a class="btn btn-primary" href="Applicant Dashboard.html"><i data-lucide="layout-grid"></i> Go to dashboard</a>
+        <a class="btn btn-secondary" href="#"><i data-lucide="life-buoy"></i> Contact support</a>
+      </div>
+      <p class="err-foot">Or head back to the <a href="Landing Page.html">home page</a>.</p>
+    </div>
+  </main>
+
+  <div class="err-divider-strong"></div>
+
+  <!-- ================= 500 ================= -->
+  <div class="variant-label"><span class="tag t500">Variant 2</span> 500 — something went wrong</div>
+  <div class="canvas-divider"></div>
+
+  <header class="site-head">
+    <div class="site-head-inner">
+      <a class="logo" href="Landing Page.html">
+        <img src="assets/logo/building-control-logo.svg" alt="Building Control" />
+        <span class="wm"><b>Building</b>&hairsp;<i>Control</i></span>
+      </a>
+      <div class="head-actions">
+        <a class="head-link" href="#">Help</a>
+        <a class="head-link" href="Log In.html">Log in</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="err">
+    <div class="err-inner">
+      <div class="err-badge warn"><i data-lucide="cloud-alert"></i></div>
+      <div class="err-code">Error 500</div>
+      <h1>Something went wrong at our end</h1>
+      <p>This one's on us, not you. Something didn't work as it should — your information is safe, and nothing you were doing has been lost.</p>
+      <div class="err-actions">
+        <button class="btn btn-primary" type="button" id="retry"><i data-lucide="rotate-cw"></i> Try again</button>
+        <a class="btn btn-secondary" href="#"><i data-lucide="life-buoy"></i> Contact support</a>
+      </div>
+      <p class="err-foot">If it keeps happening, <a href="#">let us know</a> and we'll look into it.</p>
+    </div>
+  </main>
+
+  <script>
+    lucide.createIcons();
+    // friendly retry affordance
+    const retry = document.getElementById('retry');
+    retry.addEventListener('click', () => {
+      retry.innerHTML = '<i data-lucide="loader-2"></i> Trying…';
+      retry.style.pointerEvents = 'none';
+      lucide.createIcons();
+      const spin = retry.querySelector('svg');
+      if (spin) spin.style.animation = 'spin .7s linear infinite';
+      setTimeout(() => { retry.innerHTML = '<i data-lucide="rotate-cw"></i> Try again'; retry.style.pointerEvents = ''; lucide.createIcons(); }, 1600);
+    });
+    const style = document.createElement('style');
+    style.textContent = '@keyframes spin{to{transform:rotate(360deg)}}';
+    document.head.appendChild(style);
+  </script>
+</body>
+</html>

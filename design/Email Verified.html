@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Building Control — Email verification</title>
+<link rel="stylesheet" href="styles.css" />
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-font-smoothing: antialiased; }
+  body { font-family: var(--font-sans); color: var(--text-body); letter-spacing: var(--tracking-normal);
+    background:
+      radial-gradient(120% 70% at 50% -8%, var(--primary-50) 0%, rgba(234,243,238,0) 55%),
+      var(--surface-page);
+    min-height: 100vh; padding: 48px 20px; }
+
+  .canvas { max-width: 920px; margin: 0 auto; }
+  .canvas-head { text-align: center; margin-bottom: 38px; }
+  .canvas-head .eyebrow { font-size: var(--text-micro); font-weight: var(--weight-bold); letter-spacing: var(--tracking-wide);
+    text-transform: uppercase; color: var(--primary-600); margin-bottom: 10px; }
+  .canvas-head h1 { font-size: var(--text-h2); font-weight: var(--weight-black); color: var(--text-heading); letter-spacing: var(--tracking-snug); }
+  .canvas-head p { color: var(--text-muted); font-size: var(--text-body-sm); margin-top: 8px; }
+
+  .variants { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; align-items: start; }
+  @media (max-width: 760px) { .variants { grid-template-columns: 1fr; max-width: 420px; margin: 0 auto; } }
+
+  .variant-label { display: flex; align-items: center; gap: 9px; font-size: var(--text-caption); font-weight: var(--weight-bold);
+    color: var(--text-muted); margin-bottom: 14px; padding-left: 2px; }
+  .variant-label .tag { font-family: var(--font-mono); font-size: var(--text-micro); font-weight: var(--weight-bold);
+    text-transform: uppercase; letter-spacing: var(--tracking-wide); padding: 3px 8px; border-radius: var(--radius-pill); }
+  .variant-label .tag.ok { background: var(--color-success-bg); color: var(--color-success); }
+  .variant-label .tag.bad { background: var(--color-destructive-bg); color: var(--color-destructive); }
+
+  /* shared auth card */
+  .auth-brand { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 22px; }
+  .auth-brand img { width: 40px; height: 40px; display: block; }
+  .auth-brand .wm { font-size: 16px; letter-spacing: -0.022em; white-space: nowrap; }
+  .auth-brand .wm b { font-weight: 800; color: var(--text-heading); }
+  .auth-brand .wm i { font-style: normal; font-weight: 600; color: var(--text-muted); }
+
+  .card { background: var(--surface-card); border: 1px solid var(--border-default); border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-md); padding: 38px 34px 34px; text-align: center; }
+  @media (max-width: 440px) { .card { padding: 30px 24px; } }
+
+  .state-badge { width: 68px; height: 68px; border-radius: 50%; display: grid; place-items: center; margin: 0 auto 20px; }
+  .state-badge svg { width: 32px; height: 32px; }
+  .state-badge.ok { background: var(--color-success-bg); color: var(--color-success); }
+  .state-badge.bad { background: var(--color-destructive-bg); color: var(--color-destructive); }
+
+  .card h2 { font-size: var(--text-h2); font-weight: var(--weight-black); color: var(--text-heading); letter-spacing: var(--tracking-snug); line-height: var(--leading-tight); }
+  .card .lead { color: var(--text-muted); font-size: var(--text-body); margin-top: 11px; line-height: 1.55; max-width: 36ch; margin-left: auto; margin-right: auto; }
+  .card .lead b { color: var(--text-heading); font-weight: var(--weight-bold); }
+
+  .card-actions { margin-top: 26px; display: flex; flex-direction: column; gap: 10px; }
+  .bc-btn--block { width: 100%; padding: 13px 18px; font-size: var(--text-body-lg); position: relative; }
+  .bc-btn .btn-label { display: inline-flex; align-items: center; gap: 8px; }
+  .bc-btn.is-loading { pointer-events: none; }
+  .bc-btn.is-loading .btn-label { visibility: hidden; }
+  .spinner { display: none; position: absolute; inset: 0; margin: auto; width: 19px; height: 19px;
+    border: 2.5px solid rgba(255,255,255,.45); border-top-color: #fff; border-radius: 50%; animation: spin .65s linear infinite; }
+  .bc-btn.is-loading .spinner { display: block; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .card-actions .bc-btn { text-decoration: none; }
+
+  .ghost-link { display: inline-flex; align-items: center; justify-content: center; gap: 7px; width: 100%;
+    font-family: inherit; font-size: var(--text-body-sm); font-weight: var(--weight-bold); color: var(--text-muted);
+    background: none; border: none; cursor: pointer; text-decoration: none; padding: 6px; }
+  .ghost-link:hover { color: var(--text-heading); }
+
+  .meta-note { margin-top: 18px; font-size: var(--text-caption); color: var(--text-faint); line-height: 1.5; }
+  .meta-note b { color: var(--text-muted); font-weight: var(--weight-bold); }
+
+  /* resent confirmation inside failure card */
+  .resent { display: none; align-items: center; justify-content: center; gap: 8px; margin-top: 16px;
+    font-size: var(--text-caption); font-weight: var(--weight-semibold); color: var(--color-success); }
+  .resent.is-shown { display: flex; }
+  .resent svg { width: 15px; height: 15px; }
+</style>
+</head>
+<body>
+  <div class="canvas">
+    <div class="canvas-head">
+      <div class="eyebrow">Design System · Auth states</div>
+      <h1>Email verification</h1>
+      <p>Two outcomes from the link in the verification email — success and an expired / invalid link.</p>
+    </div>
+
+    <div class="variants">
+
+      <!-- ============ SUCCESS ============ -->
+      <div class="variant">
+        <div class="variant-label"><span class="tag ok">Success</span> Link valid — account activated</div>
+        <div class="card">
+          <div class="auth-brand">
+            <img src="assets/logo/building-control-logo.svg" alt="Building Control" />
+            <span class="wm"><b>Building</b>&hairsp;<i>Control</i></span>
+          </div>
+          <div class="state-badge ok"><i data-lucide="badge-check"></i></div>
+          <h2>Your email is verified</h2>
+          <p class="lead">Your account is now active. You're all set to submit and track building regulations applications.</p>
+          <div class="card-actions">
+            <a class="bc-btn bc-btn--primary bc-btn--block" href="Applicant Dashboard.html"><span class="btn-label">Continue to dashboard <i data-lucide="arrow-right"></i></span></a>
+          </div>
+          <p class="meta-note">Verified <b>sarah@example.com</b></p>
+        </div>
+      </div>
+
+      <!-- ============ FAILURE ============ -->
+      <div class="variant">
+        <div class="variant-label"><span class="tag bad">Failure</span> Link expired or invalid</div>
+        <div class="card">
+          <div class="auth-brand">
+            <img src="assets/logo/building-control-logo.svg" alt="Building Control" />
+            <span class="wm"><b>Building</b>&hairsp;<i>Control</i></span>
+          </div>
+          <div class="state-badge bad"><i data-lucide="link-2-off"></i></div>
+          <h2>This link has expired</h2>
+          <p class="lead">Verification links are valid for <b>24 hours</b>. This one has expired or has already been used. We can send you a fresh one.</p>
+          <div class="card-actions">
+            <button class="bc-btn bc-btn--primary bc-btn--block" type="button" id="resendBtn">
+              <span class="btn-label"><i data-lucide="mail"></i> Resend verification email</span>
+              <span class="spinner" aria-hidden="true"></span>
+            </button>
+            <a class="ghost-link" href="Log In.html"><i data-lucide="arrow-left"></i> Back to log in</a>
+          </div>
+          <div class="resent" id="resent"><i data-lucide="check-circle-2"></i> New link sent to sarah@example.com</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    lucide.createIcons();
+
+    const resendBtn = document.getElementById('resendBtn');
+    const resent = document.getElementById('resent');
+    resendBtn.addEventListener('click', () => {
+      resendBtn.classList.add('is-loading');
+      resendBtn.disabled = true;
+      resent.classList.remove('is-shown');
+      setTimeout(() => {
+        resendBtn.classList.remove('is-loading');
+        resendBtn.disabled = false;
+        resent.classList.add('is-shown');
+        lucide.createIcons();
+      }, 1300);
+    });
+  </script>
+</body>
+</html>

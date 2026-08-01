@@ -1,0 +1,25 @@
+<!-- @dsCard group="Components" viewport="700x150" name="Buttons" subtitle="Primary, secondary, ghost, destructive + sizes" -->
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8" />
+<link rel="stylesheet" href="../styles.css" />
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>
+  body { margin:0; font-family:var(--font-sans); background:var(--surface-page); padding:22px; }
+  .row { display:flex; flex-wrap:wrap; gap:12px; align-items:center; }
+  .row + .row { margin-top:14px; }
+</style></head>
+<body>
+  <div class="row">
+    <button class="bc-btn bc-btn--primary"><i data-lucide="check"></i> Submit</button>
+    <button class="bc-btn bc-btn--secondary">Save draft</button>
+    <button class="bc-btn bc-btn--ghost">Cancel</button>
+    <button class="bc-btn bc-btn--destructive"><i data-lucide="trash-2"></i> Withdraw</button>
+    <button class="bc-btn bc-btn--primary is-disabled">Disabled</button>
+  </div>
+  <div class="row">
+    <button class="bc-btn bc-btn--primary bc-btn--sm"><i data-lucide="plus"></i> New</button>
+    <button class="bc-btn bc-btn--primary"><i data-lucide="plus"></i> New application</button>
+    <button class="bc-btn bc-btn--primary bc-btn--lg"><i data-lucide="plus"></i> Start new application</button>
+  </div>
+  <script>lucide.createIcons();</script>
+</body></html>

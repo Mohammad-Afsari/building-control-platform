@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Building Control — 8 Maple Court</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>
+  :root {
+    --bg:        #F5F4F0;
+    --surface:   #FFFFFF;
+    --surface-2: #FBFAF7;
+    --border:    #E7E4DC;
+    --border-2:  #DEDAD0;
+    --ink-1: #1C2622;
+    --ink-2: #46504B;
+    --ink-3: #6E766F;
+    --ink-4: #97A09A;
+    --green-50:  #EAF3EE;
+    --green-100: #D5E8DD;
+    --green-600: #16795A;
+    --green-700: #0F5C44;
+    --green-800: #0B4634;
+    --slate-bg:  #EEF0F1;  --slate-fg:  #5A6670;  --slate-dot:#8A949C;
+    --blue-bg:   #E8F0FB;  --blue-fg:   #2B5FAE;  --blue-dot: #3B82F6;
+    --amber-bg:  #FBF0DD;  --amber-fg:  #97631A;  --amber-dot:#D08B26;
+    --green-bg:  #E5F2EA;  --green-fg:  #16795A;  --green-dot:#1E9B6B;
+    --rose-bg:   #FBE9E7;  --rose-fg:   #B0463A;  --rose-dot: #D86355;
+    --radius:   16px;
+    --radius-sm: 10px;
+    --shadow-sm: 0 1px 2px rgba(28,38,34,.05);
+    --shadow:    0 1px 3px rgba(28,38,34,.06), 0 8px 24px -12px rgba(28,38,34,.12);
+    --shadow-lg: 0 2px 6px rgba(28,38,34,.07), 0 18px 40px -16px rgba(28,38,34,.18);
+    --maxw: 1160px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+  body { font-family: "Hanken Grotesk", system-ui, sans-serif; background: var(--bg); color: var(--ink-2);
+    font-size: 15px; line-height: 1.5; letter-spacing: -0.01em; }
+  ::selection { background: var(--green-100); }
+
+  /* ───────── Top nav (shared) ───────── */
+  .nav { position: sticky; top: 0; z-index: 40; background: rgba(255,255,255,.86);
+    backdrop-filter: saturate(140%) blur(12px); border-bottom: 1px solid var(--border); }
+  .nav-inner { max-width: var(--maxw); margin: 0 auto; height: 64px; padding: 0 28px; display: flex; align-items: center; gap: 28px; }
+  a.brand { text-decoration: none; }
+  .brand { display: flex; align-items: center; gap: 11px; }
+  .brand-mark { width: 34px; height: 34px; display: grid; place-items: center; }
+  .brand-mark img { width: 34px; height: 34px; display: block; }
+  .brand-name { font-weight: 800; color: var(--ink-1); font-size: 16.5px; letter-spacing: -0.02em; white-space: nowrap; }
+  .brand-name span { color: var(--ink-3); font-weight: 600; }
+  .nav-links { display: flex; align-items: center; gap: 4px; margin-left: 8px; }
+  .nav-link { display: flex; align-items: center; gap: 7px; padding: 8px 13px; border-radius: 9px;
+    color: var(--ink-3); font-weight: 600; font-size: 14.5px; text-decoration: none; transition: background .15s, color .15s; }
+  .nav-link svg { width: 16px; height: 16px; }
+  .nav-link:hover { background: var(--surface-2); color: var(--ink-1); }
+  .nav-link.active { background: var(--green-50); color: var(--green-700); }
+  .nav-right { margin-left: auto; display: flex; align-items: center; gap: 6px; }
+  .icon-btn { width: 38px; height: 38px; border-radius: 10px; border: 1px solid transparent; background: transparent; color: var(--ink-3);
+    cursor: pointer; display: grid; place-items: center; position: relative; transition: background .15s, color .15s, border-color .15s; }
+  .icon-btn svg { width: 18px; height: 18px; }
+  .icon-btn:hover { background: var(--surface-2); color: var(--ink-1); border-color: var(--border); }
+  .dot-badge::after { content: ""; position: absolute; top: 8px; right: 9px; width: 7px; height: 7px; border-radius: 50%;
+    background: var(--rose-dot); border: 2px solid var(--surface); }
+  .avatar { width: 36px; height: 36px; border-radius: 50%; margin-left: 6px; background: var(--green-100); color: var(--green-700);
+    display: grid; place-items: center; font-weight: 700; font-size: 14px; cursor: pointer; border: 1px solid var(--border-2); }
+  .profile { position: relative; }
+  .avatar-btn { font-family: inherit; padding: 0; cursor: pointer; }
+  .profile-menu { position: absolute; top: calc(100% + 10px); right: 0; width: 264px; background: var(--surface);
+    border: 1px solid var(--border); border-radius: 14px; box-shadow: var(--shadow-lg); padding: 8px; z-index: 50;
+    opacity: 0; transform: translateY(-6px) scale(.98); transform-origin: top right; pointer-events: none;
+    transition: opacity .15s ease, transform .15s ease; }
+  .profile-menu.is-open { opacity: 1; transform: none; pointer-events: auto; }
+  .profile-head { display: flex; align-items: center; gap: 11px; padding: 10px 12px 14px; }
+  .profile-head .avatar { cursor: default; flex: none; }
+  .profile-head .who .n { font-weight: 700; color: var(--ink-1); font-size: 14.5px; line-height: 1.2; }
+  .profile-head .who .e { font-size: 12.5px; color: var(--ink-3); margin-top: 2px; }
+  .profile-sep { height: 1px; background: var(--border); margin: 4px 6px; }
+  .profile-item { display: flex; align-items: center; gap: 11px; padding: 10px 12px; border-radius: 9px;
+    font-size: 14px; font-weight: 600; color: var(--ink-2); text-decoration: none; cursor: pointer; transition: background .12s, color .12s; }
+  .profile-item svg { width: 17px; height: 17px; color: var(--ink-3); }
+  .profile-item:hover { background: var(--surface-2); color: var(--ink-1); }
+  .profile-item:hover svg { color: var(--ink-1); }
+  .profile-item.danger { color: var(--rose-fg); }
+  .profile-item.danger svg { color: var(--rose-fg); }
+  .profile-item.danger:hover { background: var(--rose-bg); }
+  .nav-toggle { display: none; place-items: center; width: 42px; height: 42px; border-radius: 10px;
+    border: 1px solid var(--border); background: var(--surface); color: var(--ink-1); cursor: pointer; flex: none; margin-left: auto; }
+  .nav-toggle svg { width: 21px; height: 21px; }
+  .nav-toggle .ic-close { display: none; }
+  .nav-toggle[aria-expanded="true"] .ic-open { display: none; }
+  .nav-toggle[aria-expanded="true"] .ic-close { display: block; }
+  .mobile-menu { display: none; flex-direction: column; gap: 3px; padding: 10px 20px 18px;
+    border-top: 1px solid var(--border); background: var(--surface); }
+  .mobile-menu.is-open { display: flex; }
+  .m-link { display: flex; align-items: center; gap: 11px; padding: 13px 14px; border-radius: 11px;
+    font-size: 16.5px; font-weight: 600; color: var(--ink-2); text-decoration: none; }
+  .m-link svg { width: 19px; height: 19px; color: var(--ink-4); }
+  .m-link.active { background: var(--green-50); color: var(--green-700); }
+  .m-link.active svg { color: var(--green-700); }
+  .m-divider { height: 1px; background: var(--border); margin: 8px 4px; }
+  .m-account { display: flex; align-items: center; gap: 11px; padding: 10px 14px; }
+  .m-account .avatar { margin: 0; }
+  .m-account .who { font-weight: 700; color: var(--ink-1); font-size: 15px; }
+  .m-account .who small { display: block; font-weight: 500; color: var(--ink-3); font-size: 12.5px; }
+  @media (max-width: 759px) {
+    .nav-links { display: none; }
+    .nav-right { display: none; }
+    .nav-toggle { display: inline-grid; }
+    .nav-inner { gap: 14px; }
+    .profile { display: none; }
+  }
+
+  /* ───────── Page ───────── */
+  .wrap { max-width: 820px; margin: 0 auto; padding: 30px 28px 80px; }
+  .backbar { margin-bottom: 20px; }
+  .back { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 700;
+    color: var(--ink-3); text-decoration: none; transition: color .15s; }
+  .back svg { width: 16px; height: 16px; }
+  .back:hover { color: var(--green-700); }
+
+  .pill { display: inline-flex; align-items: center; gap: 7px; font-size: 12.5px; font-weight: 700; letter-spacing: -0.01em;
+    padding: 5px 11px 5px 9px; border-radius: 20px; white-space: nowrap; flex: none; }
+  .pill .dot { width: 7px; height: 7px; border-radius: 50%; }
+  .pill.draft { background: var(--slate-bg); color: var(--slate-fg); }
+  .pill.draft .dot { background: var(--slate-dot); }
+  .pill.submitted { background: var(--blue-bg); color: var(--blue-fg); }
+  .pill.submitted .dot { background: var(--blue-dot); }
+
+  .page-head { margin-bottom: 26px; }
+  .head-status { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+  h1 { font-size: 30px; font-weight: 800; color: var(--ink-1); letter-spacing: -0.03em; line-height: 1.1; }
+  .meta { display: flex; align-items: center; gap: 10px; margin-top: 9px; flex-wrap: wrap; }
+  .ref { font-size: 12px; font-weight: 600; color: var(--ink-3); font-variant-numeric: tabular-nums; letter-spacing: 0.01em;
+    background: var(--surface-2); border: 1px solid var(--border); padding: 2px 8px; border-radius: 6px; }
+
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 9px; font-family: inherit; font-weight: 700; font-size: 15px;
+    border: none; cursor: pointer; border-radius: 11px; padding: 13px 20px; transition: transform .12s ease, box-shadow .15s, background .15s, border-color .15s;
+    letter-spacing: -0.01em; white-space: nowrap; text-decoration: none; }
+  .btn svg { width: 18px; height: 18px; }
+  .btn-primary { background: var(--green-600); color: #fff; box-shadow: 0 1px 2px rgba(11,70,52,.25), 0 8px 18px -8px rgba(11,70,52,.5); }
+  .btn-primary:hover { background: var(--green-700); }
+  .btn-primary:active { transform: translateY(1px); }
+  .btn-primary:disabled { background: var(--ink-4); box-shadow: none; cursor: not-allowed; }
+  .btn-secondary { background: var(--surface); color: var(--ink-1); border: 1px solid var(--border-2); box-shadow: var(--shadow-sm); }
+  .btn-secondary:hover { background: var(--surface-2); }
+
+  /* ───────── Panels ───────── */
+  .col { display: flex; flex-direction: column; gap: 18px; }
+  .panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow-sm); }
+  .panel-pad { padding: 24px 26px; }
+  .panel-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; margin-bottom: 4px; }
+  .panel h2 { font-size: 16.5px; font-weight: 700; color: var(--ink-1); letter-spacing: -0.02em; display: flex; align-items: center; gap: 9px; }
+  .panel h2 svg { width: 18px; height: 18px; color: var(--green-600); }
+  .panel-sub { font-size: 13.5px; color: var(--ink-3); margin-top: 5px; }
+
+  /* form */
+  .form { margin-top: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .field { display: flex; flex-direction: column; gap: 7px; }
+  .field.full { grid-column: 1 / -1; }
+  .field label { font-size: 13px; font-weight: 700; color: var(--ink-2); display: flex; align-items: center; gap: 6px; }
+  .input, .select { font-family: inherit; font-size: 15px; color: var(--ink-1); background: var(--surface);
+    border: 1px solid var(--border-2); border-radius: 11px; padding: 12px 14px; width: 100%; transition: border-color .15s, box-shadow .15s; }
+  .input:focus, .select:focus { outline: none; border-color: var(--green-600); box-shadow: 0 0 0 3px var(--green-50); }
+  .select-wrap { position: relative; }
+  .select { appearance: none; -webkit-appearance: none; padding-right: 40px; cursor: pointer; }
+  .select-wrap svg { position: absolute; right: 13px; top: 50%; transform: translateY(-50%); width: 17px; height: 17px; color: var(--ink-4); pointer-events: none; }
+  .field .hint { font-size: 12.5px; color: var(--ink-4); }
+  .field.locked .input { background: var(--surface-2); color: var(--ink-3); cursor: not-allowed; border-style: dashed; }
+  .lock-tag { font-size: 11.5px; font-weight: 700; color: var(--ink-4); display: inline-flex; align-items: center; gap: 5px; }
+  .lock-tag svg { width: 13px; height: 13px; }
+  .form-foot { grid-column: 1 / -1; display: flex; align-items: center; justify-content: flex-end; gap: 14px; margin-top: 20px; }
+  .saved-flag { display: none; align-items: center; gap: 6px; font-size: 13.5px; font-weight: 700; color: var(--green-700); }
+  .saved-flag.show { display: inline-flex; }
+  .saved-flag svg { width: 15px; height: 15px; }
+
+  /* upload */
+  .drop { margin-top: 20px; border: 1.5px dashed var(--border-2); border-radius: var(--radius-sm); background: var(--surface-2);
+    padding: 30px 24px; text-align: center; cursor: pointer; transition: border-color .15s, background .15s; }
+  .drop:hover, .drop.drag { border-color: var(--green-600); background: var(--green-50); }
+  .drop-ic { width: 46px; height: 46px; border-radius: 13px; background: var(--surface); border: 1px solid var(--border);
+    display: grid; place-items: center; margin: 0 auto 12px; color: var(--green-600); }
+  .drop-ic svg { width: 22px; height: 22px; }
+  .drop-main { font-size: 15px; font-weight: 700; color: var(--ink-1); }
+  .drop-main span { color: var(--green-700); text-decoration: underline; }
+  .drop-sub { font-size: 12.5px; color: var(--ink-4); margin-top: 4px; }
+
+  .file-list { margin-top: 16px; display: flex; flex-direction: column; }
+  .file-row { display: flex; align-items: center; gap: 13px; padding: 12px 0; }
+  .file-row + .file-row { border-top: 1px solid var(--border); }
+  .file-ic { width: 38px; height: 38px; border-radius: 10px; flex: none; display: grid; place-items: center;
+    background: var(--surface-2); border: 1px solid var(--border); color: var(--ink-3); }
+  .file-ic svg { width: 18px; height: 18px; }
+  .file-meta { flex: 1; min-width: 0; }
+  .file-name { display: block; font-size: 14.5px; font-weight: 700; color: var(--ink-1); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .file-sub { display: block; font-size: 12.5px; color: var(--ink-4); font-weight: 500; margin-top: 1px; }
+  .file-del { width: 34px; height: 34px; border-radius: 9px; border: 1px solid var(--border); background: var(--surface);
+    color: var(--ink-3); cursor: pointer; display: grid; place-items: center; flex: none; transition: background .15s, color .15s, border-color .15s; }
+  .file-del svg { width: 16px; height: 16px; }
+  .file-del:hover { background: var(--rose-bg); color: var(--rose-fg); border-color: var(--rose-bg); }
+  .file-empty { margin-top: 14px; font-size: 13.5px; color: var(--ink-4); text-align: center; padding: 6px; }
+
+  /* fee */
+  .fee-intro { font-size: 14.5px; color: var(--ink-2); margin-top: 6px; line-height: 1.55; }
+  .fee-calc { margin-top: 18px; }
+  .fee-result { display: none; margin-top: 18px; }
+  .fee-result.show { display: block; }
+  .fee-rows { display: flex; flex-direction: column; border: 1px solid var(--border); border-radius: var(--radius-sm); overflow: hidden; }
+  .fee-rw { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 13px 16px; font-size: 14.5px; background: var(--surface); }
+  .fee-rw + .fee-rw { border-top: 1px solid var(--border); }
+  .fee-rw .k { color: var(--ink-2); }
+  .fee-rw .k small { display: block; font-size: 12px; color: var(--ink-4); font-weight: 500; margin-top: 1px; }
+  .fee-rw .v { color: var(--ink-1); font-weight: 700; font-variant-numeric: tabular-nums; }
+  .fee-rw.total { background: var(--surface-2); }
+  .fee-rw.total .k { font-weight: 800; color: var(--ink-1); font-size: 15.5px; }
+  .fee-rw.total .v { font-weight: 800; font-size: 18px; color: var(--green-700); }
+  .fee-pay { margin-top: 18px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .fee-pay .btn { flex: 1; min-width: 200px; }
+  .fee-secure { display: flex; align-items: center; gap: 7px; font-size: 12.5px; color: var(--ink-4); }
+  .fee-secure svg { width: 14px; height: 14px; }
+
+  .fee-paid { display: none; margin-top: 18px; align-items: center; gap: 14px; padding: 18px 20px;
+    background: var(--green-50); border: 1px solid var(--green-100); border-radius: var(--radius-sm); }
+  .fee-paid.show { display: flex; }
+  .fee-paid-ic { width: 44px; height: 44px; border-radius: 12px; flex: none; background: var(--green-bg); color: var(--green-fg); display: grid; place-items: center; }
+  .fee-paid-ic svg { width: 22px; height: 22px; }
+  .fee-paid-t { font-size: 15px; font-weight: 800; color: var(--green-800); }
+  .fee-paid-s { font-size: 13px; color: var(--green-800); opacity: .8; margin-top: 2px; }
+
+  @media (max-width: 600px) {
+    .wrap { padding: 24px 18px 64px; }
+    h1 { font-size: 26px; }
+    .form { grid-template-columns: 1fr; }
+    .panel-pad { padding: 20px 18px; }
+  }
+</style>
+</head>
+<body>
+
+  <nav class="nav">
+    <div class="nav-inner">
+      <a class="brand" href="Landing Page.html" aria-label="Building Control — home">
+        <div class="brand-mark"><img src="assets/logo/building-control-logo.svg" alt="Building Control" width="34" height="34" /></div>
+        <div class="brand-name">Building<span>Control</span></div>
+      </a>
+      <div class="nav-links">
+        <a class="nav-link active" href="Applicant Dashboard.html"><i data-lucide="layout-grid"></i> Dashboard</a>
+      </div>
+      <div class="nav-right">
+        <button class="icon-btn dot-badge" aria-label="Notifications"><i data-lucide="bell"></i></button>
+        <div class="profile">
+          <button class="avatar avatar-btn" id="profileBtn" aria-haspopup="true" aria-expanded="false" aria-label="Your account">SD</button>
+          <div class="profile-menu" id="profileMenu" role="menu">
+            <div class="profile-head">
+              <div class="avatar">SD</div>
+              <div class="who"><div class="n">Sarah Davies</div><div class="e">sarah@example.com</div></div>
+            </div>
+            <div class="profile-sep"></div>
+            <a class="profile-item" href="Your Profile.html#profile" role="menuitem"><i data-lucide="user"></i> Your profile</a>
+            <a class="profile-item" href="Your Profile.html#account" role="menuitem"><i data-lucide="settings"></i> Account settings</a>
+            <a class="profile-item" href="Your Profile.html#notifications" role="menuitem"><i data-lucide="bell"></i> Notifications</a>
+            <a class="profile-item" href="Contact Support.html" role="menuitem"><i data-lucide="life-buoy"></i> Help</a>
+            <div class="profile-sep"></div>
+            <a class="profile-item danger" href="Log In.html" role="menuitem"><i data-lucide="log-out"></i> Sign out</a>
+          </div>
+        </div>
+      </div>
+      <button class="nav-toggle" id="navToggle" aria-label="Menu" aria-controls="mobileMenu" aria-expanded="false">
+        <i data-lucide="menu" class="ic-open"></i><i data-lucide="x" class="ic-close"></i>
+      </button>
+    </div>
+    <nav class="mobile-menu" id="mobileMenu">
+      <a class="m-link active" href="Applicant Dashboard.html"><i data-lucide="layout-grid"></i> Dashboard</a>
+      <div class="m-divider"></div>
+      <div class="m-account"><div class="avatar">SD</div><div class="who">Sarah Davies<small>sarah@example.com</small></div></div>
+    </nav>
+  </nav>
+
+  <main class="wrap">
+    <div class="backbar">
+      <a class="back" href="Applicant Dashboard.html"><i data-lucide="arrow-left"></i> Back to your applications</a>
+    </div>
+
+    <div class="page-head">
+      <div class="head-status">
+        <span class="pill draft" id="statusPill"><span class="dot"></span> Draft — not submitted</span>
+      </div>
+      <h1>8 Maple Court</h1>
+      <div class="meta">
+        <span class="ref">BC-2026-04821</span>
+      </div>
+    </div>
+
+    <div class="col">
+
+      <!-- 1 · Application details (editable) -->
+      <section class="panel panel-pad">
+        <div class="panel-head">
+          <div>
+            <h2><i data-lucide="file-pen-line"></i> Application details</h2>
+            <p class="panel-sub">The answers you gave when you started this application. Edit anything except the site.</p>
+          </div>
+        </div>
+
+        <form class="form" id="detailsForm">
+          <div class="field full">
+            <label for="appName">Application name</label>
+            <input class="input" id="appName" type="text" value="Single-storey rear extension" />
+          </div>
+
+          <div class="field">
+            <label for="appType">Application type</label>
+            <div class="select-wrap">
+              <select class="select" id="appType">
+                <option selected>Full Plans</option>
+                <option>Building Notice</option>
+                <option>Regularisation</option>
+                <option>Demolition Notice</option>
+              </select>
+              <i data-lucide="chevron-down"></i>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="appCat">Category</label>
+            <div class="select-wrap">
+              <select class="select" id="appCat">
+                <option selected>Domestic</option>
+                <option>Commercial</option>
+                <option>Other</option>
+              </select>
+              <i data-lucide="chevron-down"></i>
+            </div>
+          </div>
+
+          <div class="field full locked">
+            <label for="appSite">Site location <span class="lock-tag"><i data-lucide="lock"></i> Can't be changed</span></label>
+            <input class="input" id="appSite" type="text" value="8 Maple Court, Bristol, BS1 4ND" readonly />
+            <span class="hint">The site is fixed once an application is created. Contact us if this is wrong.</span>
+          </div>
+
+          <div class="form-foot full">
+            <span class="saved-flag" id="savedFlag"><i data-lucide="check-circle-2"></i> Changes saved</span>
+            <button class="btn btn-secondary" type="submit"><i data-lucide="save"></i> Save changes</button>
+          </div>
+        </form>
+      </section>
+
+      <!-- 2 · Documents & drawings -->
+      <section class="panel panel-pad">
+        <h2><i data-lucide="folder-open"></i> Drawings &amp; documents</h2>
+        <p class="panel-sub">Upload your plans, structural drawings, photos or any supporting files. PDF, JPG or PNG.</p>
+
+        <div class="drop" id="drop" role="button" tabindex="0" aria-label="Upload files">
+          <div class="drop-ic"><i data-lucide="upload-cloud"></i></div>
+          <div class="drop-main">Drag &amp; drop files here, or <span>browse</span></div>
+          <div class="drop-sub">Up to 25 MB each · PDF, JPG, PNG</div>
+        </div>
+        <input id="fileInput" type="file" multiple accept=".pdf,.jpg,.jpeg,.png,image/*" hidden />
+
+        <div class="file-list" id="fileList"></div>
+        <div class="file-empty" id="fileEmpty">No files uploaded yet.</div>
+      </section>
+
+      <!-- 3 · Fee -->
+      <section class="panel panel-pad">
+        <h2><i data-lucide="receipt-text"></i> Application fee</h2>
+        <p class="fee-intro">Work out what you need to pay for this application. The fee is based on your application type and the work involved.</p>
+
+        <button class="btn btn-secondary fee-calc" id="calcBtn"><i data-lucide="calculator"></i> Calculate my fee</button>
+
+        <div class="fee-result" id="feeResult">
+          <div class="fee-rows">
+            <div class="fee-rw"><span class="k">Plan charge<small>Full Plans — Domestic</small></span><span class="v">£200.00</span></div>
+            <div class="fee-rw"><span class="k">Inspection charge<small>Site inspections during the work</small></span><span class="v">£300.00</span></div>
+            <div class="fee-rw"><span class="k">VAT<small>20%</small></span><span class="v">£100.00</span></div>
+            <div class="fee-rw total"><span class="k">Total to pay</span><span class="v">£600.00</span></div>
+          </div>
+          <div class="fee-pay">
+            <button class="btn btn-primary" id="payBtn"><i data-lucide="credit-card"></i> Pay £600.00</button>
+            <span class="fee-secure"><i data-lucide="lock"></i> Secure payment</span>
+          </div>
+        </div>
+
+        <div class="fee-paid" id="feePaid">
+          <div class="fee-paid-ic"><i data-lucide="check"></i></div>
+          <div>
+            <div class="fee-paid-t">Fee paid — £600.00</div>
+            <div class="fee-paid-s">Receipt sent to sarah@example.com. Your application has been submitted.</div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <script>
+    lucide.createIcons();
+
+    /* nav */
+    const navToggle = document.getElementById('navToggle');
+    const mobileMenu = document.getElementById('mobileMenu');
+    navToggle.addEventListener('click', () => {
+      const open = mobileMenu.classList.toggle('is-open');
+      navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    const profileBtn = document.getElementById('profileBtn');
+    const profileMenu = document.getElementById('profileMenu');
+    function closeProfile() { profileMenu.classList.remove('is-open'); profileBtn.setAttribute('aria-expanded', 'false'); }
+    profileBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const open = profileMenu.classList.toggle('is-open');
+      profileBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    document.addEventListener('click', (e) => { if (!profileMenu.contains(e.target) && e.target !== profileBtn) closeProfile(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeProfile(); });
+
+    /* save details */
+    const form = document.getElementById('detailsForm');
+    const savedFlag = document.getElementById('savedFlag');
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      savedFlag.classList.add('show');
+      setTimeout(() => savedFlag.classList.remove('show'), 2600);
+    });
+
+    /* file upload */
+    const drop = document.getElementById('drop');
+    const fileInput = document.getElementById('fileInput');
+    const fileList = document.getElementById('fileList');
+    const fileEmpty = document.getElementById('fileEmpty');
+    let files = [];
+
+    function fmtSize(bytes) {
+      if (bytes >= 1048576) return (bytes / 1048576).toFixed(1) + ' MB';
+      if (bytes >= 1024) return Math.round(bytes / 1024) + ' KB';
+      return bytes + ' B';
+    }
+    function iconFor(name) { return /\.(png|jpe?g|gif|webp)$/i.test(name) ? 'image' : 'file-text'; }
+
+    function renderFiles() {
+      fileEmpty.style.display = files.length ? 'none' : 'block';
+      fileList.innerHTML = files.map((f, i) =>
+        '<div class="file-row">' +
+          '<div class="file-ic"><i data-lucide="' + iconFor(f.name) + '"></i></div>' +
+          '<div class="file-meta"><span class="file-name">' + f.name + '</span><span class="file-sub">' + f.size + ' · just now</span></div>' +
+          '<button class="file-del" data-i="' + i + '" aria-label="Remove ' + f.name + '"><i data-lucide="trash-2"></i></button>' +
+        '</div>').join('');
+      fileList.querySelectorAll('.file-del').forEach(b =>
+        b.addEventListener('click', () => { files.splice(+b.dataset.i, 1); renderFiles(); }));
+      lucide.createIcons();
+    }
+    function addFiles(list) {
+      [...list].forEach(f => files.push({ name: f.name, size: fmtSize(f.size) }));
+      renderFiles();
+    }
+
+    drop.addEventListener('click', () => fileInput.click());
+    drop.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fileInput.click(); } });
+    fileInput.addEventListener('change', () => { addFiles(fileInput.files); fileInput.value = ''; });
+    ['dragenter', 'dragover'].forEach(ev => drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.add('drag'); }));
+    ['dragleave', 'drop'].forEach(ev => drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.remove('drag'); }));
+    drop.addEventListener('drop', (e) => { if (e.dataTransfer && e.dataTransfer.files) addFiles(e.dataTransfer.files); });
+
+    /* fee */
+    const calcBtn = document.getElementById('calcBtn');
+    const feeResult = document.getElementById('feeResult');
+    const payBtn = document.getElementById('payBtn');
+    const feePaid = document.getElementById('feePaid');
+
+    calcBtn.addEventListener('click', () => {
+      feeResult.classList.add('show');
+      calcBtn.style.display = 'none';
+    });
+    payBtn.addEventListener('click', () => {
+      feeResult.classList.remove('show');
+      feePaid.classList.add('show');
+      const pill = document.getElementById('statusPill');
+      pill.className = 'pill submitted';
+      pill.innerHTML = '<span class="dot"></span> Submitted';
+      lucide.createIcons();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,34 @@
+<!-- @dsCard group="Spacing" viewport="700x170" name="Corner radius & elevation" subtitle="Radius tokens and the three-step shadow scale" -->
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8" />
+<link rel="stylesheet" href="../styles.css" />
+<style>
+  body { margin:0; font-family:var(--font-sans); background:var(--surface-page); padding:18px 22px; }
+  .wrap { display:flex; gap:30px; align-items:flex-start; }
+  .group { display:flex; gap:12px; }
+  .radius .b { width:54px; height:54px; background:var(--primary-50); border:1.5px solid var(--primary-300); }
+  .cell { text-align:center; }
+  .cell .n { font-size:11px; font-weight:700; color:var(--text-heading); margin-top:7px; }
+  .cell .d { font-family:var(--font-mono); font-size:10px; color:var(--text-muted); }
+  .elev .e { width:80px; height:54px; background:var(--surface-card); border:1px solid var(--border-default); border-radius:var(--radius-lg); }
+  .sep { width:1px; align-self:stretch; background:var(--border-default); }
+</style></head>
+<body>
+  <div class="wrap">
+    <div>
+      <div class="group radius">
+        <div class="cell"><div class="b" style="border-radius:6px"></div><div class="n">XS</div><div class="d">6px</div></div>
+        <div class="cell"><div class="b" style="border-radius:10px"></div><div class="n">SM</div><div class="d">10px</div></div>
+        <div class="cell"><div class="b" style="border-radius:12px"></div><div class="n">MD</div><div class="d">12px</div></div>
+        <div class="cell"><div class="b" style="border-radius:16px"></div><div class="n">LG</div><div class="d">16px</div></div>
+        <div class="cell"><div class="b" style="border-radius:999px"></div><div class="n">Pill</div><div class="d">999px</div></div>
+      </div>
+    </div>
+    <div class="sep"></div>
+    <div class="group elev">
+      <div class="cell"><div class="e" style="box-shadow:var(--shadow-sm)"></div><div class="n">SM</div><div class="d">resting</div></div>
+      <div class="cell"><div class="e" style="box-shadow:var(--shadow-md)"></div><div class="n">MD</div><div class="d">raised</div></div>
+      <div class="cell"><div class="e" style="box-shadow:var(--shadow-lg)"></div><div class="n">LG</div><div class="d">hover</div></div>
+    </div>
+  </div>
+</body></html>

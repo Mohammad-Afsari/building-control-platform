@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Building Control — Logo</title>
+<link rel="stylesheet" href="styles.css" />
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-font-smoothing: antialiased; }
+  body { font-family: var(--font-sans); background: var(--surface-page); color: var(--text-body);
+    font-size: var(--text-body); line-height: var(--leading-normal); letter-spacing: var(--tracking-normal); }
+  img { display: block; }
+
+  .wrap { max-width: 1000px; margin: 0 auto; padding: 52px 40px 120px; }
+  @media (max-width: 680px) { .wrap { padding: 36px 22px 80px; } }
+
+  .doc-head { margin-bottom: 32px; }
+  .eyebrow { font-size: var(--text-micro); font-weight: var(--weight-bold); letter-spacing: var(--tracking-wide);
+    text-transform: uppercase; color: var(--primary-600); margin-bottom: 13px; }
+  h1 { font-size: var(--text-display-lg); font-weight: var(--weight-black); color: var(--text-heading); letter-spacing: var(--tracking-tight); line-height: var(--leading-tight); }
+  .doc-sub { color: var(--text-muted); font-size: var(--text-body-lg); margin-top: 13px; max-width: 58ch; }
+
+  /* wordmark */
+  .wm { font-size: 22px; letter-spacing: -0.022em; white-space: nowrap; }
+  .wm b { font-weight: 800; color: var(--text-heading); }
+  .wm i { font-style: normal; font-weight: 600; color: var(--text-muted); }
+  .wm-civic { display: flex; flex-direction: column; line-height: 1; }
+  .wm-civic .l1 { font-weight: 800; font-size: 16px; letter-spacing: 0.16em; color: var(--text-heading); }
+  .wm-civic .l2 { font-weight: 600; font-size: 16px; letter-spacing: 0.16em; color: var(--text-muted); margin-top: 3px; }
+
+  .grid { display: grid; gap: 20px; }
+  .cols-2 { grid-template-columns: 1fr 1fr; }
+  .cols-3 { grid-template-columns: repeat(3, 1fr); }
+  @media (max-width: 680px) { .cols-2, .cols-3 { grid-template-columns: 1fr; } }
+
+  .panel { background: var(--surface-card); border: 1px solid var(--border-default); border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-sm); padding: 28px 30px; }
+  .panel-label { font-size: var(--text-micro); font-weight: var(--weight-bold); letter-spacing: var(--tracking-wide);
+    text-transform: uppercase; color: var(--text-faint); margin-bottom: 20px; }
+
+  .section-title { font-size: var(--text-h3); font-weight: var(--weight-bold); color: var(--text-heading);
+    letter-spacing: var(--tracking-snug); margin: 40px 0 16px; }
+  .section-title:first-of-type { margin-top: 36px; }
+
+  /* primary lockup hero */
+  .hero-lockup { display: flex; align-items: center; gap: 24px; padding: 40px; }
+  .hero-lockup img { width: 84px; height: 84px; }
+  .hero-lockup .wm { font-size: 34px; }
+
+  .lockups { display: flex; flex-direction: column; gap: 26px; }
+  .lockup-h { display: flex; align-items: center; gap: 14px; }
+  .lockup-h img { width: 40px; height: 40px; }
+  .lockup-h.civic img { width: 38px; height: 38px; }
+
+  /* mono / reversed tiles */
+  .mark-row { display: flex; align-items: center; gap: 28px; }
+  .mark-row img { width: 40px; height: 40px; }
+  .tile { border-radius: var(--radius-md); padding: 22px 24px; display: flex; align-items: center; gap: 14px; }
+  .tile img { width: 34px; height: 34px; }
+  .tile-green { background: linear-gradient(155deg, var(--primary-600), var(--primary-800)); }
+  .tile-green .wm b { color: #fff; } .tile-green .wm i { color: rgba(255,255,255,.72); }
+  .tile-ink { background: var(--ink-900); }
+  .tile-ink .wm b { color: #fff; } .tile-ink .wm i { color: rgba(255,255,255,.64); }
+  .tile-paper { background: var(--surface-page); border: 1px solid var(--border-default); }
+
+  /* app icon sizes */
+  .appicons { display: flex; align-items: flex-end; gap: 26px; flex-wrap: wrap; }
+  .appicon { text-align: center; }
+  .appicon img { margin: 0 auto; }
+  .appicon .cap { font-size: 11px; color: var(--text-faint); margin-top: 9px; font-family: var(--font-mono); }
+
+  /* clearspace */
+  .clearspace { display: flex; gap: 30px; align-items: center; flex-wrap: wrap; }
+  .cs-box { position: relative; padding: 28px; background:
+      linear-gradient(var(--primary-50) 0 0) padding-box, var(--surface-card);
+    border: 1px dashed var(--primary-300); border-radius: var(--radius-md); }
+  .cs-box img { width: 72px; height: 72px; position: relative; z-index: 1; }
+  .cs-note { font-size: var(--text-body-sm); color: var(--text-muted); max-width: 30ch; line-height: 1.5; }
+  .cs-note b { color: var(--text-heading); font-weight: var(--weight-bold); }
+
+  .min-row { display: flex; align-items: flex-end; gap: 30px; }
+  .min-item { text-align: center; }
+  .min-item .cap { font-size: 11px; color: var(--text-faint); margin-top: 8px; font-family: var(--font-mono); }
+
+  /* don'ts */
+  .dont img { width: 44px; height: 44px; }
+  .dont-row { display: flex; align-items: center; gap: 14px; }
+  .dont-x { width: 22px; height: 22px; border-radius: 50%; background: var(--color-destructive-bg); color: var(--color-destructive);
+    display: grid; place-items: center; flex: none; }
+  .dont-x svg { width: 14px; height: 14px; }
+  .dont p { font-size: var(--text-body-sm); color: var(--text-body); margin-top: 14px; }
+  .stretched { transform: scaleX(1.5); transform-origin: left center; }
+  .rotated { transform: rotate(12deg); }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="doc-head">
+      <div class="eyebrow">Design System · Brand</div>
+      <h1>Logo</h1>
+      <p class="doc-sub">The Building Control mark — a building rising from a leaf, signalling construction in balance with care and approval. Here's how to use it.</p>
+    </header>
+
+    <!-- Primary lockup -->
+    <div class="panel">
+      <div class="panel-label">Primary lockup</div>
+      <div class="hero-lockup">
+        <img src="assets/logo/building-control-logo.svg" alt="Building Control" />
+        <span class="wm"><b>Building</b>&hairsp;<i>Control</i></span>
+      </div>
+    </div>
+
+    <div class="section-title">Lockups</div>
+    <div class="grid cols-2">
+      <div class="panel">
+        <div class="panel-label">Horizontal — default</div>
+        <div class="lockups">
+          <div class="lockup-h"><img src="assets/logo/building-control-logo.svg" alt="Building Control" /><span class="wm"><b>Building</b>&hairsp;<i>Control</i></span></div>
+          <div class="lockup-h civic"><img src="assets/logo/building-control-logo.svg" alt="Building Control" /><span class="wm-civic"><span class="l1">BUILDING</span><span class="l2">CONTROL</span></span></div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-label">Mark only</div>
+        <div class="mark-row">
+          <img src="assets/logo/building-control-logo.svg" alt="Building Control mark" style="width:56px;height:56px" />
+          <img src="assets/logo/building-control-logo.svg" alt="Building Control mark" style="width:40px;height:40px" />
+          <img src="assets/logo/building-control-logo.svg" alt="Building Control mark" style="width:28px;height:28px" />
+        </div>
+      </div>
+    </div>
+
+    <div class="section-title">On colour</div>
+    <div class="grid cols-3">
+      <div class="panel">
+        <div class="panel-label">On paper</div>
+        <div class="tile tile-paper"><img src="assets/logo/building-control-logo.svg" alt="Building Control" /><span class="wm"><b>Building</b>&hairsp;<i>Control</i></span></div>
+      </div>
+      <div class="panel">
+        <div class="panel-label">On brand green</div>
+        <div class="tile tile-green"><img src="assets/logo/building-control-logo.svg" alt="Building Control" /><span class="wm"><b>Building</b>&hairsp;<i>Control</i></span></div>
+      </div>
+      <div class="panel">
+        <div class="panel-label">On ink</div>
+        <div class="tile tile-ink"><img src="assets/logo/building-control-logo.svg" alt="Building Control" /><span class="wm"><b>Building</b>&hairsp;<i>Control</i></span></div>
+      </div>
+    </div>
+
+    <div class="section-title">App icon &amp; favicon</div>
+    <div class="panel">
+      <div class="panel-label">The mark holds up down to a 20px favicon</div>
+      <div class="appicons">
+        <div class="appicon"><img src="assets/logo/building-control-logo.svg" alt="" style="width:64px;height:64px" /><div class="cap">64</div></div>
+        <div class="appicon"><img src="assets/logo/building-control-logo.svg" alt="" style="width:48px;height:48px" /><div class="cap">48</div></div>
+        <div class="appicon"><img src="assets/logo/building-control-logo.svg" alt="" style="width:32px;height:32px" /><div class="cap">32</div></div>
+        <div class="appicon"><img src="assets/logo/building-control-logo.svg" alt="" style="width:24px;height:24px" /><div class="cap">24</div></div>
+        <div class="appicon"><img src="assets/logo/building-control-logo.svg" alt="" style="width:20px;height:20px" /><div class="cap">20</div></div>
+      </div>
+    </div>
+
+    <div class="section-title">Clearspace &amp; minimum size</div>
+    <div class="grid cols-2">
+      <div class="panel">
+        <div class="panel-label">Clearspace</div>
+        <div class="clearspace">
+          <div class="cs-box"><img src="assets/logo/building-control-logo.svg" alt="Building Control" /></div>
+          <div class="cs-note">Keep clear space around the mark equal to <b>half its height</b> on every side. Don't crowd it with text or other logos.</div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-label">Minimum size</div>
+        <div class="min-row">
+          <div class="min-item"><img src="assets/logo/building-control-logo.svg" alt="" style="width:24px;height:24px" /><div class="cap">24px digital</div></div>
+          <div class="min-item"><img src="assets/logo/building-control-logo.svg" alt="" style="width:40px;height:40px" /><div class="cap">10mm print</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-title">Don'ts</div>
+    <div class="grid cols-3">
+      <div class="panel dont">
+        <div class="dont-row"><span class="dont-x"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span><img class="stretched" src="assets/logo/building-control-logo.svg" alt="" /></div>
+        <p>Don't stretch or distort the proportions.</p>
+      </div>
+      <div class="panel dont">
+        <div class="dont-row"><span class="dont-x"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span><img class="rotated" src="assets/logo/building-control-logo.svg" alt="" /></div>
+        <p>Don't rotate or tilt the mark.</p>
+      </div>
+      <div class="panel dont">
+        <div class="dont-row"><span class="dont-x"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></span><div class="tile" style="background:#7B3FA0;padding:10px 12px;border-radius:10px"><img src="assets/logo/building-control-logo.svg" alt="" style="width:40px;height:40px" /></div></div>
+        <p>Don't place on clashing colours. Use paper, brand green or ink.</p>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Building Control — Component Sheet</title>
+<link rel="stylesheet" href="styles.css" />
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-font-smoothing: antialiased; scroll-behavior: smooth; }
+  body { font-family: var(--font-sans); background: var(--surface-page); color: var(--text-body);
+    font-size: var(--text-body); line-height: var(--leading-normal); letter-spacing: var(--tracking-normal); }
+
+  .topbar { position: sticky; top: 0; z-index: 30; background: rgba(255,255,255,.86);
+    backdrop-filter: saturate(140%) blur(12px); border-bottom: 1px solid var(--border-default); }
+  .topbar-inner { max-width: 1080px; margin: 0 auto; height: 60px; padding: 0 40px; display: flex; align-items: center; gap: 12px; }
+  .tb-mark { width: 30px; height: 30px; display: grid; place-items: center; }
+  .tb-mark img { width: 30px; height: 30px; display: block; }
+  .tb-name { font-weight: var(--weight-black); color: var(--text-heading); font-size: 15px; letter-spacing: var(--tracking-snug); }
+  .tb-name span { color: var(--text-muted); font-weight: var(--weight-semibold); }
+  .tb-tag { margin-left: 10px; font-size: var(--text-micro); font-weight: var(--weight-bold); letter-spacing: var(--tracking-wide);
+    text-transform: uppercase; color: var(--text-faint); }
+
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 48px 40px 120px; }
+  @media (max-width: 720px) { .wrap, .topbar-inner { padding-left: 22px; padding-right: 22px; } }
+
+  .doc-head { margin-bottom: 52px; }
+  .eyebrow { font-size: var(--text-micro); font-weight: var(--weight-bold); letter-spacing: var(--tracking-wide);
+    text-transform: uppercase; color: var(--primary-600); margin-bottom: 13px; }
+  h1 { font-size: var(--text-display-lg); font-weight: var(--weight-black); color: var(--text-heading);
+    letter-spacing: var(--tracking-tight); line-height: var(--leading-tight); }
+  .doc-sub { color: var(--text-muted); font-size: var(--text-body-lg); margin-top: 13px; max-width: 58ch; }
+
+  section { margin-bottom: 56px; scroll-margin-top: 80px; }
+  .sec-head { display: flex; align-items: baseline; gap: 12px; margin-bottom: 20px; }
+  .sec-head h2 { font-size: var(--text-h2); font-weight: var(--weight-bold); color: var(--text-heading); letter-spacing: var(--tracking-snug); }
+  .sec-num { font-size: var(--text-caption); font-weight: var(--weight-bold); color: var(--text-faint); font-variant-numeric: tabular-nums; }
+
+  .panel { background: var(--surface-card); border: 1px solid var(--border-default); border-radius: var(--radius-xl);
+    padding: 28px 30px; box-shadow: var(--shadow-sm); }
+  .panel + .panel { margin-top: 16px; }
+  .panel-label { font-size: var(--text-micro); font-weight: var(--weight-bold); letter-spacing: var(--tracking-wide);
+    text-transform: uppercase; color: var(--text-faint); margin-bottom: 18px; }
+
+  /* button state grid */
+  .btn-grid { display: grid; grid-template-columns: 116px repeat(4, 1fr); gap: 16px 18px; align-items: center; }
+  .bg-head { font-size: var(--text-caption); font-weight: var(--weight-bold); color: var(--text-muted); text-align: center; }
+  .bg-rowlabel { font-size: var(--text-body-sm); font-weight: var(--weight-bold); color: var(--text-heading); }
+  .btn-grid > div:not(.bg-head):not(.bg-rowlabel) { display: flex; justify-content: center; }
+  @media (max-width: 720px) { .btn-grid { grid-template-columns: 1fr; } .bg-head { display: none; } }
+
+  .row { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; }
+  .row-sizes { gap: 16px; }
+
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 22px 28px; }
+  @media (max-width: 640px) { .grid2 { grid-template-columns: 1fr; } }
+
+  .applist { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  @media (max-width: 720px) { .applist { grid-template-columns: 1fr; } }
+
+  .alert-stack { display: flex; flex-direction: column; gap: 12px; }
+
+  /* nav demo */
+  .nav-caption { font-size: var(--text-body-sm); color: var(--text-muted); margin: 14px 2px 0; }
+  .nav-state { display: flex; align-items: center; gap: 10px; margin: 28px 2px 14px; }
+  .nav-state:first-of-type { margin-top: 4px; }
+  .nav-state h3 { font-size: var(--text-h3); font-weight: var(--weight-bold); color: var(--text-heading); letter-spacing: var(--tracking-snug); }
+  .nav-state .chip { font-size: var(--text-micro); font-weight: var(--weight-bold); letter-spacing: var(--tracking-wide);
+    text-transform: uppercase; padding: 3px 9px; border-radius: var(--radius-pill); }
+  .nav-state .chip.in { background: var(--color-success-bg); color: var(--color-success); }
+  .nav-state .chip.out { background: var(--surface-sunken); color: var(--text-muted); }
+  .phone-frame { width: 390px; max-width: 100%; border: 1px solid var(--border-default); border-radius: var(--radius-lg);
+    overflow: hidden; box-shadow: var(--shadow-sm); }
+  /* force the mobile rendering inside the phone frame regardless of viewport width */
+  .phone-frame .bc-nav-links,
+  .phone-frame .bc-nav-right { display: none; }
+  .phone-frame .bc-nav-toggle { display: inline-grid; }
+  .phone-frame .bc-nav-inner { gap: 14px; height: 60px; padding: 0 18px; }
+</style>
+</head>
+<body>
+
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div class="tb-mark"><img src="assets/logo/building-control-logo.svg" alt="Building Control" width="30" height="30" /></div>
+      <div class="tb-name">Building<span>Control</span></div>
+      <div class="tb-tag">Component Sheet</div>
+    </div>
+  </div>
+
+  <main class="wrap">
+    <header class="doc-head">
+      <div class="eyebrow">Design System · Components</div>
+      <h1>Component Sheet</h1>
+      <p class="doc-sub">Every reusable component, shown in all its states. Built entirely from the foundation tokens — class names are listed under each group.</p>
+    </header>
+
+    <!-- ============ BUTTONS ============ -->
+    <section id="buttons">
+      <div class="sec-head"><span class="sec-num">01</span><h2>Buttons</h2></div>
+      <div class="panel">
+        <div class="panel-label">Variants × States — .bc-btn .bc-btn--primary / --secondary / --ghost / --destructive</div>
+        <div class="btn-grid">
+          <div></div>
+          <div class="bg-head">Default</div>
+          <div class="bg-head">Hover</div>
+          <div class="bg-head">Focus</div>
+          <div class="bg-head">Disabled</div>
+
+          <div class="bg-rowlabel">Primary</div>
+          <div><button class="bc-btn bc-btn--primary"><i data-lucide="check"></i> Submit</button></div>
+          <div><button class="bc-btn bc-btn--primary is-hover"><i data-lucide="check"></i> Submit</button></div>
+          <div><button class="bc-btn bc-btn--primary is-focus"><i data-lucide="check"></i> Submit</button></div>
+          <div><button class="bc-btn bc-btn--primary is-disabled"><i data-lucide="check"></i> Submit</button></div>
+
+          <div class="bg-rowlabel">Secondary</div>
+          <div><button class="bc-btn bc-btn--secondary">Save draft</button></div>
+          <div><button class="bc-btn bc-btn--secondary is-hover">Save draft</button></div>
+          <div><button class="bc-btn bc-btn--secondary is-focus">Save draft</button></div>
+          <div><button class="bc-btn bc-btn--secondary is-disabled">Save draft</button></div>
+
+          <div class="bg-rowlabel">Ghost</div>
+          <div><button class="bc-btn bc-btn--ghost">Cancel</button></div>
+          <div><button class="bc-btn bc-btn--ghost is-hover">Cancel</button></div>
+          <div><button class="bc-btn bc-btn--ghost is-focus">Cancel</button></div>
+          <div><button class="bc-btn bc-btn--ghost is-disabled">Cancel</button></div>
+
+          <div class="bg-rowlabel">Destructive</div>
+          <div><button class="bc-btn bc-btn--destructive"><i data-lucide="trash-2"></i> Withdraw</button></div>
+          <div><button class="bc-btn bc-btn--destructive is-hover"><i data-lucide="trash-2"></i> Withdraw</button></div>
+          <div><button class="bc-btn bc-btn--destructive is-focus"><i data-lucide="trash-2"></i> Withdraw</button></div>
+          <div><button class="bc-btn bc-btn--destructive is-disabled"><i data-lucide="trash-2"></i> Withdraw</button></div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-label">Sizes — .bc-btn--sm / (default) / --lg</div>
+        <div class="row row-sizes">
+          <button class="bc-btn bc-btn--primary bc-btn--sm"><i data-lucide="plus"></i> New</button>
+          <button class="bc-btn bc-btn--primary"><i data-lucide="plus"></i> New application</button>
+          <button class="bc-btn bc-btn--primary bc-btn--lg"><i data-lucide="plus"></i> Start new application</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ STATUS PILLS ============ -->
+    <section id="pills">
+      <div class="sec-head"><span class="sec-num">02</span><h2>Status pills</h2></div>
+      <div class="panel">
+        <div class="panel-label">.bc-pill .bc-pill--draft / --submitted / --review / --approved / --rejected</div>
+        <div class="row">
+          <span class="bc-pill bc-pill--draft"><span class="bc-dot"></span> Draft</span>
+          <span class="bc-pill bc-pill--submitted"><span class="bc-dot"></span> Submitted</span>
+          <span class="bc-pill bc-pill--review"><span class="bc-dot"></span> Under review</span>
+          <span class="bc-pill bc-pill--approved"><span class="bc-dot"></span> Approved</span>
+          <span class="bc-pill bc-pill--rejected"><span class="bc-dot"></span> Changes requested</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ APPLICATION CARD ============ -->
+    <section id="appcard">
+      <div class="sec-head"><span class="sec-num">03</span><h2>Application card</h2></div>
+      <div class="panel">
+        <div class="panel-label">.bc-appcard — default & hover</div>
+        <div class="applist">
+          <article class="bc-appcard">
+            <div class="bc-appcard-top"><span class="bc-pill bc-pill--submitted"><span class="bc-dot"></span> Submitted</span><span class="bc-appcard-date">Updated 4 days ago</span></div>
+            <div class="bc-appcard-addr">Flat 3, 22 Bridge Street</div>
+            <div class="bc-appcard-meta"><span class="bc-appcard-proj">Internal structural alterations</span><span class="bc-ref">BC-2026-04766</span></div>
+            <div class="bc-track"><span class="bc-track-seg is-done"></span><span class="bc-track-seg is-done"></span><span class="bc-track-seg"></span><span class="bc-track-seg"></span></div>
+            <div class="bc-appcard-foot"><span class="bc-next"><i data-lucide="check-circle-2" style="color:var(--color-info-dot)"></i> <span><span class="bc-lead">Received</span> — a surveyor will be assigned shortly</span></span><a class="bc-link" href="#">View <i data-lucide="arrow-right"></i></a></div>
+          </article>
+          <article class="bc-appcard is-hover">
+            <div class="bc-appcard-top"><span class="bc-pill bc-pill--review"><span class="bc-dot"></span> Under review</span><span class="bc-appcard-date">Updated yesterday</span></div>
+            <div class="bc-appcard-addr">8 Maple Court</div>
+            <div class="bc-appcard-meta"><span class="bc-appcard-proj">Single-storey rear extension</span><span class="bc-ref">BC-2026-04821</span></div>
+            <div class="bc-track"><span class="bc-track-seg is-done"></span><span class="bc-track-seg is-done"></span><span class="bc-track-seg is-warn"></span><span class="bc-track-seg"></span></div>
+            <div class="bc-appcard-foot"><span class="bc-next"><i data-lucide="upload" style="color:var(--color-action-needed-dot)"></i> <span><span class="bc-lead">Upload</span> structural drawings</span></span><a class="bc-link" href="#">View <i data-lucide="arrow-right"></i></a></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ FORM FIELDS ============ -->
+    <section id="forms">
+      <div class="sec-head"><span class="sec-num">04</span><h2>Form fields</h2></div>
+      <div class="panel">
+        <div class="panel-label">Text input — .bc-input (default · focus · error · disabled)</div>
+        <div class="grid2">
+          <div class="bc-field">
+            <label class="bc-label">Project address</label>
+            <input class="bc-input" type="text" placeholder="Start typing your address…" value="8 Maple Court" />
+            <span class="bc-hint">As it appears on your council tax bill.</span>
+          </div>
+          <div class="bc-field">
+            <label class="bc-label">Project address <span class="bc-opt">— focused</span></label>
+            <input class="bc-input is-focus" type="text" value="8 Maple Court, Bristol" />
+            <span class="bc-hint">As it appears on your council tax bill.</span>
+          </div>
+          <div class="bc-field">
+            <label class="bc-label">Estimated cost of work</label>
+            <input class="bc-input is-error" type="text" value="abc" />
+            <span class="bc-error-msg"><i data-lucide="alert-circle"></i> Please enter a number, e.g. 24000.</span>
+          </div>
+          <div class="bc-field">
+            <label class="bc-label">Reference number <span class="bc-opt">— read only</span></label>
+            <input class="bc-input is-disabled" type="text" value="BC-2026-04821" disabled />
+            <span class="bc-hint">Generated automatically once submitted.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-label">Select — .bc-select-wrap > .bc-select</div>
+        <div class="grid2">
+          <div class="bc-field">
+            <label class="bc-label">Type of work</label>
+            <div class="bc-select-wrap">
+              <select class="bc-select">
+                <option>Single-storey rear extension</option>
+                <option>Loft conversion</option>
+                <option>Garage conversion</option>
+                <option>Internal structural alterations</option>
+              </select>
+              <i data-lucide="chevron-down"></i>
+            </div>
+          </div>
+          <div class="bc-field">
+            <label class="bc-label">Who is applying?</label>
+            <div class="bc-select-wrap">
+              <select class="bc-select">
+                <option>I'm the homeowner</option>
+                <option>I'm a builder / agent</option>
+                <option>I'm an architect</option>
+              </select>
+              <i data-lucide="chevron-down"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-label">File upload — .bc-file (default · filled · error)</div>
+        <div class="grid2" style="grid-template-columns:1fr 1fr 1fr">
+          <button class="bc-file">
+            <span class="bc-file-icon"><i data-lucide="upload-cloud"></i></span>
+            <span><span class="bc-file-main">Upload drawings</span><span class="bc-file-sub">PDF, PNG or JPG · up to 25MB</span></span>
+          </button>
+          <div class="bc-file bc-file--filled">
+            <span class="bc-file-icon"><i data-lucide="file-check-2"></i></span>
+            <span><span class="bc-file-main">floor-plans.pdf</span><span class="bc-file-sub">2.4MB · uploaded</span></span>
+          </div>
+          <div class="bc-file is-error">
+            <span class="bc-file-icon"><i data-lucide="file-x-2"></i></span>
+            <span><span class="bc-file-main">site-photo.tiff</span><span class="bc-file-sub">File type not supported</span></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ STEPPER ============ -->
+    <section id="stepper">
+      <div class="sec-head"><span class="sec-num">05</span><h2>Multi-step stepper</h2></div>
+      <div class="panel">
+        <div class="panel-label">.bc-stepper — done · current · warn · upcoming</div>
+        <div class="bc-stepper" style="max-width:640px">
+          <div class="bc-step bc-step--done"><div class="bc-step-dot"><i data-lucide="check"></i></div><div class="bc-step-label">Your details</div></div>
+          <div class="bc-step bc-step--done"><div class="bc-step-dot"><i data-lucide="check"></i></div><div class="bc-step-label">The work</div></div>
+          <div class="bc-step bc-step--current"><div class="bc-step-dot">3</div><div class="bc-step-label">Upload plans</div></div>
+          <div class="bc-step"><div class="bc-step-dot">4</div><div class="bc-step-label">Pay &amp; submit</div></div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-label">With an action-needed step — .bc-step--warn</div>
+        <div class="bc-stepper" style="max-width:640px">
+          <div class="bc-step bc-step--done"><div class="bc-step-dot"><i data-lucide="check"></i></div><div class="bc-step-label">Submitted</div></div>
+          <div class="bc-step bc-step--done"><div class="bc-step-dot"><i data-lucide="check"></i></div><div class="bc-step-label">Allocated</div></div>
+          <div class="bc-step bc-step--warn"><div class="bc-step-dot"><i data-lucide="alert-triangle"></i></div><div class="bc-step-label">Under review</div></div>
+          <div class="bc-step"><div class="bc-step-dot">4</div><div class="bc-step-label">Decision</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ ALERTS ============ -->
+    <section id="alerts">
+      <div class="sec-head"><span class="sec-num">06</span><h2>Alerts &amp; banners</h2></div>
+      <div class="panel">
+        <div class="panel-label">.bc-alert .bc-alert--info / --success / --warning / --danger / --neutral</div>
+        <div class="alert-stack">
+          <div class="bc-alert bc-alert--warning">
+            <div class="bc-alert-icon"><i data-lucide="bell-ring"></i></div>
+            <div class="bc-alert-body"><div class="bc-alert-title">2 applications need something from you.</div><div class="bc-alert-text">We've listed exactly what's missing on each one.</div></div>
+            <a class="bc-alert-action" href="#">Review these <i data-lucide="arrow-right"></i></a>
+          </div>
+          <div class="bc-alert bc-alert--success">
+            <div class="bc-alert-icon"><i data-lucide="badge-check"></i></div>
+            <div class="bc-alert-body"><div class="bc-alert-title">Your plans have been approved.</div><div class="bc-alert-text">Your completion certificate is ready to download.</div></div>
+            <a class="bc-alert-action" href="#">Download <i data-lucide="download"></i></a>
+          </div>
+          <div class="bc-alert bc-alert--info">
+            <div class="bc-alert-icon"><i data-lucide="info"></i></div>
+            <div class="bc-alert-body"><div class="bc-alert-title">A surveyor has been assigned.</div><div class="bc-alert-text">Jane Okafor will be in touch within 5 working days.</div></div>
+          </div>
+          <div class="bc-alert bc-alert--danger">
+            <div class="bc-alert-icon"><i data-lucide="alert-octagon"></i></div>
+            <div class="bc-alert-body"><div class="bc-alert-title">Three changes are needed before we can approve.</div><div class="bc-alert-text">We've explained each one in plain English.</div></div>
+            <a class="bc-alert-action" href="#">See feedback <i data-lucide="arrow-right"></i></a>
+          </div>
+          <div class="bc-alert bc-alert--neutral">
+            <div class="bc-alert-icon"><i data-lucide="save"></i></div>
+            <div class="bc-alert-body"><div class="bc-alert-title">Draft saved.</div><div class="bc-alert-text">You can pick this up any time from your dashboard.</div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ TOP NAV ============ -->
+    <section id="nav">
+      <div class="sec-head"><span class="sec-num">07</span><h2>Top navigation</h2></div>
+
+      <!-- ---------- SIGNED IN ---------- -->
+      <div class="nav-state"><h3>Signed in</h3><span class="chip in">Authenticated</span></div>
+      <div class="panel" style="padding:0; overflow:hidden">
+        <nav class="bc-nav">
+          <div class="bc-nav-inner">
+            <div class="bc-brand"><div class="bc-brand-mark"><img src="assets/logo/building-control-logo.svg" alt="Building Control" width="34" height="34" /></div><div class="bc-brand-name">Building<span>Control</span></div></div>
+            <div class="bc-nav-links">
+              <a class="bc-nav-link is-active" href="#"><i data-lucide="layout-grid"></i> Dashboard</a>
+            </div>
+            <div class="bc-nav-right">
+              <button class="bc-icon-btn"><i data-lucide="bell"></i></button>
+              <div class="bc-avatar">SD</div>
+            </div>
+            <button class="bc-nav-toggle" id="csNavToggle" aria-label="Menu" aria-controls="csMobileMenu" aria-expanded="false">
+              <i data-lucide="menu" class="ic-open"></i><i data-lucide="x" class="ic-close"></i>
+            </button>
+          </div>
+          <nav class="bc-mobile-menu" id="csMobileMenu">
+            <a class="bc-m-link is-active" href="#"><i data-lucide="layout-grid"></i> Dashboard</a>
+            <div class="bc-m-divider"></div>
+            <div class="bc-m-account"><div class="bc-avatar" style="margin-left:0">SD</div><div class="who">Sarah Davies<small>sarah@example.com</small></div></div>
+          </nav>
+        </nav>
+      </div>
+      <p class="nav-caption">App links, utility actions and the account avatar (opens a profile menu). Below 760px everything collapses into a hamburger drawer that ends with the signed-in account row.</p>
+
+      <div class="panel" style="margin-top:16px">
+        <div class="panel-label">Mobile · collapsed</div>
+        <div class="phone-frame">
+          <nav class="bc-nav">
+            <div class="bc-nav-inner">
+              <div class="bc-brand"><div class="bc-brand-mark"><img src="assets/logo/building-control-logo.svg" alt="Building Control" width="34" height="34" /></div><div class="bc-brand-name">Building<span>Control</span></div></div>
+              <button class="bc-nav-toggle" aria-label="Menu" aria-expanded="false"><i data-lucide="menu" class="ic-open"></i><i data-lucide="x" class="ic-close"></i></button>
+            </div>
+          </nav>
+        </div>
+
+        <div class="panel-label" style="margin-top:24px">Mobile · drawer open</div>
+        <div class="phone-frame">
+          <nav class="bc-nav">
+            <div class="bc-nav-inner">
+              <div class="bc-brand"><div class="bc-brand-mark"><img src="assets/logo/building-control-logo.svg" alt="Building Control" width="34" height="34" /></div><div class="bc-brand-name">Building<span>Control</span></div></div>
+              <button class="bc-nav-toggle" aria-label="Menu" aria-expanded="true"><i data-lucide="menu" class="ic-open"></i><i data-lucide="x" class="ic-close"></i></button>
+            </div>
+            <nav class="bc-mobile-menu is-open">
+              <a class="bc-m-link is-active" href="#"><i data-lucide="layout-grid"></i> Dashboard</a>
+              <div class="bc-m-divider"></div>
+              <div class="bc-m-account"><div class="bc-avatar" style="margin-left:0">SD</div><div class="who">Sarah Davies<small>sarah@example.com</small></div></div>
+            </nav>
+          </nav>
+        </div>
+      </div>
+
+      <!-- ---------- SIGNED OUT ---------- -->
+      <div class="nav-state"><h3>Signed out</h3><span class="chip out">Marketing / public</span></div>
+      <div class="panel" style="padding:0; overflow:hidden">
+        <nav class="bc-nav">
+          <div class="bc-nav-inner">
+            <div class="bc-brand"><div class="bc-brand-mark"><img src="assets/logo/building-control-logo.svg" alt="Building Control" width="34" height="34" /></div><div class="bc-brand-name">Building<span>Control</span></div></div>
+            <div class="bc-nav-links">
+              <a class="bc-nav-link" href="#">How it works</a>
+              <a class="bc-nav-link" href="#">Who it's for</a>
+              <a class="bc-nav-link" href="#">Guidance</a>
+            </div>
+            <div class="bc-nav-right">
+              <a class="bc-btn bc-btn--ghost bc-btn--sm" href="#"><i data-lucide="log-in"></i> Log in</a>
+              <a class="bc-btn bc-btn--primary bc-btn--sm" href="#">Sign up</a>
+            </div>
+            <button class="bc-nav-toggle" id="csNavToggleOut" aria-label="Menu" aria-controls="csMobileMenuOut" aria-expanded="false">
+              <i data-lucide="menu" class="ic-open"></i><i data-lucide="x" class="ic-close"></i>
+            </button>
+          </div>
+          <nav class="bc-mobile-menu" id="csMobileMenuOut">
+            <a class="bc-m-link" href="#"><i data-lucide="route"></i> How it works</a>
+            <a class="bc-m-link" href="#"><i data-lucide="users"></i> Who it's for</a>
+            <div class="bc-m-divider"></div>
+            <a class="bc-btn bc-btn--secondary" href="#" style="width:100%"><i data-lucide="log-in"></i> Log in</a>
+            <a class="bc-btn bc-btn--primary" href="#" style="width:100%">Sign up</a>
+          </nav>
+        </nav>
+      </div>
+      <p class="nav-caption">Public pages (landing, guidance, legal) show marketing links and a Log in / Sign up pair. The same hamburger drawer pattern applies on mobile, ending with the two account buttons.</p>
+
+      <div class="panel" style="margin-top:16px">
+        <div class="panel-label">Mobile · collapsed</div>
+        <div class="phone-frame">
+          <nav class="bc-nav">
+            <div class="bc-nav-inner">
+              <div class="bc-brand"><div class="bc-brand-mark"><img src="assets/logo/building-control-logo.svg" alt="Building Control" width="34" height="34" /></div><div class="bc-brand-name">Building<span>Control</span></div></div>
+              <button class="bc-nav-toggle" aria-label="Menu" aria-expanded="false"><i data-lucide="menu" class="ic-open"></i><i data-lucide="x" class="ic-close"></i></button>
+            </div>
+          </nav>
+        </div>
+
+        <div class="panel-label" style="margin-top:24px">Mobile · drawer open</div>
+        <div class="phone-frame">
+          <nav class="bc-nav">
+            <div class="bc-nav-inner">
+              <div class="bc-brand"><div class="bc-brand-mark"><img src="assets/logo/building-control-logo.svg" alt="Building Control" width="34" height="34" /></div><div class="bc-brand-name">Building<span>Control</span></div></div>
+              <button class="bc-nav-toggle" aria-label="Menu" aria-expanded="true"><i data-lucide="menu" class="ic-open"></i><i data-lucide="x" class="ic-close"></i></button>
+            </div>
+            <nav class="bc-mobile-menu is-open">
+              <a class="bc-m-link" href="#"><i data-lucide="route"></i> How it works</a>
+              <a class="bc-m-link" href="#"><i data-lucide="users"></i> Who it's for</a>
+              <div class="bc-m-divider"></div>
+              <a class="bc-btn bc-btn--secondary" href="#" style="width:100%"><i data-lucide="log-in"></i> Log in</a>
+              <a class="bc-btn bc-btn--primary" href="#" style="width:100%">Sign up</a>
+            </nav>
+          </nav>
+        </div>
+      </div>
+    </section>
+
+  </main>
+  <script>
+    lucide.createIcons();
+    function wireToggle(toggleId, menuId) {
+      const t = document.getElementById(toggleId);
+      const m = document.getElementById(menuId);
+      if (!t || !m) return;
+      t.addEventListener('click', () => {
+        const open = m.classList.toggle('is-open');
+        t.setAttribute('aria-expanded', open ? 'true' : 'false');
+      });
+    }
+    wireToggle('csNavToggle', 'csMobileMenu');
+    wireToggle('csNavToggleOut', 'csMobileMenuOut');
+  </script>
+</body>
+</html>

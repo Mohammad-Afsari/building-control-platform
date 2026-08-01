@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Building Control — Your profile</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>
+  :root {
+    --bg:        #F5F4F0;
+    --surface:   #FFFFFF;
+    --surface-2: #FBFAF7;
+    --border:    #E7E4DC;
+    --border-2:  #DEDAD0;
+    --ink-1: #1C2622;
+    --ink-2: #46504B;
+    --ink-3: #6E766F;
+    --ink-4: #97A09A;
+    --green-50:  #EAF3EE;
+    --green-100: #D5E8DD;
+    --green-600: #16795A;
+    --green-700: #0F5C44;
+    --green-800: #0B4634;
+    --green-bg:  #E5F2EA;  --green-fg:  #16795A;  --green-dot:#1E9B6B;
+    --rose-bg:   #FBE9E7;  --rose-fg:   #B0463A;  --rose-dot: #D86355;
+    --radius:   16px;
+    --radius-sm: 10px;
+    --shadow-sm: 0 1px 2px rgba(28,38,34,.05);
+    --shadow:    0 1px 3px rgba(28,38,34,.06), 0 8px 24px -12px rgba(28,38,34,.12);
+    --shadow-lg: 0 2px 6px rgba(28,38,34,.07), 0 18px 40px -16px rgba(28,38,34,.18);
+    --maxw: 1160px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+  body { font-family: "Hanken Grotesk", system-ui, sans-serif; background: var(--bg); color: var(--ink-2);
+    font-size: 15px; line-height: 1.5; letter-spacing: -0.01em; }
+  ::selection { background: var(--green-100); }
+
+  /* ───────── Top nav (shared) ───────── */
+  .nav { position: sticky; top: 0; z-index: 40; background: rgba(255,255,255,.86);
+    backdrop-filter: saturate(140%) blur(12px); border-bottom: 1px solid var(--border); }
+  .nav-inner { max-width: var(--maxw); margin: 0 auto; height: 64px; padding: 0 28px; display: flex; align-items: center; gap: 28px; }
+  a.brand { text-decoration: none; }
+  .brand { display: flex; align-items: center; gap: 11px; }
+  .brand-mark { width: 34px; height: 34px; display: grid; place-items: center; }
+  .brand-mark img { width: 34px; height: 34px; display: block; }
+  .brand-name { font-weight: 800; color: var(--ink-1); font-size: 16.5px; letter-spacing: -0.02em; white-space: nowrap; }
+  .brand-name span { color: var(--ink-3); font-weight: 600; }
+  .nav-links { display: flex; align-items: center; gap: 4px; margin-left: 8px; }
+  .nav-link { display: flex; align-items: center; gap: 7px; padding: 8px 13px; border-radius: 9px;
+    color: var(--ink-3); font-weight: 600; font-size: 14.5px; text-decoration: none; transition: background .15s, color .15s; }
+  .nav-link svg { width: 16px; height: 16px; }
+  .nav-link:hover { background: var(--surface-2); color: var(--ink-1); }
+  .nav-link.active { background: var(--green-50); color: var(--green-700); }
+  .nav-right { margin-left: auto; display: flex; align-items: center; gap: 6px; }
+  .icon-btn { width: 38px; height: 38px; border-radius: 10px; border: 1px solid transparent; background: transparent; color: var(--ink-3);
+    cursor: pointer; display: grid; place-items: center; position: relative; transition: background .15s, color .15s, border-color .15s; }
+  .icon-btn svg { width: 18px; height: 18px; }
+  .icon-btn:hover { background: var(--surface-2); color: var(--ink-1); border-color: var(--border); }
+  .dot-badge::after { content: ""; position: absolute; top: 8px; right: 9px; width: 7px; height: 7px; border-radius: 50%;
+    background: var(--rose-dot); border: 2px solid var(--surface); }
+  .avatar { width: 36px; height: 36px; border-radius: 50%; margin-left: 6px; background: var(--green-100); color: var(--green-700);
+    display: grid; place-items: center; font-weight: 700; font-size: 14px; cursor: pointer; border: 1px solid var(--border-2); }
+  .profile { position: relative; }
+  .avatar-btn { font-family: inherit; padding: 0; cursor: pointer; }
+  .profile-menu { position: absolute; top: calc(100% + 10px); right: 0; width: 264px; background: var(--surface);
+    border: 1px solid var(--border); border-radius: 14px; box-shadow: var(--shadow-lg); padding: 8px; z-index: 50;
+    opacity: 0; transform: translateY(-6px) scale(.98); transform-origin: top right; pointer-events: none;
+    transition: opacity .15s ease, transform .15s ease; }
+  .profile-menu.is-open { opacity: 1; transform: none; pointer-events: auto; }
+  .profile-head { display: flex; align-items: center; gap: 11px; padding: 10px 12px 14px; }
+  .profile-head .avatar { cursor: default; flex: none; }
+  .profile-head .who .n { font-weight: 700; color: var(--ink-1); font-size: 14.5px; line-height: 1.2; }
+  .profile-head .who .e { font-size: 12.5px; color: var(--ink-3); margin-top: 2px; }
+  .profile-sep { height: 1px; background: var(--border); margin: 4px 6px; }
+  .profile-item { display: flex; align-items: center; gap: 11px; padding: 10px 12px; border-radius: 9px;
+    font-size: 14px; font-weight: 600; color: var(--ink-2); text-decoration: none; cursor: pointer; transition: background .12s, color .12s; }
+  .profile-item svg { width: 17px; height: 17px; color: var(--ink-3); }
+  .profile-item:hover { background: var(--surface-2); color: var(--ink-1); }
+  .profile-item:hover svg { color: var(--ink-1); }
+  .profile-item.danger { color: var(--rose-fg); }
+  .profile-item.danger svg { color: var(--rose-fg); }
+  .profile-item.danger:hover { background: var(--rose-bg); }
+  .nav-toggle { display: none; place-items: center; width: 42px; height: 42px; border-radius: 10px;
+    border: 1px solid var(--border); background: var(--surface); color: var(--ink-1); cursor: pointer; flex: none; margin-left: auto; }
+  .nav-toggle svg { width: 21px; height: 21px; }
+  .nav-toggle .ic-close { display: none; }
+  .nav-toggle[aria-expanded="true"] .ic-open { display: none; }
+  .nav-toggle[aria-expanded="true"] .ic-close { display: block; }
+  .mobile-menu { display: none; flex-direction: column; gap: 3px; padding: 10px 20px 18px;
+    border-top: 1px solid var(--border); background: var(--surface); }
+  .mobile-menu.is-open { display: flex; }
+  .m-link { display: flex; align-items: center; gap: 11px; padding: 13px 14px; border-radius: 11px;
+    font-size: 16.5px; font-weight: 600; color: var(--ink-2); text-decoration: none; }
+  .m-link svg { width: 19px; height: 19px; color: var(--ink-4); }
+  .m-link.active { background: var(--green-50); color: var(--green-700); }
+  .m-link.active svg { color: var(--green-700); }
+  .m-divider { height: 1px; background: var(--border); margin: 8px 4px; }
+  .m-account { display: flex; align-items: center; gap: 11px; padding: 10px 14px; }
+  .m-account .avatar { margin: 0; }
+  .m-account .who { font-weight: 700; color: var(--ink-1); font-size: 15px; }
+  .m-account .who small { display: block; font-weight: 500; color: var(--ink-3); font-size: 12.5px; }
+  @media (max-width: 759px) {
+    .nav-links { display: none; }
+    .nav-right { display: none; }
+    .nav-toggle { display: inline-grid; }
+    .nav-inner { gap: 14px; }
+    .profile { display: none; }
+  }
+
+  /* ───────── Page ───────── */
+  .wrap { max-width: 880px; margin: 0 auto; padding: 32px 28px 80px; }
+  .page-head { display: flex; align-items: center; gap: 18px; margin-bottom: 26px; }
+  .id-avatar { width: 60px; height: 60px; border-radius: 50%; flex: none; background: var(--green-100); color: var(--green-700);
+    display: grid; place-items: center; font-weight: 800; font-size: 22px; border: 1px solid var(--border-2); }
+  .greeting { color: var(--ink-3); font-weight: 600; font-size: 14px; margin-bottom: 3px; }
+  h1 { font-size: 28px; font-weight: 800; color: var(--ink-1); letter-spacing: -0.03em; line-height: 1.1; }
+
+  /* tabs */
+  .tabs { display: flex; align-items: center; gap: 4px; background: var(--surface); border: 1px solid var(--border);
+    border-radius: 13px; padding: 5px; margin-bottom: 22px; box-shadow: var(--shadow-sm); width: fit-content; max-width: 100%; flex-wrap: wrap; }
+  .tab { font-family: inherit; border: none; background: transparent; cursor: pointer; display: inline-flex; align-items: center; gap: 8px;
+    padding: 9px 15px; border-radius: 9px; font-size: 14px; font-weight: 700; color: var(--ink-3); transition: background .15s, color .15s; white-space: nowrap; }
+  .tab svg { width: 16px; height: 16px; }
+  .tab:hover { background: var(--surface-2); color: var(--ink-1); }
+  .tab.active { background: var(--green-600); color: #fff; }
+
+  /* panels */
+  .panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow-sm);
+    padding: 24px 26px; margin-bottom: 18px; }
+  .panel h2 { font-size: 16.5px; font-weight: 700; color: var(--ink-1); letter-spacing: -0.02em; display: flex; align-items: center; gap: 9px; }
+  .panel h2 svg { width: 18px; height: 18px; color: var(--green-600); }
+  .panel-sub { font-size: 13.5px; color: var(--ink-3); margin-top: 5px; }
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* form */
+  .form { margin-top: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .field { display: flex; flex-direction: column; gap: 7px; }
+  .field.full { grid-column: 1 / -1; }
+  .field label { font-size: 13px; font-weight: 700; color: var(--ink-2); }
+  .input { font-family: inherit; font-size: 15px; color: var(--ink-1); background: var(--surface);
+    border: 1px solid var(--border-2); border-radius: 11px; padding: 12px 14px; width: 100%; transition: border-color .15s, box-shadow .15s; }
+  .input:focus { outline: none; border-color: var(--green-600); box-shadow: 0 0 0 3px var(--green-50); }
+  .input::placeholder { color: var(--ink-4); }
+  .hint { font-size: 12.5px; color: var(--ink-4); }
+  .form-foot { grid-column: 1 / -1; display: flex; align-items: center; justify-content: flex-end; gap: 14px; margin-top: 6px; }
+  .saved-flag { display: none; align-items: center; gap: 6px; font-size: 13.5px; font-weight: 700; color: var(--green-700); }
+  .saved-flag.show { display: inline-flex; }
+  .saved-flag svg { width: 15px; height: 15px; }
+
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 9px; font-family: inherit; font-weight: 700; font-size: 15px;
+    border: none; cursor: pointer; border-radius: 11px; padding: 12px 20px; transition: transform .12s ease, box-shadow .15s, background .15s, border-color .15s;
+    letter-spacing: -0.01em; white-space: nowrap; text-decoration: none; }
+  .btn svg { width: 18px; height: 18px; }
+  .btn-primary { background: var(--green-600); color: #fff; box-shadow: 0 1px 2px rgba(11,70,52,.25), 0 8px 18px -8px rgba(11,70,52,.5); }
+  .btn-primary:hover { background: var(--green-700); }
+  .btn-primary:active { transform: translateY(1px); }
+  .btn-secondary { background: var(--surface); color: var(--ink-1); border: 1px solid var(--border-2); box-shadow: var(--shadow-sm); }
+  .btn-secondary:hover { background: var(--surface-2); }
+
+  /* toggle list */
+  .toggle-list { margin-top: 18px; display: flex; flex-direction: column; }
+  .toggle-row { display: flex; align-items: center; gap: 16px; padding: 16px 0; }
+  .toggle-row + .toggle-row { border-top: 1px solid var(--border); }
+  .toggle-meta { flex: 1; }
+  .toggle-meta .t { font-size: 14.5px; font-weight: 700; color: var(--ink-1); }
+  .toggle-meta .d { font-size: 13px; color: var(--ink-3); margin-top: 2px; }
+  .switch { position: relative; width: 46px; height: 27px; flex: none; }
+  .switch input { position: absolute; opacity: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; }
+  .slider { position: absolute; inset: 0; background: var(--border-2); border-radius: 20px; transition: background .2s; }
+  .slider::before { content: ""; position: absolute; top: 3px; left: 3px; width: 21px; height: 21px; border-radius: 50%;
+    background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.2); transition: transform .2s; }
+  .switch input:checked + .slider { background: var(--green-600); }
+  .switch input:checked + .slider::before { transform: translateX(19px); }
+
+  /* danger row */
+  .danger-zone { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .danger-zone .dz-meta { flex: 1; min-width: 220px; }
+  .danger-zone .dz-meta .t { font-size: 14.5px; font-weight: 700; color: var(--ink-1); }
+  .danger-zone .dz-meta .d { font-size: 13px; color: var(--ink-3); margin-top: 2px; }
+  .btn-danger { background: var(--surface); color: var(--rose-fg); border: 1px solid var(--rose-bg); box-shadow: var(--shadow-sm); }
+  .btn-danger:hover { background: var(--rose-bg); }
+
+  @media (max-width: 600px) {
+    .wrap { padding: 24px 18px 64px; }
+    h1 { font-size: 24px; }
+    .form { grid-template-columns: 1fr; }
+    .panel { padding: 20px 18px; }
+    .tab span.lbl { display: none; }
+    .tab { padding: 10px 14px; }
+  }
+</style>
+</head>
+<body>
+
+  <nav class="nav">
+    <div class="nav-inner">
+      <a class="brand" href="Landing Page.html" aria-label="Building Control — home">
+        <div class="brand-mark"><img src="assets/logo/building-control-logo.svg" alt="Building Control" width="34" height="34" /></div>
+        <div class="brand-name">Building<span>Control</span></div>
+      </a>
+      <div class="nav-links">
+        <a class="nav-link" href="Applicant Dashboard.html"><i data-lucide="layout-grid"></i> Dashboard</a>
+      </div>
+      <div class="nav-right">
+        <button class="icon-btn dot-badge" aria-label="Notifications"><i data-lucide="bell"></i></button>
+        <div class="profile">
+          <button class="avatar avatar-btn" id="profileBtn" aria-haspopup="true" aria-expanded="false" aria-label="Your account">SD</button>
+          <div class="profile-menu" id="profileMenu" role="menu">
+            <div class="profile-head">
+              <div class="avatar">SD</div>
+              <div class="who"><div class="n">Sarah Davies</div><div class="e">sarah@example.com</div></div>
+            </div>
+            <div class="profile-sep"></div>
+            <a class="profile-item" href="Your Profile.html#profile" role="menuitem"><i data-lucide="user"></i> Your profile</a>
+            <a class="profile-item" href="Your Profile.html#account" role="menuitem"><i data-lucide="settings"></i> Account settings</a>
+            <a class="profile-item" href="Your Profile.html#notifications" role="menuitem"><i data-lucide="bell"></i> Notifications</a>
+            <a class="profile-item" href="Contact Support.html" role="menuitem"><i data-lucide="life-buoy"></i> Help</a>
+            <div class="profile-sep"></div>
+            <a class="profile-item danger" href="Log In.html" role="menuitem"><i data-lucide="log-out"></i> Sign out</a>
+          </div>
+        </div>
+      </div>
+      <button class="nav-toggle" id="navToggle" aria-label="Menu" aria-controls="mobileMenu" aria-expanded="false">
+        <i data-lucide="menu" class="ic-open"></i><i data-lucide="x" class="ic-close"></i>
+      </button>
+    </div>
+    <nav class="mobile-menu" id="mobileMenu">
+      <a class="m-link" href="Applicant Dashboard.html"><i data-lucide="layout-grid"></i> Dashboard</a>
+      <a class="m-link active" href="Your Profile.html#profile"><i data-lucide="user"></i> Your profile</a>
+      <div class="m-divider"></div>
+      <div class="m-account"><div class="avatar">SD</div><div class="who">Sarah Davies<small>sarah@example.com</small></div></div>
+    </nav>
+  </nav>
+
+  <main class="wrap" data-screen-label="Your profile">
+    <div class="page-head">
+      <div class="id-avatar">SD</div>
+      <div>
+        <div class="greeting">Account</div>
+        <h1>Sarah Davies</h1>
+      </div>
+    </div>
+
+    <div class="tabs" id="tabs" role="tablist">
+      <button class="tab active" data-tab="profile" role="tab"><i data-lucide="user"></i> <span class="lbl">Profile</span></button>
+      <button class="tab" data-tab="account" role="tab"><i data-lucide="settings"></i> <span class="lbl">Account</span></button>
+      <button class="tab" data-tab="notifications" role="tab"><i data-lucide="bell"></i> <span class="lbl">Notifications</span></button>
+    </div>
+
+    <!-- ── Profile ── -->
+    <div class="section active" id="sec-profile">
+      <form class="panel" id="profileForm">
+        <h2><i data-lucide="user"></i> Your details</h2>
+        <p class="panel-sub">This is how we'll address you and get in touch about your applications.</p>
+        <div class="form">
+          <div class="field">
+            <label for="firstName">First name</label>
+            <input class="input" id="firstName" type="text" value="Sarah" />
+          </div>
+          <div class="field">
+            <label for="lastName">Last name</label>
+            <input class="input" id="lastName" type="text" value="Davies" />
+          </div>
+          <div class="field">
+            <label for="phone">Phone number</label>
+            <input class="input" id="phone" type="tel" value="07700 900142" />
+          </div>
+          <div class="field">
+            <label for="company">Company <span class="hint">(optional)</span></label>
+            <input class="input" id="company" type="text" placeholder="e.g. Davies Builders Ltd" />
+          </div>
+          <div class="field full">
+            <label for="address">Correspondence address</label>
+            <input class="input" id="address" type="text" value="12 Park View, Bristol, BS6 7HJ" />
+          </div>
+          <div class="form-foot">
+            <span class="saved-flag" data-flag><i data-lucide="check-circle-2"></i> Changes saved</span>
+            <button class="btn btn-primary" type="submit"><i data-lucide="check"></i> Save changes</button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <!-- ── Account ── -->
+    <div class="section" id="sec-account">
+      <form class="panel" id="emailForm">
+        <h2><i data-lucide="mail"></i> Email address</h2>
+        <p class="panel-sub">You sign in and receive all updates at this address.</p>
+        <div class="form">
+          <div class="field full">
+            <label for="email">Email</label>
+            <input class="input" id="email" type="email" value="sarah@example.com" />
+          </div>
+          <div class="form-foot">
+            <span class="saved-flag" data-flag><i data-lucide="check-circle-2"></i> Changes saved</span>
+            <button class="btn btn-secondary" type="submit"><i data-lucide="save"></i> Update email</button>
+          </div>
+        </div>
+      </form>
+
+      <form class="panel" id="passwordForm">
+        <h2><i data-lucide="lock"></i> Password</h2>
+        <p class="panel-sub">Choose something you don't use anywhere else.</p>
+        <div class="form">
+          <div class="field full">
+            <label for="curPw">Current password</label>
+            <input class="input" id="curPw" type="password" placeholder="••••••••" />
+          </div>
+          <div class="field">
+            <label for="newPw">New password</label>
+            <input class="input" id="newPw" type="password" placeholder="At least 8 characters" />
+          </div>
+          <div class="field">
+            <label for="confirmPw">Confirm new password</label>
+            <input class="input" id="confirmPw" type="password" placeholder="Re-enter password" />
+          </div>
+          <div class="form-foot">
+            <span class="saved-flag" data-flag><i data-lucide="check-circle-2"></i> Password updated</span>
+            <button class="btn btn-secondary" type="submit"><i data-lucide="key-round"></i> Update password</button>
+          </div>
+        </div>
+      </form>
+
+      <div class="panel">
+        <h2><i data-lucide="triangle-alert"></i> Close your account</h2>
+        <p class="panel-sub">This permanently removes your account and applications. This can't be undone.</p>
+        <div class="danger-zone" style="margin-top:18px;">
+          <div class="dz-meta">
+            <div class="t">Delete account</div>
+            <div class="d">You'll lose access to all your applications and documents.</div>
+          </div>
+          <button class="btn btn-danger" type="button"><i data-lucide="trash-2"></i> Delete account</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Notifications ── -->
+    <div class="section" id="sec-notifications">
+      <div class="panel">
+        <h2><i data-lucide="bell"></i> How we keep you updated</h2>
+        <p class="panel-sub">Choose when we email you. We'll only ever contact you about your applications.</p>
+        <div class="toggle-list">
+          <div class="toggle-row">
+            <div class="toggle-meta"><div class="t">Application updates</div><div class="d">Status changes, surveyor questions and decisions.</div></div>
+            <label class="switch"><input type="checkbox" checked /><span class="slider"></span></label>
+          </div>
+          <div class="toggle-row">
+            <div class="toggle-meta"><div class="t">Payment receipts</div><div class="d">A copy of your receipt whenever you pay a fee.</div></div>
+            <label class="switch"><input type="checkbox" checked /><span class="slider"></span></label>
+          </div>
+          <div class="toggle-row">
+            <div class="toggle-meta"><div class="t">Reminders</div><div class="d">Nudges when an application needs something from you.</div></div>
+            <label class="switch"><input type="checkbox" checked /><span class="slider"></span></label>
+          </div>
+          <div class="toggle-row">
+            <div class="toggle-meta"><div class="t">Product news</div><div class="d">Occasional updates about new features. No marketing.</div></div>
+            <label class="switch"><input type="checkbox" /><span class="slider"></span></label>
+          </div>
+        </div>
+        <div class="form-foot" style="margin-top:20px;">
+          <span class="saved-flag" data-flag><i data-lucide="check-circle-2"></i> Preferences saved</span>
+          <button class="btn btn-primary" type="button" id="saveNotif"><i data-lucide="check"></i> Save preferences</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    lucide.createIcons();
+
+    /* nav */
+    const navToggle = document.getElementById('navToggle');
+    const mobileMenu = document.getElementById('mobileMenu');
+    navToggle.addEventListener('click', () => {
+      const open = mobileMenu.classList.toggle('is-open');
+      navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    const profileBtn = document.getElementById('profileBtn');
+    const profileMenu = document.getElementById('profileMenu');
+    function closeProfile() { profileMenu.classList.remove('is-open'); profileBtn.setAttribute('aria-expanded', 'false'); }
+    profileBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const open = profileMenu.classList.toggle('is-open');
+      profileBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    document.addEventListener('click', (e) => { if (!profileMenu.contains(e.target) && e.target !== profileBtn) closeProfile(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeProfile(); });
+
+    /* tabs */
+    const tabs = [...document.querySelectorAll('.tab')];
+    function selectTab(name) {
+      const valid = ['profile', 'account', 'notifications'];
+      if (!valid.includes(name)) name = 'profile';
+      tabs.forEach(t => t.classList.toggle('active', t.dataset.tab === name));
+      document.querySelectorAll('.section').forEach(s => s.classList.toggle('active', s.id === 'sec-' + name));
+      if (history.replaceState) history.replaceState(null, '', '#' + name);
+      else location.hash = name;
+    }
+    tabs.forEach(t => t.addEventListener('click', () => selectTab(t.dataset.tab)));
+    selectTab((location.hash || '#profile').slice(1));
+    window.addEventListener('hashchange', () => selectTab((location.hash || '#profile').slice(1)));
+
+    /* save flags */
+    function flash(scope) {
+      const flag = scope.querySelector('[data-flag]');
+      if (!flag) return;
+      flag.classList.add('show');
+      setTimeout(() => flag.classList.remove('show'), 2600);
+    }
+    document.querySelectorAll('form').forEach(f => f.addEventListener('submit', (e) => { e.preventDefault(); flash(f); }));
+    document.getElementById('saveNotif').addEventListener('click', () => flash(document.getElementById('sec-notifications')));
+  </script>
+</body>
+</html>

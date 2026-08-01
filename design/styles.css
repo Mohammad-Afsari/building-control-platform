@@ -1,0 +1,9 @@
+/* ============================================================
+   Building Control — Design System
+   Global stylesheet entry point. Consumers link THIS file only.
+   Keep this file as @import lines only — no rules here.
+   ============================================================ */
+@import "tokens/colors.css";
+@import "tokens/typography.css";
+@import "tokens/spacing.css";
+@import "components.css";

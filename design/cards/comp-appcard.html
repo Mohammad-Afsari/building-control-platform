@@ -1,0 +1,21 @@
+<!-- @dsCard group="Components" viewport="700x230" name="Application card" subtitle="The core dashboard card with status and next step" -->
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8" />
+<link rel="stylesheet" href="../styles.css" />
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>
+  body { margin:0; font-family:var(--font-sans); background:var(--surface-page); padding:22px; }
+  .holder { max-width:420px; }
+</style></head>
+<body>
+  <div class="holder">
+    <article class="bc-appcard">
+      <div class="bc-appcard-top"><span class="bc-pill bc-pill--review"><span class="bc-dot"></span> Under review</span><span class="bc-appcard-date">Updated yesterday</span></div>
+      <div class="bc-appcard-addr">8 Maple Court</div>
+      <div class="bc-appcard-meta"><span class="bc-appcard-proj">Single-storey rear extension</span><span class="bc-ref">BC-2026-04821</span></div>
+      <div class="bc-track"><span class="bc-track-seg is-done"></span><span class="bc-track-seg is-done"></span><span class="bc-track-seg is-warn"></span><span class="bc-track-seg"></span></div>
+      <div class="bc-appcard-foot"><span class="bc-next"><i data-lucide="upload" style="color:var(--color-action-needed-dot)"></i> <span><span class="bc-lead">Upload</span> structural drawings</span></span><a class="bc-link" href="#">View <i data-lucide="arrow-right"></i></a></div>
+    </article>
+  </div>
+  <script>lucide.createIcons();</script>
+</body></html>

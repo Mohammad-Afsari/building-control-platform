@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Building Control — Your applications</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>
+  :root {
+    --bg:        #F5F4F0;
+    --surface:   #FFFFFF;
+    --surface-2: #FBFAF7;
+    --border:    #E7E4DC;
+    --border-2:  #DEDAD0;
+    --ink-1: #1C2622;
+    --ink-2: #46504B;
+    --ink-3: #6E766F;
+    --ink-4: #97A09A;
+    --green-50:  #EAF3EE;
+    --green-100: #D5E8DD;
+    --green-600: #16795A;
+    --green-700: #0F5C44;
+    --green-800: #0B4634;
+    --slate-bg:  #EEF0F1;  --slate-fg:  #5A6670;  --slate-dot:#8A949C;
+    --blue-bg:   #E8F0FB;  --blue-fg:   #2B5FAE;  --blue-dot: #3B82F6;
+    --amber-bg:  #FBF0DD;  --amber-fg:  #97631A;  --amber-dot:#D08B26;
+    --green-bg:  #E5F2EA;  --green-fg:  #16795A;  --green-dot:#1E9B6B;
+    --rose-bg:   #FBE9E7;  --rose-fg:   #B0463A;  --rose-dot: #D86355;
+    --radius:   16px;
+    --radius-sm: 10px;
+    --shadow-sm: 0 1px 2px rgba(28,38,34,.05);
+    --shadow:    0 1px 3px rgba(28,38,34,.06), 0 8px 24px -12px rgba(28,38,34,.12);
+    --shadow-lg: 0 2px 6px rgba(28,38,34,.07), 0 18px 40px -16px rgba(28,38,34,.18);
+    --maxw: 1160px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+  body { font-family: "Hanken Grotesk", system-ui, sans-serif; background: var(--bg); color: var(--ink-2);
+    font-size: 15px; line-height: 1.5; letter-spacing: -0.01em; }
+  ::selection { background: var(--green-100); }
+
+  /* ───────── Top nav (shared) ───────── */
+  .nav { position: sticky; top: 0; z-index: 40; background: rgba(255,255,255,.86);
+    backdrop-filter: saturate(140%) blur(12px); border-bottom: 1px solid var(--border); }
+  .nav-inner { max-width: var(--maxw); margin: 0 auto; height: 64px; padding: 0 28px; display: flex; align-items: center; gap: 28px; }
+  a.brand { text-decoration: none; }
+  .brand { display: flex; align-items: center; gap: 11px; }
+  .brand-mark { width: 34px; height: 34px; display: grid; place-items: center; }
+  .brand-mark img { width: 34px; height: 34px; display: block; }
+  .brand-name { font-weight: 800; color: var(--ink-1); font-size: 16.5px; letter-spacing: -0.02em; white-space: nowrap; }
+  .brand-name span { color: var(--ink-3); font-weight: 600; }
+  .nav-links { display: flex; align-items: center; gap: 4px; margin-left: 8px; }
+  .nav-link { display: flex; align-items: center; gap: 7px; padding: 8px 13px; border-radius: 9px;
+    color: var(--ink-3); font-weight: 600; font-size: 14.5px; text-decoration: none; transition: background .15s, color .15s; }
+  .nav-link svg { width: 16px; height: 16px; }
+  .nav-link:hover { background: var(--surface-2); color: var(--ink-1); }
+  .nav-link.active { background: var(--green-50); color: var(--green-700); }
+  .nav-right { margin-left: auto; display: flex; align-items: center; gap: 6px; }
+  .icon-btn { width: 38px; height: 38px; border-radius: 10px; border: 1px solid transparent; background: transparent; color: var(--ink-3);
+    cursor: pointer; display: grid; place-items: center; position: relative; transition: background .15s, color .15s, border-color .15s; }
+  .icon-btn svg { width: 18px; height: 18px; }
+  .icon-btn:hover { background: var(--surface-2); color: var(--ink-1); border-color: var(--border); }
+  .dot-badge::after { content: ""; position: absolute; top: 8px; right: 9px; width: 7px; height: 7px; border-radius: 50%;
+    background: var(--rose-dot); border: 2px solid var(--surface); }
+  .avatar { width: 36px; height: 36px; border-radius: 50%; margin-left: 6px; background: var(--green-100); color: var(--green-700);
+    display: grid; place-items: center; font-weight: 700; font-size: 14px; cursor: pointer; border: 1px solid var(--border-2); }
+  .profile { position: relative; }
+  .avatar-btn { font-family: inherit; padding: 0; cursor: pointer; }
+  .profile-menu { position: absolute; top: calc(100% + 10px); right: 0; width: 264px; background: var(--surface);
+    border: 1px solid var(--border); border-radius: 14px; box-shadow: var(--shadow-lg); padding: 8px; z-index: 50;
+    opacity: 0; transform: translateY(-6px) scale(.98); transform-origin: top right; pointer-events: none;
+    transition: opacity .15s ease, transform .15s ease; }
+  .profile-menu.is-open { opacity: 1; transform: none; pointer-events: auto; }
+  .profile-head { display: flex; align-items: center; gap: 11px; padding: 10px 12px 14px; }
+  .profile-head .avatar { cursor: default; flex: none; }
+  .profile-head .who .n { font-weight: 700; color: var(--ink-1); font-size: 14.5px; line-height: 1.2; }
+  .profile-head .who .e { font-size: 12.5px; color: var(--ink-3); margin-top: 2px; }
+  .profile-sep { height: 1px; background: var(--border); margin: 4px 6px; }
+  .profile-item { display: flex; align-items: center; gap: 11px; padding: 10px 12px; border-radius: 9px;
+    font-size: 14px; font-weight: 600; color: var(--ink-2); text-decoration: none; cursor: pointer; transition: background .12s, color .12s; }
+  .profile-item svg { width: 17px; height: 17px; color: var(--ink-3); }
+  .profile-item:hover { background: var(--surface-2); color: var(--ink-1); }
+  .profile-item:hover svg { color: var(--ink-1); }
+  .profile-item.danger { color: var(--rose-fg); }
+  .profile-item.danger svg { color: var(--rose-fg); }
+  .profile-item.danger:hover { background: var(--rose-bg); }
+  .nav-toggle { display: none; place-items: center; width: 42px; height: 42px; border-radius: 10px;
+    border: 1px solid var(--border); background: var(--surface); color: var(--ink-1); cursor: pointer; flex: none; margin-left: auto; }
+  .nav-toggle svg { width: 21px; height: 21px; }
+  .nav-toggle .ic-close { display: none; }
+  .nav-toggle[aria-expanded="true"] .ic-open { display: none; }
+  .nav-toggle[aria-expanded="true"] .ic-close { display: block; }
+  .mobile-menu { display: none; flex-direction: column; gap: 3px; padding: 10px 20px 18px;
+    border-top: 1px solid var(--border); background: var(--surface); }
+  .mobile-menu.is-open { display: flex; }
+  .m-link { display: flex; align-items: center; gap: 11px; padding: 13px 14px; border-radius: 11px;
+    font-size: 16.5px; font-weight: 600; color: var(--ink-2); text-decoration: none; }
+  .m-link svg { width: 19px; height: 19px; color: var(--ink-4); }
+  .m-link.active { background: var(--green-50); color: var(--green-700); }
+  .m-link.active svg { color: var(--green-700); }
+  .m-divider { height: 1px; background: var(--border); margin: 8px 4px; }
+  .m-account { display: flex; align-items: center; gap: 11px; padding: 10px 14px; }
+  .m-account .avatar { margin: 0; }
+  .m-account .who { font-weight: 700; color: var(--ink-1); font-size: 15px; }
+  .m-account .who small { display: block; font-weight: 500; color: var(--ink-3); font-size: 12.5px; }
+  @media (max-width: 759px) {
+    .nav-links { display: none; }
+    .nav-right { display: none; }
+    .nav-toggle { display: inline-grid; }
+    .nav-inner { gap: 14px; }
+    .profile { display: none; }
+  }
+
+  /* ───────── Page head ───────── */
+  .wrap { max-width: var(--maxw); margin: 0 auto; padding: 38px 28px 72px; }
+  .page-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; flex-wrap: wrap; margin-bottom: 24px; }
+  .greeting { color: var(--ink-3); font-weight: 600; font-size: 14.5px; margin-bottom: 6px; }
+  h1 { font-size: 30px; font-weight: 800; color: var(--ink-1); letter-spacing: -0.03em; line-height: 1.1; }
+  .subtitle { color: var(--ink-3); margin-top: 8px; font-size: 15.5px; max-width: 48ch; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 9px; font-family: inherit; font-weight: 700; font-size: 15px;
+    border: none; cursor: pointer; border-radius: 11px; padding: 13px 20px; transition: transform .12s ease, box-shadow .15s, background .15s, border-color .15s;
+    letter-spacing: -0.01em; white-space: nowrap; text-decoration: none; }
+  .btn svg { width: 18px; height: 18px; }
+  .btn-primary { background: var(--green-600); color: #fff; box-shadow: 0 1px 2px rgba(11,70,52,.25), 0 8px 18px -8px rgba(11,70,52,.5); }
+  .btn-primary:hover { background: var(--green-700); }
+  .btn-primary:active { transform: translateY(1px); }
+
+  /* ───────── Attention banner ───────── */
+  .attention { display: flex; align-items: center; gap: 14px; background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 16px 20px; margin-bottom: 22px; box-shadow: var(--shadow-sm); }
+  .attention-icon { width: 40px; height: 40px; border-radius: 11px; flex: none; background: var(--amber-bg); color: var(--amber-fg);
+    display: grid; place-items: center; }
+  .attention-icon svg { width: 20px; height: 20px; }
+  .attention-text strong { color: var(--ink-1); font-weight: 700; }
+  .attention-text { font-size: 14.5px; color: var(--ink-2); }
+  .attention a { color: var(--green-700); font-weight: 700; text-decoration: none; margin-left: auto; white-space: nowrap; display: flex; align-items: center; gap: 5px; }
+  .attention a svg { width: 15px; height: 15px; }
+  .attention a:hover { text-decoration: underline; }
+  @media (max-width: 559px) {
+    .attention { align-items: flex-start; flex-wrap: wrap; }
+    .attention a { margin-left: 54px; }
+  }
+
+  /* ───────── Toolbar ───────── */
+  .toolbar { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; flex-wrap: wrap; }
+  .tabs { display: flex; align-items: center; gap: 4px; background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 4px; flex-wrap: wrap; }
+  .tab { font-family: inherit; border: none; background: transparent; cursor: pointer; display: inline-flex; align-items: center; gap: 7px;
+    padding: 8px 13px; border-radius: 8px; font-size: 13.5px; font-weight: 700; color: var(--ink-3); transition: background .15s, color .15s; white-space: nowrap; }
+  .tab .count { font-size: 12px; font-weight: 700; color: var(--ink-4); background: var(--surface-2); border: 1px solid var(--border);
+    padding: 0 6px; border-radius: 20px; min-width: 20px; text-align: center; }
+  .tab:hover { background: var(--surface-2); color: var(--ink-1); }
+  .tab.active { background: var(--green-600); color: #fff; }
+  .tab.active .count { color: #fff; background: rgba(255,255,255,.18); border-color: transparent; }
+
+  .view-toggle { margin-left: auto; display: inline-flex; background: var(--surface); border: 1px solid var(--border);
+    border-radius: 11px; padding: 3px; box-shadow: var(--shadow-sm); flex: none; }
+  .vt { font-family: inherit; border: none; background: transparent; cursor: pointer; display: inline-flex; align-items: center; gap: 7px;
+    padding: 8px 13px; border-radius: 8px; font-size: 13.5px; font-weight: 700; color: var(--ink-3); transition: background .15s, color .15s; }
+  .vt svg { width: 16px; height: 16px; }
+  .vt:hover { color: var(--ink-1); }
+  .vt.active { background: var(--ink-1); color: #fff; }
+
+  .search { position: relative; flex: 0 1 300px; min-width: 200px; }
+  .search svg { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); width: 17px; height: 17px; color: var(--ink-4); }
+  .search input { width: 100%; font-family: inherit; font-size: 14.5px; color: var(--ink-1); background: var(--surface);
+    border: 1px solid var(--border-2); border-radius: 11px; padding: 11px 14px 11px 40px; transition: border-color .15s, box-shadow .15s; }
+  .search input::placeholder { color: var(--ink-4); }
+  .search input:focus { outline: none; border-color: var(--green-600); box-shadow: 0 0 0 3px var(--green-50); }
+
+  [hidden] { display: none !important; }
+
+  /* ───────── List view ───────── */
+  .list-panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow-sm); overflow: hidden; }
+  .list-head { display: grid; grid-template-columns: 150px 1fr 130px 168px 130px 28px; gap: 16px; align-items: center;
+    padding: 13px 22px; background: var(--surface-2); border-bottom: 1px solid var(--border); }
+  .list-head span { font-size: 11.5px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink-4); }
+
+  .row { display: grid; grid-template-columns: 150px 1fr 130px 168px 130px 28px; gap: 16px; align-items: center;
+    padding: 16px 22px; text-decoration: none; color: inherit; transition: background .12s; border-bottom: 1px solid var(--border); }
+  .row:last-child { border-bottom: none; }
+  .row:hover { background: var(--surface-2); }
+  .c-ref { font-size: 13px; font-weight: 700; color: var(--ink-3); font-variant-numeric: tabular-nums; letter-spacing: 0.01em; }
+  .c-project .p-addr { font-size: 15px; font-weight: 700; color: var(--ink-1); letter-spacing: -0.015em; }
+  .c-project .p-desc { font-size: 13px; color: var(--ink-3); margin-top: 2px; }
+  .c-type { font-size: 13.5px; font-weight: 600; color: var(--ink-2); }
+  .c-type small { display: block; font-size: 12px; color: var(--ink-4); font-weight: 500; margin-top: 1px; }
+  .c-updated { font-size: 13.5px; color: var(--ink-3); font-weight: 500; }
+  .c-go { display: grid; place-items: center; }
+  .c-go svg { width: 18px; height: 18px; color: var(--ink-4); }
+  .row:hover .c-go svg { color: var(--green-700); }
+
+  /* ───────── Card view ───────── */
+  .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
+  @media (max-width: 760px) { .grid { grid-template-columns: 1fr; } }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px 22px 20px;
+    box-shadow: var(--shadow-sm); transition: transform .15s ease, box-shadow .2s ease, border-color .2s; display: flex; flex-direction: column; cursor: pointer; }
+  .card:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); border-color: var(--border-2); }
+  .card-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
+  .updated { font-size: 13px; color: var(--ink-4); font-weight: 500; white-space: nowrap; }
+  .addr { font-size: 19px; font-weight: 700; color: var(--ink-1); letter-spacing: -0.02em; line-height: 1.25; }
+  .meta { display: flex; align-items: center; gap: 10px; margin-top: 7px; flex-wrap: wrap; }
+  .proj { font-size: 14px; color: var(--ink-3); font-weight: 500; }
+  .track { display: flex; gap: 5px; margin: 18px 0 14px; }
+  .seg { flex: 1; height: 5px; border-radius: 4px; background: var(--border); }
+  .seg.done { background: var(--green-dot); }
+  .seg.done.warn { background: var(--amber-dot); }
+  .seg.done.bad  { background: var(--rose-dot); }
+  .card-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: auto; padding-top: 4px; }
+  .next { display: flex; align-items: center; gap: 9px; font-size: 14px; color: var(--ink-2); font-weight: 500; }
+  .next svg { width: 16px; height: 16px; flex: none; }
+  .next .lead { color: var(--ink-1); font-weight: 600; }
+  .link { display: inline-flex; align-items: center; gap: 5px; font-size: 14px; font-weight: 700; color: var(--green-700); text-decoration: none; white-space: nowrap; }
+  .link svg { width: 15px; height: 15px; transition: transform .15s; }
+  .card:hover .link svg { transform: translateX(3px); }
+
+  /* shared pill */
+  .ref { font-size: 12px; font-weight: 600; color: var(--ink-3); font-variant-numeric: tabular-nums; letter-spacing: 0.01em;
+    background: var(--surface-2); border: 1px solid var(--border); padding: 2px 8px; border-radius: 6px; }
+  .pill { display: inline-flex; align-items: center; gap: 7px; font-size: 12.5px; font-weight: 700; letter-spacing: -0.01em;
+    padding: 5px 11px 5px 9px; border-radius: 20px; white-space: nowrap; }
+  .pill .dot { width: 7px; height: 7px; border-radius: 50%; flex: none; }
+  .pill.draft     { background: var(--slate-bg); color: var(--slate-fg); }  .pill.draft .dot     { background: var(--slate-dot); }
+  .pill.submitted { background: var(--blue-bg);  color: var(--blue-fg); }   .pill.submitted .dot { background: var(--blue-dot); }
+
+  /* empty */
+  .empty { display: none; padding: 56px 24px; text-align: center; color: var(--ink-3); }
+  .empty svg { width: 30px; height: 30px; color: var(--ink-4); margin-bottom: 12px; }
+  .empty div { font-size: 15px; font-weight: 600; }
+
+  /* ───────── Pagination ───────── */
+  .pager { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 20px; flex-wrap: wrap; }
+  .pager-info { font-size: 13.5px; color: var(--ink-3); font-weight: 600; }
+  .pager-info b { color: var(--ink-1); font-weight: 700; }
+  .pages { display: flex; align-items: center; gap: 6px; }
+  .pg { min-width: 38px; height: 38px; padding: 0 10px; border-radius: 10px; border: 1px solid var(--border-2); background: var(--surface);
+    color: var(--ink-2); font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer; display: inline-grid; place-items: center;
+    transition: background .15s, color .15s, border-color .15s; }
+  .pg svg { width: 17px; height: 17px; }
+  .pg:hover:not(:disabled):not(.active) { background: var(--surface-2); border-color: var(--ink-4); color: var(--ink-1); }
+  .pg.active { background: var(--green-600); color: #fff; border-color: var(--green-600); cursor: default; }
+  .pg:disabled { opacity: .4; cursor: not-allowed; }
+  .pg-gap { color: var(--ink-4); font-weight: 700; padding: 0 2px; }
+
+  @media (max-width: 759px) {
+    .wrap { padding: 26px 16px 56px; }
+    h1 { font-size: 25px; }
+    .page-head .btn { width: 100%; }
+    .view-toggle { margin-left: 0; }
+    .search { order: -1; flex: 1 1 100%; max-width: none; }
+    .list-head { display: none; }
+    .list-panel { background: transparent; border: none; box-shadow: none; overflow: visible; display: flex; flex-direction: column; gap: 12px; }
+    .row { grid-template-columns: 1fr auto; grid-template-areas: "status updated" "project project" "typeref typeref";
+      gap: 10px 12px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow-sm);
+      padding: 16px 18px; }
+    .row:last-child { border-bottom: 1px solid var(--border); }
+    .c-status { grid-area: status; }
+    .c-updated { grid-area: updated; text-align: right; align-self: center; }
+    .c-project { grid-area: project; }
+    .c-type { grid-area: typeref; display: flex; align-items: baseline; gap: 8px; padding-top: 9px; border-top: 1px solid var(--border); }
+    .c-type small { display: inline; margin-top: 0; }
+    .c-type::after { content: attr(data-ref); margin-left: auto; font-size: 12px; font-weight: 700; color: var(--ink-4); font-variant-numeric: tabular-nums; }
+    .c-ref, .c-go { display: none; }
+    .pager { justify-content: center; }
+  }
+</style>
+</head>
+<body>
+
+  <nav class="nav">
+    <div class="nav-inner">
+      <a class="brand" href="Landing Page.html" aria-label="Building Control — home">
+        <div class="brand-mark"><img src="assets/logo/building-control-logo.svg" alt="Building Control" width="34" height="34" /></div>
+        <div class="brand-name">Building<span>Control</span></div>
+      </a>
+      <div class="nav-links">
+        <a class="nav-link active" href="Applicant Dashboard.html"><i data-lucide="layout-grid"></i> Dashboard</a>
+      </div>
+      <div class="nav-right">
+        <button class="icon-btn dot-badge" aria-label="Notifications"><i data-lucide="bell"></i></button>
+        <div class="profile">
+          <button class="avatar avatar-btn" id="profileBtn" aria-haspopup="true" aria-expanded="false" aria-label="Your account">SD</button>
+          <div class="profile-menu" id="profileMenu" role="menu">
+            <div class="profile-head">
+              <div class="avatar">SD</div>
+              <div class="who"><div class="n">Sarah Davies</div><div class="e">sarah@example.com</div></div>
+            </div>
+            <div class="profile-sep"></div>
+            <a class="profile-item" href="Your Profile.html#profile" role="menuitem"><i data-lucide="user"></i> Your profile</a>
+            <a class="profile-item" href="Your Profile.html#account" role="menuitem"><i data-lucide="settings"></i> Account settings</a>
+            <a class="profile-item" href="Your Profile.html#notifications" role="menuitem"><i data-lucide="bell"></i> Notifications</a>
+            <a class="profile-item" href="Contact Support.html" role="menuitem"><i data-lucide="life-buoy"></i> Help</a>
+            <div class="profile-sep"></div>
+            <a class="profile-item danger" href="Log In.html" role="menuitem"><i data-lucide="log-out"></i> Sign out</a>
+          </div>
+        </div>
+      </div>
+      <button class="nav-toggle" id="navToggle" aria-label="Menu" aria-controls="mobileMenu" aria-expanded="false">
+        <i data-lucide="menu" class="ic-open"></i><i data-lucide="x" class="ic-close"></i>
+      </button>
+    </div>
+    <nav class="mobile-menu" id="mobileMenu">
+      <a class="m-link active" href="Applicant Dashboard.html"><i data-lucide="layout-grid"></i> Dashboard</a>
+      <div class="m-divider"></div>
+      <a class="m-link" href="#"><i data-lucide="bell"></i> Notifications</a>
+      <div class="m-divider"></div>
+      <div class="m-account"><div class="avatar">SD</div><div class="who">Sarah Davies<small>sarah@example.com</small></div></div>
+    </nav>
+  </nav>
+
+  <main class="wrap" data-screen-label="Dashboard">
+    <div class="page-head">
+      <div>
+        <div class="greeting">Good morning, Sarah</div>
+        <h1>Your applications</h1>
+        <p class="subtitle">Everything you've submitted, all in one place. We'll always tell you what happens next — no jargon.</p>
+      </div>
+      <a class="btn btn-primary" href="Application Wizard.html"><i data-lucide="plus"></i> Start new application</a>
+    </div>
+
+    <div class="toolbar">
+      <div class="tabs" id="tabs">
+        <button class="tab active" data-filter="all">All <span class="count" data-count="all">0</span></button>
+        <button class="tab" data-filter="draft">Drafts <span class="count" data-count="draft">0</span></button>
+        <button class="tab" data-filter="submitted">Submitted <span class="count" data-count="submitted">0</span></button>
+      </div>
+      <div class="view-toggle" id="viewToggle">
+        <button class="vt active" data-view="list" aria-label="List view"><i data-lucide="list"></i> List</button>
+        <button class="vt" data-view="cards" aria-label="Card view"><i data-lucide="layout-grid"></i> Cards</button>
+      </div>
+      <div class="search">
+        <i data-lucide="search"></i>
+        <input id="search" type="text" placeholder="Search address or reference…" />
+      </div>
+    </div>
+
+    <div class="list-panel" id="listPanel">
+      <div class="list-head">
+        <span>Reference</span>
+        <span>Project</span>
+        <span>Type</span>
+        <span>Status</span>
+        <span>Last updated</span>
+        <span></span>
+      </div>
+      <div id="rows"></div>
+    </div>
+
+    <div class="grid" id="grid" hidden></div>
+
+    <div class="empty" id="empty">
+      <i data-lucide="search-x"></i>
+      <div>No applications match your filter.</div>
+    </div>
+
+    <div class="pager" id="pager">
+      <div class="pager-info" id="pagerInfo"></div>
+      <div class="pages" id="pages"></div>
+    </div>
+  </main>
+
+  <script>
+    const STATUS = {
+      draft:     { label: 'Draft',     cls: 'draft' },
+      submitted: { label: 'Submitted', cls: 'submitted' },
+    };
+    const DETAIL = 'Application Detail.html';
+
+    // Per-status presentation for the card view
+    const CARD = {
+      draft:     { track: ['',''],         icon: 'pencil-line',    color: 'var(--slate-dot)', lead: 'Not submitted yet', rest: ' — pay the application fee to submit', link: { label: 'Continue', icon: 'arrow-right' } },
+      submitted: { track: ['done','done'], icon: 'check-circle-2', color: 'var(--blue-dot)',  lead: 'Submitted',         rest: ' — fee paid, we have your application', link: { label: 'View', icon: 'arrow-right' } },
+    };
+
+    const DATA = [
+      { ref: 'BC-2026-05140', addr: '14 Elm Grove',            desc: 'Loft conversion with dormer',     type: 'Building Notice', cat: 'Domestic',   status: 'draft',     updated: 'Started 2 days ago' },
+      { ref: 'BC-2026-04821', addr: '8 Maple Court',           desc: 'Single-storey rear extension',    type: 'Full Plans',      cat: 'Domestic',   status: 'draft',     updated: 'Yesterday' },
+      { ref: 'BC-2026-04766', addr: 'Flat 3, 22 Bridge Street', desc: 'Internal structural alterations', type: 'Full Plans',     cat: 'Domestic',   status: 'submitted', updated: '4 days ago' },
+      { ref: 'BC-2026-04693', addr: '62 The Sidings',          desc: 'Garage conversion',               type: 'Full Plans',      cat: 'Domestic',   status: 'submitted', updated: '6 days ago' },
+      { ref: 'BC-2026-04512', addr: '5 Oakwood Close',         desc: 'Front porch addition',            type: 'Building Notice', cat: 'Domestic',   status: 'submitted', updated: '12 May' },
+      { ref: 'BC-2026-04388', addr: '31 Hill Road',            desc: 'Two-storey side extension',       type: 'Full Plans',      cat: 'Domestic',   status: 'submitted', updated: '8 May' },
+      { ref: 'BC-2026-04201', addr: '9 Camden Mews',           desc: 'Kitchen extension',               type: 'Full Plans',      cat: 'Domestic',   status: 'submitted', updated: '2 May' },
+      { ref: 'BC-2026-03988', addr: '47 Riverside Walk',       desc: 'Basement conversion',             type: 'Full Plans',      cat: 'Domestic',   status: 'submitted', updated: '28 Apr' },
+      { ref: 'BC-2026-03877', addr: '12 Beech Avenue',         desc: 'Replacement windows',             type: 'Building Notice', cat: 'Domestic',   status: 'submitted', updated: '21 Apr' },
+      { ref: 'BC-2026-03790', addr: '3 Foundry Lane',          desc: 'Garden room',                     type: 'Building Notice', cat: 'Domestic',   status: 'submitted', updated: '18 Apr' },
+      { ref: 'BC-2026-03654', addr: '88 Victoria Road',        desc: 'Loft conversion',                 type: 'Full Plans',      cat: 'Domestic',   status: 'submitted', updated: '14 Apr' },
+      { ref: 'BC-2026-03501', addr: '21 Orchard Close',        desc: 'Chimney breast removal',          type: 'Building Notice', cat: 'Domestic',   status: 'submitted', updated: '9 Apr' },
+      { ref: 'BC-2026-03377', addr: '5 Tanners Yard',          desc: 'Shopfront alteration',            type: 'Full Plans',      cat: 'Commercial', status: 'draft',     updated: 'Started 2 Apr' },
+      { ref: 'BC-2026-03244', addr: '30 Mill Street',          desc: 'Re-roofing',                      type: 'Building Notice', cat: 'Domestic',   status: 'submitted', updated: '27 Mar' },
+      { ref: 'BC-2026-03190', addr: '17 Spring Gardens',       desc: 'Single-storey side extension',    type: 'Full Plans',      cat: 'Domestic',   status: 'draft',     updated: 'Started 20 Mar' },
+      { ref: 'BC-2026-03012', addr: '6 Quarry Rise',           desc: 'Detached garage',                 type: 'Full Plans',      cat: 'Domestic',   status: 'submitted', updated: '15 Mar' },
+    ];
+
+    const PAGE_SIZE = 6;
+    let activeFilter = 'all';
+    let query = '';
+    let page = 1;
+    let view = localStorage.getItem('bc_dash_view') || 'list';
+
+    const rowsEl = document.getElementById('rows');
+    const gridEl = document.getElementById('grid');
+    const listPanel = document.getElementById('listPanel');
+    const emptyEl = document.getElementById('empty');
+    const pagerEl = document.getElementById('pager');
+    const pagerInfo = document.getElementById('pagerInfo');
+    const pagesEl = document.getElementById('pages');
+
+    // tab counts
+    document.querySelectorAll('.count').forEach(c => {
+      const k = c.dataset.count;
+      c.textContent = k === 'all' ? DATA.length : DATA.filter(d => d.status === k).length;
+    });
+
+    function filtered() {
+      return DATA.filter(d => {
+        const mF = activeFilter === 'all' || d.status === activeFilter;
+        const mQ = !query || (d.addr + ' ' + d.desc + ' ' + d.ref).toLowerCase().includes(query);
+        return mF && mQ;
+      });
+    }
+
+    function rowHTML(d) {
+      const s = STATUS[d.status];
+      return `<a class="row" href="${DETAIL}">
+        <div class="c-ref">${d.ref}</div>
+        <div class="c-project"><div class="p-addr">${d.addr}</div><div class="p-desc">${d.desc}</div></div>
+        <div class="c-type" data-ref="${d.ref}">${d.type}<small>${d.cat}</small></div>
+        <div class="c-status"><span class="pill ${s.cls}"><span class="dot"></span> ${s.label}</span></div>
+        <div class="c-updated">${d.updated}</div>
+        <div class="c-go"><i data-lucide="chevron-right"></i></div>
+      </a>`;
+    }
+
+    function cardHTML(d) {
+      const s = STATUS[d.status];
+      const cfg = CARD[d.status];
+      const track = cfg.track.map(c => `<span class="seg ${c}"></span>`).join('');
+      const linkHref = DETAIL;
+      const foot = `<span class="next"><i data-lucide="${cfg.icon}" style="color:${cfg.color}"></i> <span><span class="lead">${cfg.lead}</span>${cfg.rest}</span></span>
+          <a class="link" href="${linkHref}">${cfg.link.label} <i data-lucide="${cfg.link.icon}"></i></a>`;
+      return `<article class="card" data-href="${DETAIL}">
+        <div class="card-top"><span class="pill ${s.cls}"><span class="dot"></span> ${s.label}</span><span class="updated">${d.updated}</span></div>
+        <div class="addr">${d.addr}</div>
+        <div class="meta"><span class="proj">${d.desc}</span><span class="ref">${d.ref}</span></div>
+        <div class="track">${track}</div>
+        <div class="card-foot">${foot}</div>
+      </article>`;
+    }
+
+    function pageBtn(label, opts = {}) {
+      const { active, disabled, icon, go } = opts;
+      const b = document.createElement('button');
+      b.className = 'pg' + (active ? ' active' : '');
+      if (disabled) b.disabled = true;
+      if (icon) b.innerHTML = `<i data-lucide="${icon}"></i>`; else b.textContent = label;
+      if (go !== undefined && !disabled && !active) b.addEventListener('click', () => { page = go; render(); });
+      return b;
+    }
+
+    function buildPages(totalPages) {
+      pagesEl.innerHTML = '';
+      pagesEl.appendChild(pageBtn('', { icon: 'chevron-left', disabled: page === 1, go: page - 1 }));
+      const nums = [];
+      for (let i = 1; i <= totalPages; i++) {
+        if (i === 1 || i === totalPages || Math.abs(i - page) <= 1) nums.push(i);
+        else if (nums[nums.length - 1] !== '…') nums.push('…');
+      }
+      nums.forEach(n => {
+        if (n === '…') { const g = document.createElement('span'); g.className = 'pg-gap'; g.textContent = '…'; pagesEl.appendChild(g); }
+        else pagesEl.appendChild(pageBtn(String(n), { active: n === page, go: n }));
+      });
+      pagesEl.appendChild(pageBtn('', { icon: 'chevron-right', disabled: page === totalPages, go: page + 1 }));
+    }
+
+    function render() {
+      const list = filtered();
+      const total = list.length;
+      const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+      if (page > totalPages) page = totalPages;
+      const start = (page - 1) * PAGE_SIZE;
+      const slice = list.slice(start, start + PAGE_SIZE);
+
+      const isList = view === 'list';
+      listPanel.hidden = !isList || total === 0;
+      gridEl.hidden = isList || total === 0;
+
+      if (isList) rowsEl.innerHTML = slice.map(rowHTML).join('');
+      else gridEl.innerHTML = slice.map(cardHTML).join('');
+
+      emptyEl.style.display = total === 0 ? 'block' : 'none';
+
+      if (total === 0) {
+        pagerEl.style.display = 'none';
+      } else {
+        pagerEl.style.display = 'flex';
+        pagerInfo.innerHTML = `Showing <b>${start + 1}–${start + slice.length}</b> of <b>${total}</b> applications`;
+        buildPages(totalPages);
+      }
+      lucide.createIcons();
+    }
+
+    // filter tabs
+    document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => {
+      document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+      t.classList.add('active');
+      activeFilter = t.dataset.filter;
+      page = 1;
+      render();
+    }));
+
+    // view toggle
+    document.querySelectorAll('.vt').forEach(b => b.addEventListener('click', () => {
+      view = b.dataset.view;
+      localStorage.setItem('bc_dash_view', view);
+      document.querySelectorAll('.vt').forEach(x => x.classList.toggle('active', x === b));
+      render();
+    }));
+    // restore persisted view on load
+    document.querySelectorAll('.vt').forEach(x => x.classList.toggle('active', x.dataset.view === view));
+
+    document.getElementById('search').addEventListener('input', (e) => { query = e.target.value.trim().toLowerCase(); page = 1; render(); });
+
+    // whole card navigates (inner links keep their own targets)
+    gridEl.addEventListener('click', (e) => {
+      if (e.target.closest('a')) return;
+      const card = e.target.closest('.card');
+      if (card && card.dataset.href) window.location.href = card.dataset.href;
+    });
+
+    // nav behaviour
+    const navToggle = document.getElementById('navToggle');
+    const mobileMenu = document.getElementById('mobileMenu');
+    navToggle.addEventListener('click', () => {
+      const open = mobileMenu.classList.toggle('is-open');
+      navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    const profileBtn = document.getElementById('profileBtn');
+    const profileMenu = document.getElementById('profileMenu');
+    function closeProfile() { profileMenu.classList.remove('is-open'); profileBtn.setAttribute('aria-expanded', 'false'); }
+    profileBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const open = profileMenu.classList.toggle('is-open');
+      profileBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    document.addEventListener('click', (e) => { if (!profileMenu.contains(e.target) && e.target !== profileBtn) closeProfile(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeProfile(); });
+
+    render();
+  </script>
+</body>
+</html>

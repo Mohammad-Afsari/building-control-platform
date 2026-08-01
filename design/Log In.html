@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Building Control — Log in</title>
+<link rel="stylesheet" href="styles.css" />
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-font-smoothing: antialiased; }
+  body { font-family: var(--font-sans); color: var(--text-body); letter-spacing: var(--tracking-normal);
+    background:
+      radial-gradient(120% 80% at 50% -10%, var(--primary-50) 0%, rgba(234,243,238,0) 55%),
+      var(--surface-page);
+    min-height: 100vh; display: grid; place-items: center; padding: 32px 20px; }
+
+  .auth { width: 100%; max-width: 408px; }
+
+  /* logo */
+  .auth-brand { display: flex; flex-direction: column; align-items: center; gap: 12px; margin-bottom: 26px; }
+  .auth-brand img { width: 52px; height: 52px; display: block; }
+  .auth-brand .wm { font-size: 19px; letter-spacing: -0.022em; }
+  .auth-brand .wm b { font-weight: 800; color: var(--text-heading); }
+  .auth-brand .wm i { font-style: normal; font-weight: 600; color: var(--text-muted); }
+
+  .card { background: var(--surface-card); border: 1px solid var(--border-default); border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-md); padding: 34px 34px 30px; }
+  @media (max-width: 440px) { .card { padding: 26px 22px; } }
+
+  .card-head { text-align: center; margin-bottom: 24px; }
+  .card-head h1 { font-size: var(--text-h2); font-weight: var(--weight-black); color: var(--text-heading); letter-spacing: var(--tracking-snug); }
+  .card-head p { color: var(--text-muted); font-size: var(--text-body-sm); margin-top: 6px; }
+
+  /* error banner */
+  .auth-alert { display: none; align-items: flex-start; gap: 11px; margin-bottom: 20px;
+    background: var(--color-destructive-bg); border: 1px solid #F1C9C3; border-radius: var(--radius-md); padding: 12px 14px; }
+  .auth-alert.is-shown { display: flex; }
+  .auth-alert svg { width: 18px; height: 18px; color: var(--color-destructive); flex: none; margin-top: 1px; }
+  .auth-alert .msg { font-size: var(--text-body-sm); color: var(--color-destructive); font-weight: var(--weight-semibold); line-height: 1.45; }
+
+  form { display: flex; flex-direction: column; gap: 18px; }
+  .label-row { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 7px; }
+  .label-row .bc-label { margin: 0; }
+  .link-sm { font-size: var(--text-caption); font-weight: var(--weight-bold); color: var(--text-link); text-decoration: none; white-space: nowrap; }
+  .link-sm:hover { text-decoration: underline; }
+
+  .pw-wrap { position: relative; }
+  .pw-wrap .bc-input { padding-right: 44px; }
+  .pw-toggle { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); width: 32px; height: 32px;
+    border: none; background: none; cursor: pointer; color: var(--text-faint); display: grid; place-items: center; border-radius: var(--radius-xs); }
+  .pw-toggle:hover { color: var(--text-body); background: var(--surface-sunken); }
+  .pw-toggle svg { width: 17px; height: 17px; }
+
+  .field-msg { display: none; align-items: center; gap: 6px; font-size: var(--text-caption); color: var(--color-destructive); font-weight: var(--weight-semibold); margin-top: 7px; }
+  .field-msg.is-shown { display: flex; }
+  .field-msg svg { width: 14px; height: 14px; flex: none; }
+
+  /* submit + loading */
+  .bc-btn--block { width: 100%; padding: 13px 18px; font-size: var(--text-body-lg); margin-top: 4px; position: relative; }
+  .bc-btn .btn-label { display: inline-flex; align-items: center; gap: 8px; }
+  .bc-btn.is-loading { pointer-events: none; }
+  .bc-btn.is-loading .btn-label { visibility: hidden; }
+  .spinner { display: none; position: absolute; inset: 0; margin: auto; width: 19px; height: 19px;
+    border: 2.5px solid rgba(255,255,255,.45); border-top-color: #fff; border-radius: 50%; animation: spin .65s linear infinite; }
+  .bc-btn.is-loading .spinner { display: block; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .demo-hint { text-align: center; font-size: var(--text-caption); color: var(--text-faint); margin-top: 14px; }
+  .demo-hint code { font-family: var(--font-mono); color: var(--text-muted); background: var(--surface-sunken); padding: 1px 6px; border-radius: 5px; }
+
+  .auth-alt { text-align: center; margin-top: 24px; font-size: var(--text-body-sm); color: var(--text-muted); }
+  .auth-alt a { color: var(--text-link); font-weight: var(--weight-bold); text-decoration: none; }
+  .auth-alt a:hover { text-decoration: underline; }
+
+  .auth-foot { text-align: center; margin-top: 22px; font-size: var(--text-caption); color: var(--text-faint); }
+  .auth-foot a { color: var(--text-muted); text-decoration: none; }
+  .auth-foot a:hover { color: var(--text-body); }
+</style>
+</head>
+<body>
+  <div class="auth">
+    <div class="auth-brand">
+      <img src="assets/logo/building-control-logo.svg" alt="Building Control" />
+      <span class="wm"><b>Building</b>&hairsp;<i>Control</i></span>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <h1>Welcome back</h1>
+        <p>Log in to submit and track your applications.</p>
+      </div>
+
+      <div class="auth-alert" id="authAlert" role="alert">
+        <i data-lucide="alert-circle"></i>
+        <span class="msg">Those details don't match an account. Check your email and password and try again.</span>
+      </div>
+
+      <form id="loginForm" novalidate>
+        <div class="bc-field">
+          <label class="bc-label" for="email">Email address</label>
+          <input class="bc-input" id="email" name="email" type="email" autocomplete="email" placeholder="you@example.com" />
+          <div class="field-msg" id="emailMsg"><i data-lucide="alert-circle"></i> <span>Enter a valid email address.</span></div>
+        </div>
+
+        <div class="bc-field">
+          <div class="label-row">
+            <label class="bc-label" for="password">Password</label>
+            <a class="link-sm" href="Forgot Password.html" id="forgot">Forgot password?</a>
+          </div>
+          <div class="pw-wrap">
+            <input class="bc-input" id="password" name="password" type="password" autocomplete="current-password" placeholder="Enter your password" />
+            <button class="pw-toggle" type="button" id="pwToggle" aria-label="Show password"><i data-lucide="eye"></i></button>
+          </div>
+          <div class="field-msg" id="pwMsg"><i data-lucide="alert-circle"></i> <span>Enter your password.</span></div>
+        </div>
+
+        <button class="bc-btn bc-btn--primary bc-btn--block" type="submit" id="submitBtn">
+          <span class="btn-label">Log in <i data-lucide="arrow-right"></i></span>
+          <span class="spinner" aria-hidden="true"></span>
+        </button>
+      </form>
+
+      <p class="demo-hint">Demo — sign in with password <code>demo1234</code></p>
+    </div>
+
+    <p class="auth-alt">Don't have an account? <a href="Sign Up.html">Sign up</a></p>
+    <p class="auth-foot"><a href="Landing Page.html">← Back to home</a></p>
+  </div>
+
+  <script>
+    lucide.createIcons();
+
+    const form = document.getElementById('loginForm');
+    const email = document.getElementById('email');
+    const password = document.getElementById('password');
+    const emailMsg = document.getElementById('emailMsg');
+    const pwMsg = document.getElementById('pwMsg');
+    const alert = document.getElementById('authAlert');
+    const btn = document.getElementById('submitBtn');
+    const pwToggle = document.getElementById('pwToggle');
+
+    // show / hide password
+    pwToggle.addEventListener('click', () => {
+      const show = password.type === 'password';
+      password.type = show ? 'text' : 'password';
+      pwToggle.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+      pwToggle.innerHTML = show ? '<i data-lucide="eye-off"></i>' : '<i data-lucide="eye"></i>';
+      lucide.createIcons();
+    });
+
+    function clearAll() {
+      alert.classList.remove('is-shown');
+      [[email, emailMsg], [password, pwMsg]].forEach(([f, m]) => { f.classList.remove('is-error'); m.classList.remove('is-shown'); });
+    }
+    // clear a field's error as soon as the user edits it
+    email.addEventListener('input', () => { email.classList.remove('is-error'); emailMsg.classList.remove('is-shown'); alert.classList.remove('is-shown'); });
+    password.addEventListener('input', () => { password.classList.remove('is-error'); pwMsg.classList.remove('is-shown'); alert.classList.remove('is-shown'); });
+
+    function setLoading(on) {
+      btn.classList.toggle('is-loading', on);
+      btn.disabled = on;
+    }
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      clearAll();
+
+      const emailVal = email.value.trim();
+      const pwVal = password.value;
+      let ok = true;
+      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(emailVal)) { email.classList.add('is-error'); emailMsg.classList.add('is-shown'); ok = false; }
+      if (pwVal.length < 1) { password.classList.add('is-error'); pwMsg.classList.add('is-shown'); ok = false; }
+      if (!ok) { (email.classList.contains('is-error') ? email : password).focus(); return; }
+
+      setLoading(true);
+      setTimeout(() => {
+        if (pwVal === 'demo1234') {
+          window.location.href = 'Applicant Dashboard.html';
+        } else {
+          setLoading(false);
+          email.classList.add('is-error');
+          password.classList.add('is-error');
+          alert.classList.add('is-shown');
+          password.focus();
+          password.select();
+        }
+      }, 1300);
+    });
+  </script>
+</body>
+</html>

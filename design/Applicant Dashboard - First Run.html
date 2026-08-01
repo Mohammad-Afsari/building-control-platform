@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Building Control — Welcome</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>
+  :root {
+    --bg:        #F5F4F0;
+    --surface:   #FFFFFF;
+    --surface-2: #FBFAF7;
+    --border:    #E7E4DC;
+    --border-2:  #DEDAD0;
+
+    --ink-1: #1C2622;
+    --ink-2: #46504B;
+    --ink-3: #6E766F;
+    --ink-4: #97A09A;
+
+    --green-50:  #EAF3EE;
+    --green-100: #D5E8DD;
+    --green-200: #A9D0BC;
+    --green-600: #16795A;
+    --green-700: #0F5C44;
+    --green-800: #0B4634;
+
+    --slate-bg:  #EEF0F1;  --slate-fg:  #5A6670;  --slate-dot:#8A949C;
+    --amber-bg:  #FBF0DD;  --amber-fg:  #97631A;  --amber-dot:#D08B26;
+    --rose-dot: #D86355;
+
+    --radius:   16px;
+    --radius-sm: 10px;
+    --shadow-sm: 0 1px 2px rgba(28,38,34,.05);
+    --shadow:    0 1px 3px rgba(28,38,34,.06), 0 8px 24px -12px rgba(28,38,34,.12);
+    --shadow-lg: 0 2px 6px rgba(28,38,34,.07), 0 18px 40px -16px rgba(28,38,34,.18);
+
+    --maxw: 1160px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+  body {
+    font-family: "Hanken Grotesk", system-ui, sans-serif;
+    background: var(--bg); color: var(--ink-2);
+    font-size: 15px; line-height: 1.5; letter-spacing: -0.01em;
+  }
+  ::selection { background: var(--green-100); }
+
+  /* ───────────────── Top nav ───────────────── */
+  .nav { position: sticky; top: 0; z-index: 40; background: rgba(255,255,255,.86);
+    backdrop-filter: saturate(140%) blur(12px); border-bottom: 1px solid var(--border); }
+  .nav-inner { max-width: var(--maxw); margin: 0 auto; height: 64px; padding: 0 28px; display: flex; align-items: center; gap: 28px; }
+  .brand { display: flex; align-items: center; gap: 11px; }
+  .brand-mark { width: 34px; height: 34px; display: grid; place-items: center; }
+  .brand-mark img { width: 34px; height: 34px; display: block; }
+  .brand-name { font-weight: 800; color: var(--ink-1); font-size: 16.5px; letter-spacing: -0.02em; }
+  .brand-name span { color: var(--ink-3); font-weight: 600; }
+  .nav-links { display: flex; align-items: center; gap: 4px; margin-left: 8px; }
+  .nav-link { display: flex; align-items: center; gap: 7px; padding: 8px 13px; border-radius: 9px;
+    color: var(--ink-3); font-weight: 600; font-size: 14.5px; text-decoration: none; transition: background .15s, color .15s; }
+  .nav-link svg { width: 16px; height: 16px; }
+  .nav-link:hover { background: var(--surface-2); color: var(--ink-1); }
+  .nav-link.active { background: var(--green-50); color: var(--green-700); }
+  .nav-right { margin-left: auto; display: flex; align-items: center; gap: 6px; }
+  .icon-btn { width: 38px; height: 38px; border-radius: 10px; border: 1px solid transparent; background: transparent;
+    color: var(--ink-3); cursor: pointer; display: grid; place-items: center; position: relative; transition: background .15s, color .15s, border-color .15s; }
+  .icon-btn svg { width: 18px; height: 18px; }
+  .icon-btn:hover { background: var(--surface-2); color: var(--ink-1); border-color: var(--border); }
+  .avatar { width: 36px; height: 36px; border-radius: 50%; margin-left: 6px; background: var(--green-100); color: var(--green-700);
+    display: grid; place-items: center; font-weight: 700; font-size: 14px; cursor: pointer; border: 1px solid var(--border-2); }
+
+  /* ───────────────── Button ───────────────── */
+  .btn { display: inline-flex; align-items: center; gap: 9px; font-family: inherit; font-weight: 700; font-size: 15px;
+    border: none; cursor: pointer; border-radius: 11px; padding: 13px 20px; text-decoration: none;
+    transition: transform .12s ease, box-shadow .15s, background .15s; letter-spacing: -0.01em; white-space: nowrap; }
+  .btn svg { width: 18px; height: 18px; }
+  .btn-lg { padding: 15px 24px; font-size: 16.5px; }
+  .btn-primary { background: var(--green-600); color: #fff; box-shadow: 0 1px 2px rgba(11,70,52,.25), 0 8px 18px -8px rgba(11,70,52,.5); }
+  .btn-primary:hover { background: var(--green-700); }
+  .btn-primary:active { transform: translateY(1px); }
+
+  /* ───────────────── Page ───────────────── */
+  .wrap { max-width: var(--maxw); margin: 0 auto; padding: 38px 28px 80px; }
+
+  /* hero empty state */
+  .empty-hero { background: var(--surface); border: 1px solid var(--border); border-radius: 22px;
+    box-shadow: var(--shadow); overflow: hidden; position: relative; }
+  /* soft decorative band */
+  .empty-hero::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 220px;
+    background: radial-gradient(120% 140% at 50% -40%, var(--green-50) 0%, rgba(234,243,238,0) 70%); pointer-events: none; }
+  .empty-inner { position: relative; text-align: center; padding: 64px 28px 56px; }
+
+  /* illustration — stacked tokens building a "house" with a tick */
+  .illus { width: 132px; height: 132px; margin: 0 auto 30px; position: relative; }
+  .illus-ring { position: absolute; inset: 0; border-radius: 50%; background: var(--surface);
+    border: 1px solid var(--border); box-shadow: var(--shadow); }
+  .illus-ring::after { content: ""; position: absolute; inset: 0; border-radius: 50%;
+    box-shadow: inset 0 0 0 8px var(--green-50); }
+  .illus-logo { position: absolute; inset: 0; display: grid; place-items: center; }
+  .illus-logo img { width: 62px; height: 62px; display: block; }
+  .illus-badge { position: absolute; right: 4px; bottom: 6px; width: 40px; height: 40px; border-radius: 50%;
+    background: var(--green-600); color: #fff; display: grid; place-items: center; border: 3px solid var(--surface);
+    box-shadow: var(--shadow); }
+  .illus-badge svg { width: 21px; height: 21px; }
+
+  .empty-eyebrow { font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--green-700); margin-bottom: 14px; }
+  .empty-hero h1 { font-size: 34px; font-weight: 800; color: var(--ink-1); letter-spacing: -0.03em; line-height: 1.08; }
+  .empty-hero .sub { color: var(--ink-3); font-size: 17px; margin: 14px auto 0; max-width: 44ch; line-height: 1.5; }
+  .empty-cta { margin-top: 30px; display: flex; align-items: center; justify-content: center; gap: 14px; flex-wrap: wrap; }
+  .empty-trust { display: flex; align-items: center; justify-content: center; gap: 18px; margin-top: 22px; flex-wrap: wrap;
+    font-size: 13.5px; color: var(--ink-3); }
+  .empty-trust span { display: inline-flex; align-items: center; gap: 7px; }
+  .empty-trust svg { width: 15px; height: 15px; color: var(--green-600); }
+
+  /* how it works strip */
+  .how { margin-top: 26px; }
+  .how-head { display: flex; align-items: center; gap: 11px; margin-bottom: 16px; padding-left: 2px; }
+  .how-head .line { flex: 1; height: 1px; background: var(--border); }
+  .how-head h2 { font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-4); }
+  .how-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  @media (max-width: 720px) { .how-grid { grid-template-columns: 1fr; } }
+  .how-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px 22px 20px; box-shadow: var(--shadow-sm); }
+  .how-top { display: flex; align-items: center; gap: 12px; margin-bottom: 13px; }
+  .how-ic { width: 44px; height: 44px; border-radius: 12px; flex: none; display: grid; place-items: center;
+    background: var(--green-50); color: var(--green-700); border: 1px solid var(--green-100); }
+  .how-ic svg { width: 21px; height: 21px; }
+  .how-n { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 12.5px; font-weight: 700; color: var(--ink-4); }
+  .how-card h3 { font-size: 16px; font-weight: 700; color: var(--ink-1); letter-spacing: -0.02em; }
+  .how-card p { font-size: 13.5px; color: var(--ink-3); margin-top: 5px; line-height: 1.5; }
+
+  .help-foot { text-align: center; margin-top: 30px; font-size: 14px; color: var(--ink-3); }
+  .help-foot a { color: var(--green-700); font-weight: 700; text-decoration: none; }
+  .help-foot a:hover { text-decoration: underline; }
+
+  /* ───────────────── Mobile nav ───────────────── */
+  .nav-toggle { display: none; place-items: center; width: 42px; height: 42px; border-radius: 10px;
+    border: 1px solid var(--border); background: var(--surface); color: var(--ink-1); cursor: pointer; flex: none; margin-left: auto; }
+  .nav-toggle svg { width: 21px; height: 21px; }
+  .nav-toggle .ic-close { display: none; }
+  .nav-toggle[aria-expanded="true"] .ic-open { display: none; }
+  .nav-toggle[aria-expanded="true"] .ic-close { display: block; }
+  .mobile-menu { display: none; flex-direction: column; gap: 3px; padding: 10px 20px 18px;
+    border-top: 1px solid var(--border); background: var(--surface); }
+  .mobile-menu.is-open { display: flex; }
+  .m-link { display: flex; align-items: center; gap: 11px; padding: 13px 14px; border-radius: 11px;
+    font-size: 16.5px; font-weight: 600; color: var(--ink-2); text-decoration: none; }
+  .m-link svg { width: 19px; height: 19px; color: var(--ink-4); }
+  .m-link.active { background: var(--green-50); color: var(--green-700); }
+  .m-link.active svg { color: var(--green-700); }
+  .m-divider { height: 1px; background: var(--border); margin: 8px 4px; }
+  .m-account { display: flex; align-items: center; gap: 11px; padding: 10px 14px; }
+  .m-account .who { font-weight: 700; color: var(--ink-1); font-size: 15px; }
+  .m-account .who small { display: block; font-weight: 500; color: var(--ink-3); font-size: 12.5px; }
+
+  @media (max-width: 759px) {
+    .nav-links { display: none; }
+    .nav-right { display: none; }
+    .nav-toggle { display: inline-grid; }
+    .nav-inner { gap: 14px; }
+    h1 { font-size: 28px; }
+  }
+
+  /* brand link + profile dropdown */
+  a.brand { text-decoration: none; }
+  .profile { position: relative; }
+  .avatar-btn { font-family: inherit; padding: 0; cursor: pointer; }
+  .profile-menu { position: absolute; top: calc(100% + 10px); right: 0; width: 264px; background: var(--surface);
+    border: 1px solid var(--border); border-radius: 14px; box-shadow: var(--shadow-lg); padding: 8px; z-index: 50;
+    opacity: 0; transform: translateY(-6px) scale(.98); transform-origin: top right; pointer-events: none;
+    transition: opacity .15s ease, transform .15s ease; }
+  .profile-menu.is-open { opacity: 1; transform: none; pointer-events: auto; }
+  .profile-head { display: flex; align-items: center; gap: 11px; padding: 10px 12px 14px; }
+  .profile-head .avatar { cursor: default; flex: none; }
+  .profile-head .who .n { font-weight: 700; color: var(--ink-1); font-size: 14.5px; line-height: 1.2; }
+  .profile-head .who .e { font-size: 12.5px; color: var(--ink-3); margin-top: 2px; }
+  .profile-sep { height: 1px; background: var(--border); margin: 4px 6px; }
+  .profile-item { display: flex; align-items: center; gap: 11px; padding: 10px 12px; border-radius: 9px;
+    font-size: 14px; font-weight: 600; color: var(--ink-2); text-decoration: none; cursor: pointer; transition: background .12s, color .12s; }
+  .profile-item svg { width: 17px; height: 17px; color: var(--ink-3); }
+  .profile-item:hover { background: var(--surface-2); color: var(--ink-1); }
+  .profile-item:hover svg { color: var(--ink-1); }
+  .profile-item.danger { color: var(--rose-fg); }
+  .profile-item.danger svg { color: var(--rose-fg); }
+  .profile-item.danger:hover { background: var(--rose-bg); }
+  @media (max-width: 759px) { .profile { display: none; } }
+</style>
+</head>
+<body>
+
+  <nav class="nav">
+    <div class="nav-inner">
+      <a class="brand" href="Landing Page.html" aria-label="Building Control — home">
+        <div class="brand-mark"><img src="assets/logo/building-control-logo.svg" alt="Building Control" width="34" height="34" /></div>
+        <div class="brand-name">Building<span>Control</span></div>
+      </a>
+      <div class="nav-links">
+        <a class="nav-link active" href="#"><i data-lucide="layout-grid"></i> Dashboard</a>
+      </div>
+      <div class="nav-right">
+        <button class="icon-btn" aria-label="Notifications"><i data-lucide="bell"></i></button>
+        <div class="profile">
+          <button class="avatar avatar-btn" id="profileBtn" aria-haspopup="true" aria-expanded="false" aria-label="Your account">SD</button>
+          <div class="profile-menu" id="profileMenu" role="menu">
+            <div class="profile-head">
+              <div class="avatar">SD</div>
+              <div class="who"><div class="n">Sarah Davies</div><div class="e">sarah@example.com</div></div>
+            </div>
+            <div class="profile-sep"></div>
+            <a class="profile-item" href="Your Profile.html#profile" role="menuitem"><i data-lucide="user"></i> Your profile</a>
+            <a class="profile-item" href="Your Profile.html#account" role="menuitem"><i data-lucide="settings"></i> Account settings</a>
+            <a class="profile-item" href="Contact Support.html" role="menuitem"><i data-lucide="life-buoy"></i> Help</a>
+            <div class="profile-sep"></div>
+            <a class="profile-item danger" href="Log In.html" role="menuitem"><i data-lucide="log-out"></i> Sign out</a>
+          </div>
+        </div>
+      </div>
+      <button class="nav-toggle" id="navToggle" aria-label="Menu" aria-controls="mobileMenu" aria-expanded="false">
+        <i data-lucide="menu" class="ic-open"></i><i data-lucide="x" class="ic-close"></i>
+      </button>
+    </div>
+    <nav class="mobile-menu" id="mobileMenu">
+      <a class="m-link active" href="#"><i data-lucide="layout-grid"></i> Dashboard</a>
+      <div class="m-divider"></div>
+      <a class="m-link" href="#"><i data-lucide="life-buoy"></i> Help</a>
+      <a class="m-link" href="#"><i data-lucide="bell"></i> Notifications</a>
+      <div class="m-divider"></div>
+      <div class="m-account"><div class="avatar">SD</div><div class="who">Sarah Davies<small>sarah@example.com</small></div></div>
+    </nav>
+  </nav>
+
+  <main class="wrap">
+    <section class="empty-hero">
+      <div class="empty-inner">
+        <div class="illus" aria-hidden="true">
+          <div class="illus-ring"></div>
+          <div class="illus-logo"><img src="assets/logo/building-control-logo.svg" alt="" /></div>
+          <div class="illus-badge"><i data-lucide="check"></i></div>
+        </div>
+        <div class="empty-eyebrow">Welcome, Sarah</div>
+        <h1>Let's get your first application started</h1>
+        <p class="sub">There's nothing here yet — and that's fine. No jargon, no guesswork. We'll guide you through it one step at a time.</p>
+        <div class="empty-cta">
+          <a class="btn btn-primary btn-lg" href="Application Wizard.html"><i data-lucide="plus"></i> Start your first application</a>
+        </div>
+        <div class="empty-trust">
+          <span><i data-lucide="check"></i> Free to start</span>
+          <span><i data-lucide="check"></i> Save and return any time</span>
+          <span><i data-lucide="check"></i> We tell you what's next</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="how">
+      <div class="how-head">
+        <h2>Here's how it works</h2>
+        <span class="line"></span>
+      </div>
+      <div class="how-grid">
+        <div class="how-card">
+          <div class="how-top"><span class="how-ic"><i data-lucide="square-pen"></i></span><span class="how-n">Step 1</span></div>
+          <h3>Tell us about the work</h3>
+          <p>Name your application and the site, then choose the type of work.</p>
+        </div>
+        <div class="how-card">
+          <div class="how-top"><span class="how-ic"><i data-lucide="upload-cloud"></i></span><span class="how-n">Step 2</span></div>
+          <h3>Add your details &amp; plans</h3>
+          <p>Upload documents and pay the fee — we'll show you exactly what's needed.</p>
+        </div>
+        <div class="how-card">
+          <div class="how-top"><span class="how-ic"><i data-lucide="radar"></i></span><span class="how-n">Step 3</span></div>
+          <h3>Submit &amp; track</h3>
+          <p>Follow every step here, and we'll always tell you what happens next.</p>
+        </div>
+      </div>
+    </section>
+
+    <p class="help-foot">Not sure if you need approval? <a href="#">Read our plain-English guidance</a> or <a href="#">ask us a question</a>.</p>
+  </main>
+
+  <script>lucide.createIcons();
+    const navToggle = document.getElementById('navToggle');
+    const mobileMenu = document.getElementById('mobileMenu');
+    navToggle.addEventListener('click', () => {
+      const open = mobileMenu.classList.toggle('is-open');
+      navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+
+    const profileBtn = document.getElementById('profileBtn');
+    const profileMenu = document.getElementById('profileMenu');
+    function closeProfile() { profileMenu.classList.remove('is-open'); profileBtn.setAttribute('aria-expanded', 'false'); }
+    profileBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const open = profileMenu.classList.toggle('is-open');
+      profileBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    document.addEventListener('click', (e) => { if (!profileMenu.contains(e.target) && e.target !== profileBtn) closeProfile(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeProfile(); });
+  </script>
+</body>
+</html>
