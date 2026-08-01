@@ -11,24 +11,24 @@
 
 ## Tests
 
-- [ ] `src/routes/not-found.test.tsx` — an unmatched path renders the
+- [x] `src/routes/not-found.test.tsx` — an unmatched path renders the
       not-found page
-- [ ] `src/routes/not-found.test.tsx` — the heading reads "We can't
+- [x] `src/routes/not-found.test.tsx` — the heading reads "We can't
       find that page"
-- [ ] `src/routes/not-found.test.tsx` — the document title is set
-- [ ] `src/routes/not-found.test.tsx` — activating the home link
+- [x] `src/routes/not-found.test.tsx` — the document title is set
+- [x] `src/routes/not-found.test.tsx` — activating the home link
       navigates to `/`
-- [ ] `src/routes/not-found.test.tsx` — the page has exactly one `h1`
-- [ ] `src/routes/not-found.test.tsx` — regression: `/login` still
+- [x] `src/routes/not-found.test.tsx` — the page has exactly one `h1`
+- [x] `src/routes/not-found.test.tsx` — regression: `/login` still
       renders the login page, proving the catch-all has not shadowed
       real routes
 
 ## Verification
 
-- [ ] `npm run lint`
-- [ ] `npm run build`
-- [ ] `npm run test:run`
-- [ ] Confirm the catch-all regression test genuinely bites: point the
+- [x] `npm run lint`
+- [x] `npm run build`
+- [x] `npm run test:run`
+- [x] Confirm the catch-all regression test genuinely bites: point the
       catch-all at a real path instead of `*`, watch the unmatched-path
       test fail, then restore it
 
