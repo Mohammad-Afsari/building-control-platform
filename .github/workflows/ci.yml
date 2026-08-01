@@ -14,6 +14,25 @@ permissions:
   contents: read
 
 jobs:
+  # A proposal's acceptance criteria are the target an implementation is
+  # measured against. An implementer able to edit them can always meet
+  # them, so this rejects a PR that rewrites one while also changing
+  # source. Amending a proposal deliberately is fine — in its own PR.
+  spec-integrity:
+    name: Spec integrity
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+
+      - run: node scripts/check-spec-immutability.mjs origin/${{ github.base_ref }}
+
   checks:
     name: Lint, typecheck, test
     runs-on: ubuntu-latest

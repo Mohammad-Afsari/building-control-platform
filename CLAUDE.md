@@ -86,3 +86,19 @@ Full rules are in [`.claude/STYLE_GUIDE.md`](./.claude/STYLE_GUIDE.md) and concr
 ## Workflow
 
 All changes go through a feature branch and pull request — never commit directly to `main`.
+
+### Spec-driven development
+
+Work is described in [`specs/`](./specs/) before it is built. A **change** is one PR-sized piece of work; merged changes amend a **capability**, which records what the system does today.
+
+Three gates, each a separate pull request you review:
+
+1. **`/new-spec <description>`** → `specs/changes/<name>/proposal.md` — what and why, acceptance criteria in EARS notation, tests required
+2. **`/plan <name>`** → `design.md` + `tasks.md` — how, and why that way
+3. **Merging a `planned` change** triggers implementation, which opens a PR for review
+
+Naming is verb-led kebab-case matching the branch (`add-about-page`), with no numeric prefix — parallel proposals would race for the same number and a folder collision is not something git flags.
+
+**Acceptance criteria are immutable during implementation.** Only `status` may change. `scripts/check-spec-immutability.mjs` enforces this in CI: a PR that rewrites a proposal while also touching `src/` or `e2e/` is rejected. Amending a proposal deliberately is fine, in a PR that changes nothing else.
+
+Rules for whoever implements a change — including the hard limits — are in [`.claude/SPEC_WORKFLOW.md`](./.claude/SPEC_WORKFLOW.md).
