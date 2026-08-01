@@ -34,25 +34,56 @@ Ordering lives in the archive timestamp, where it is actually true.
 
 ## The flow
 
-Three gates. You review at each, and each is a separate pull request.
+Four steps, each a separate pull request you review.
 
 **1. Propose** — `/new-spec <description>`
 
 Writes `specs/changes/<name>/proposal.md` with status `proposed` and
-opens a PR. One markdown file, reviewable on a phone. This is the
-cheapest possible place to catch "that is not what I meant".
+opens a PR. One markdown file, reviewable on a phone. The cheapest
+possible place to catch "that is not what I meant".
 
 **2. Plan** — `/plan <change-name>`
 
-Adds `design.md` and `tasks.md`, moves status to `planned`. This is
-where the approach gets agreed — before there is a large diff to argue
-with.
+Adds `design.md` and `tasks.md`, moves status to `planned`. Where the
+approach gets agreed — before there is a large diff to argue with.
 
-**3. Implement** — automatic on merge
+**3. Implement** — `/implement-spec <change-name>`
 
-Merging a `planned` change triggers the implementation workflow. It
-branches, writes the code and the tests named in the proposal, runs the
-gates, and opens a PR for review. It never merges its own work.
+Works through `tasks.md` **one task at a time**, committing after each,
+writing the tests named in the proposal, then opens a PR. Never merges
+its own work.
+
+One task at a time is deliberate. It is what both
+[OpenSpec](https://github.com/Fission-AI/OpenSpec) and
+[Kiro](https://kiro.dev/docs/specs/) settled on, for the same reason:
+when something goes wrong at task four of seven, you get three sound
+commits and an obvious stopping point instead of one tangled diff.
+
+**4. Archive** — `/archive-spec <change-name>`
+
+Once the implementation is merged, folds the criteria into
+`specs/capabilities/` and moves the change to
+`specs/changes/archive/YYYY-MM-DD-<name>/`.
+
+Skipping this is how a capability folder goes stale. Without it you
+accumulate historical diffs and nothing describing what the system
+currently does.
+
+## Why this is invoked rather than automated
+
+Every step is run by a person. There is no workflow that picks up a
+merged spec and starts building.
+
+That is on purpose, and it matches how the tools this borrows from
+actually work — both are editor-invoked with someone watching. Kiro
+[held back unattended execution for a long time](https://kiro.dev/blog/run-all-tasks/)
+because their testing found the agent sometimes did well alone and
+sometimes produced failures that cost more to unpick than to have done
+by hand.
+
+Automating the trigger is a small change once the loop is proven. Doing
+it before then just means discovering a weak prompt through a series of
+pull requests nobody was watching.
 
 ## Writing acceptance criteria
 
