@@ -31,6 +31,12 @@ approach and what was already rejected, `tasks.md` for the checklist.
 Ask the user. Do not pick the likeliest reading — that is the failure
 this whole pipeline exists to prevent.
 
+A marker reaching this stage means the planning gate was skipped or
+rushed. The answer belongs in the proposal under `## Decisions`, and
+you cannot put it there yourself: editing a proposal while also
+changing source is exactly what the immutability check rejects. So the
+fix is a separate proposal-only pull request, then rebase onto it.
+
 ### 2. Set up
 
 ```bash

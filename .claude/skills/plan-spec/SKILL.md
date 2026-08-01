@@ -18,8 +18,30 @@ Output is `design.md` and `tasks.md` — still no source code.
 list those with `status: proposed` and ask which.
 
 **If any `[NEEDS CLARIFICATION]` markers remain, resolve them with the
-user now.** That is what this gate is for. Planning around an unanswered
-question just moves the guess later, where it is more expensive.
+user before planning anything.** That is what this gate is for.
+Planning around an unanswered question just moves the guess later,
+where it is more expensive.
+
+Once the user answers, **write the decision into the proposal** —
+replace the marker with the verdict and its reasoning under a
+`## Decisions` heading, and commit that as its own change:
+
+```markdown
+## Decisions
+
+- **Home link only.** "Go to dashboard" would bounce a signed-out
+  visitor to login — a worse dead end than the 404 — and there is no
+  support route yet. Revisit when both exist.
+```
+
+Do not leave the answer in the conversation or a PR comment. Whoever
+implements this later reads the change folder, not the thread. Record
+why, not just what, or the question gets reopened.
+
+Amending a proposal this way is allowed — the immutability check only
+rejects it when the same pull request also touches source.
+
+**A change cannot move to `planned` while a marker is unresolved.**
 
 ### 2. Understand the ground
 
