@@ -1,6 +1,6 @@
 ---
 title: Show a not-found page instead of a blank screen
-status: planned
+status: done
 capability: chrome-errors
 design: design/Error Pages.html
 ---

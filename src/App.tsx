@@ -7,6 +7,7 @@ import { HomePage } from '@/src/routes/home'
 import { LoginPage } from '@/src/routes/login'
 import { SignupPage } from '@/src/routes/signup'
 import { AuthConfirmPage } from '@/src/routes/auth-confirm'
+import { NotFoundPage } from '@/src/routes/not-found'
 import { ApplicationsListPage } from '@/src/routes/applications/list'
 import { NewApplicationPage } from '@/src/routes/applications/new'
 import { ApplicationDetailPage } from '@/src/routes/applications/detail'
@@ -48,6 +49,8 @@ function App() {
                   </ProtectedRoute>
                 }
               />
+              {/* Last: only matches when nothing else does. */}
+              <Route path="*" element={<NotFoundPage />} />
             </Routes>
           </BrowserRouter>
         </AuthProvider>
