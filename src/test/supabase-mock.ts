@@ -6,22 +6,30 @@ import { vi } from 'vitest'
 
     The `getSession`/`onAuthStateChange` defaults are what `AuthProvider`
     calls on mount, so a component tree renders without extra setup. */
-export const createSupabaseMock = () => ({
-  auth: {
-    signInWithPassword: vi.fn(),
-    signUp: vi.fn(),
-    resend: vi.fn(),
-    verifyOtp: vi.fn(),
-    exchangeCodeForSession: vi.fn(),
-    signOut: vi.fn().mockResolvedValue({ error: null }),
-    getSession: vi
-      .fn()
-      .mockResolvedValue({ data: { session: null }, error: null }),
-    onAuthStateChange: vi.fn().mockReturnValue({
-      data: { subscription: { unsubscribe: vi.fn() } },
-    }),
-  },
-})
+export const createSupabaseMock = () => {
+  const order = vi.fn()
+  const select = vi.fn().mockReturnValue({ order })
+  const from = vi.fn().mockReturnValue({ select })
+
+  return {
+    auth: {
+      signInWithPassword: vi.fn(),
+      signUp: vi.fn(),
+      resend: vi.fn(),
+      verifyOtp: vi.fn(),
+      exchangeCodeForSession: vi.fn(),
+      signOut: vi.fn().mockResolvedValue({ error: null }),
+      getSession: vi
+        .fn()
+        .mockResolvedValue({ data: { session: null }, error: null }),
+      onAuthStateChange: vi.fn().mockReturnValue({
+        data: { subscription: { unsubscribe: vi.fn() } },
+      }),
+    },
+    from,
+    database: { select, order },
+  }
+}
 
 export type SupabaseMock = ReturnType<typeof createSupabaseMock>
 

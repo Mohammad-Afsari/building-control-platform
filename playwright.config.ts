@@ -47,9 +47,11 @@ const readSupabaseEnv = (): SupabaseEnv => {
 
 const supabase = readSupabaseEnv()
 
-/* Workers are forked from this process, so they inherit this. Keeps
-   the mail server's port in one place rather than hardcoded in tests. */
+/* Workers are forked from this process, so they inherit these. Keeps
+   local service details in one place rather than hardcoded in tests. */
 process.env.MAILPIT_URL = supabase.mailpitUrl
+process.env.SUPABASE_API_URL = supabase.apiUrl
+process.env.SUPABASE_ANON_KEY = supabase.anonKey
 
 export default defineConfig({
   testDir: './e2e',
