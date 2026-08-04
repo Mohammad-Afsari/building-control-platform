@@ -146,7 +146,15 @@ proposal you have not planned yet will not surprise you with a PR.
 
 ## Rules for implementers
 
-In [`.claude/SPEC_WORKFLOW.md`](../.claude/SPEC_WORKFLOW.md). The one
+In [`specs/IMPLEMENTATION_RULES.md`](./IMPLEMENTATION_RULES.md). The one
 worth knowing here: **acceptance criteria are immutable during
 implementation.** An agent that can edit the target can always hit it.
 CI enforces this.
+
+## Agent support
+
+The workflow is tool-neutral. Claude exposes the four stages through
+`.claude/skills/`; Codex exposes the same stages through `.agents/skills/` and
+loads repository-wide guidance from `AGENTS.md`. Both tools read the files in
+this directory as the contract, so switching agents does not change the
+acceptance criteria, design, tasks, or archive format.

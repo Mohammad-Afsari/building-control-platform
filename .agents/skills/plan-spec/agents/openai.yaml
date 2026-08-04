@@ -1,0 +1,4 @@
+interface:
+  display_name: "Plan Spec"
+  short_description: "Turn an approved proposal into a build plan"
+  default_prompt: "Use $plan-spec to create the design and tasks for an approved change."
