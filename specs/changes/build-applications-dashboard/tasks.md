@@ -4,7 +4,7 @@
 
 - [x] Add the typed `applications` summary query and extend the shared Supabase
   test mock for authenticated, ordered table reads.
-- [ ] Build the reusable signed-in `AppNav` with active Dashboard navigation,
+- [x] Build the reusable signed-in `AppNav` with active Dashboard navigation,
   account identity, sign out, and an accessible mobile disclosure, omitting
   every unbuilt destination.
 - [ ] Build the accessible dashboard loading skeleton and first-run experience
