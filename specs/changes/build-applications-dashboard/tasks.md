@@ -18,7 +18,7 @@
 
 ## Tests
 
-- [ ] `src/routes/applications/list.test.tsx` — prove query ordering and error
+- [x] `src/routes/applications/list.test.tsx` — prove query ordering and error
   propagation, accessible loading and retry, first-run and populated states,
   greeting fallback, all status counts and filters, search/no-match behaviour,
   persisted views, page reset and pagination, working links, document title,
