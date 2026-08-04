@@ -7,7 +7,7 @@
 - [x] Build the reusable signed-in `AppNav` with active Dashboard navigation,
   account identity, sign out, and an accessible mobile disclosure, omitting
   every unbuilt destination.
-- [ ] Build the accessible dashboard loading skeleton and first-run experience
+- [x] Build the accessible dashboard loading skeleton and first-run experience
   from their committed visual references.
 - [ ] Build the populated dashboard with all five status counts, filtering,
   case-insensitive search, persisted list/card views, responsive application
