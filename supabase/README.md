@@ -22,6 +22,21 @@ contains. It exists because `0001` was originally applied without them
 and needed a follow-up. Grants are idempotent, so it is a no-op on a
 fresh database; it is kept to preserve the real history.
 
+## Hosted schema status
+
+Last verified read-only through the Supabase connector on **2026-08-04**:
+
+- `0001_applications.sql` is present: the table, sequence, functions, trigger,
+  RLS policies, and application grants match the intended migration.
+- `0002_applications_grants.sql` is present.
+- `0003_documents.sql` is **not present**: there is no `public.documents`
+  table, `application-documents` storage bucket, or associated RLS policies.
+- The hosted migration history is empty, as expected from applying SQL by hand.
+
+This is known schema drift, not permission to apply `0003`. Apply it only as a
+separate reviewed database change, then update this section after verifying the
+hosted schema.
+
 ## Applying to a fresh database
 
 ```sql

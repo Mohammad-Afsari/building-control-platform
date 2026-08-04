@@ -1,0 +1,4 @@
+interface:
+  display_name: "Archive Spec"
+  short_description: "Promote completed behavior and archive its change"
+  default_prompt: "Use $archive-spec to archive a merged change into the capability specs."

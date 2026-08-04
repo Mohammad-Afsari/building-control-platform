@@ -12,7 +12,7 @@ Kiro converged on this independently, for the same reason: when
 something goes wrong at task four of seven, a reviewer gets three sound
 commits and an obvious stopping point rather than one tangled diff.
 
-Read [`.claude/SPEC_WORKFLOW.md`](../../SPEC_WORKFLOW.md) before
+Read [`specs/IMPLEMENTATION_RULES.md`](../../../specs/IMPLEMENTATION_RULES.md) before
 starting — it holds the rules and the hard limits. They are not
 negotiable.
 

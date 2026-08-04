@@ -105,4 +105,4 @@ Naming is verb-led kebab-case matching the branch (`add-about-page`), with no nu
 
 **Acceptance criteria are immutable during implementation.** Only `status` may change. `scripts/check-spec-immutability.mjs` enforces this in CI: a PR that rewrites a proposal while also touching `src/` or `e2e/` is rejected. Amending a proposal deliberately is fine, in a PR that changes nothing else.
 
-Rules for whoever implements a change — including the hard limits — are in [`.claude/SPEC_WORKFLOW.md`](./.claude/SPEC_WORKFLOW.md).
+Rules for whoever implements a change — including the hard limits — are in [`specs/IMPLEMENTATION_RULES.md`](./specs/IMPLEMENTATION_RULES.md).
