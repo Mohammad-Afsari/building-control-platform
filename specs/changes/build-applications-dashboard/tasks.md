@@ -12,7 +12,7 @@
 - [x] Build the populated dashboard with all five status counts, filtering,
   case-insensitive search, persisted list/card views, responsive application
   links, no-match feedback, relative timestamps, and six-item pagination.
-- [ ] Compose the `/applications` route with its document title, current user,
+- [x] Compose the `/applications` route with its document title, current user,
   user-keyed TanStack Query, loading/first-run/populated states, and a retryable
   error alert that cannot be mistaken for an empty account.
 
