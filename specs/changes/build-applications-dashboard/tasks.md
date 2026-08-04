@@ -9,7 +9,7 @@
   every unbuilt destination.
 - [x] Build the accessible dashboard loading skeleton and first-run experience
   from their committed visual references.
-- [ ] Build the populated dashboard with all five status counts, filtering,
+- [x] Build the populated dashboard with all five status counts, filtering,
   case-insensitive search, persisted list/card views, responsive application
   links, no-match feedback, relative timestamps, and six-item pagination.
 - [ ] Compose the `/applications` route with its document title, current user,
