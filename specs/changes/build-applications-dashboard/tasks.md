@@ -23,7 +23,7 @@
   greeting fallback, all status counts and filters, search/no-match behaviour,
   persisted views, page reset and pagination, working links, document title,
   navigation semantics, and omission of dead controls.
-- [ ] `e2e/supabase.ts`, `playwright.config.ts`, and
+- [x] `e2e/supabase.ts`, `playwright.config.ts`, and
   `e2e/applications.spec.ts` — create isolated local users and applications,
   then prove RLS ownership, newest-first rendering, detail navigation, and
   keyboard-operable mobile navigation in Chromium.
