@@ -1,6 +1,6 @@
 ---
 title: Build the applications dashboard
-status: proposed
+status: planned
 capability: applications-dashboard
 design: design/Applicant Dashboard.html
 ---
