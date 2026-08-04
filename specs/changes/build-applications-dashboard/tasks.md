@@ -2,7 +2,7 @@
 
 ## Implementation
 
-- [ ] Add the typed `applications` summary query and extend the shared Supabase
+- [x] Add the typed `applications` summary query and extend the shared Supabase
   test mock for authenticated, ordered table reads.
 - [ ] Build the reusable signed-in `AppNav` with active Dashboard navigation,
   account identity, sign out, and an accessible mobile disclosure, omitting
