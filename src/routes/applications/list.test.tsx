@@ -1,6 +1,6 @@
 import { act } from 'react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { screen, within } from '@testing-library/react'
+import { screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Route, Routes } from 'react-router'
 import { AuthProvider } from '@/src/lib/auth-context'
@@ -118,12 +118,14 @@ describe('ApplicationsListPage', () => {
     expect(await screen.findByRole('status')).toHaveTextContent(
       /loading your applications/i,
     )
-    expect(supabaseMock.from).toHaveBeenCalledWith('applications')
-    expect(database.select).toHaveBeenCalledWith(
-      'id, name, address, reference, status, type, category, updated_at',
-    )
-    expect(database.order).toHaveBeenCalledWith('updated_at', {
-      ascending: false,
+    await waitFor(() => {
+      expect(supabaseMock.from).toHaveBeenCalledWith('applications')
+      expect(database.select).toHaveBeenCalledWith(
+        'id, name, address, reference, status, type, category, updated_at',
+      )
+      expect(database.order).toHaveBeenCalledWith('updated_at', {
+        ascending: false,
+      })
     })
 
     await act(async () => finishRequest({ data: [], error: null }))
