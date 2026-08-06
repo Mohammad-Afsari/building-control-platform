@@ -14,7 +14,7 @@ time and keep the acceptance criteria intact while implementing.
   check-email states: local email validation and focus, in-flight disabling,
   current-origin `/reset-password` redirect, generic non-enumerating copy,
   operational retry, resend announcements, and `/login` navigation.
-- [ ] Build the callback gate and password-entry states in
+- [x] Build the callback gate and password-entry states in
   `src/routes/reset-password.tsx`: checking and invalid-link states, recovery
   event plus guarded session fallback, eight-character and matching validation,
   strength guidance, reveal control, focus management, and accessible status.
