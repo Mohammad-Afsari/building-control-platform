@@ -5,7 +5,7 @@ time and keep the acceptance criteria intact while implementing.
 
 ## Implementation
 
-- [ ] Add the non-secret initial callback snapshot to
+- [x] Add the non-secret initial callback snapshot to
   `src/lib/supabase/client.ts`, and extend `src/test/supabase-mock.ts` with
   controllable recovery request, session, update, sign-out, and auth-event
   behaviour. This supplies deterministic handling for valid, missing, invalid,

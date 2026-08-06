@@ -1,4 +1,10 @@
 import { vi } from 'vitest'
+import type { AuthChangeEvent, Session } from '@supabase/supabase-js'
+
+type AuthStateChangeCallback = (
+  event: AuthChangeEvent,
+  session: Session | null,
+) => void | Promise<void>
 
 /** Stand-in for `@/src/lib/supabase/client`'s `supabase` export.
     Unit tests never talk to a real backend — anything needing a live
@@ -10,21 +16,42 @@ export const createSupabaseMock = () => {
   const order = vi.fn()
   const select = vi.fn().mockReturnValue({ order })
   const from = vi.fn().mockReturnValue({ select })
+  const authStateChangeCallbacks = new Set<AuthStateChangeCallback>()
+  const onAuthStateChange = vi.fn((callback: AuthStateChangeCallback) => {
+    authStateChangeCallbacks.add(callback)
+    return {
+      data: {
+        subscription: {
+          unsubscribe: vi.fn(() => authStateChangeCallbacks.delete(callback)),
+        },
+      },
+    }
+  })
 
   return {
     auth: {
       signInWithPassword: vi.fn(),
       signUp: vi.fn(),
       resend: vi.fn(),
+      resetPasswordForEmail: vi.fn(),
+      updateUser: vi.fn(),
       verifyOtp: vi.fn(),
       exchangeCodeForSession: vi.fn(),
       signOut: vi.fn().mockResolvedValue({ error: null }),
       getSession: vi
         .fn()
         .mockResolvedValue({ data: { session: null }, error: null }),
-      onAuthStateChange: vi.fn().mockReturnValue({
-        data: { subscription: { unsubscribe: vi.fn() } },
-      }),
+      onAuthStateChange,
+    },
+    emitAuthStateChange: async (
+      event: AuthChangeEvent,
+      session: Session | null,
+    ) => {
+      await Promise.all(
+        [...authStateChangeCallbacks].map((callback) =>
+          callback(event, session),
+        ),
+      )
     },
     from,
     database: { select, order },
