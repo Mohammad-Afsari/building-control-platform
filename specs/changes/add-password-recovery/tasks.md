@@ -21,7 +21,7 @@ time and keep the acceptance criteria intact while implementing.
 - [x] Complete the reset mutation states in `src/routes/reset-password.tsx`:
   disabled loading control, readable update failure, local-scope session cleanup
   with its own retry path, Password updated success, and `/login` navigation.
-- [ ] Register `/forgot-password` and `/reset-password` as public routes in
+- [x] Register `/forgot-password` and `/reset-password` as public routes in
   `src/App.tsx`, confirming the existing login Forgot password action reaches
   the new request page and neither route is wrapped by `ProtectedRoute`.
 
