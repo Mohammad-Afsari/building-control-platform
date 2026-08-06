@@ -77,7 +77,9 @@ test('an applicant can recover their password from the emailed link', async ({
 
     await expect(page).toHaveURL(/\/applications$/)
     await expect(
-      page.getByRole('heading', { name: 'Your applications' }),
+      page.getByRole('heading', {
+        name: /let's get your first application started/i,
+      }),
     ).toBeVisible()
   })
 })
