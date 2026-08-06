@@ -11,10 +11,7 @@ import {
   Link2Off,
 } from 'lucide-react'
 import { cn } from '@/src/lib/utils'
-import {
-  initialAuthCallback,
-  supabase,
-} from '@/src/lib/supabase/client'
+import { initialAuthCallback, supabase } from '@/src/lib/supabase/client'
 import { AuthCard, AuthShell } from '@/src/components/auth-shell'
 import {
   Alert,
@@ -315,8 +312,8 @@ export const ResetPasswordPage = () => {
                   Set a new password
                 </h1>
                 <p className="mt-1.5 text-body-sm text-muted">
-                  Choose a new password for your account. Make it something
-                  only you would know.
+                  Choose a new password for your account. Make it something only
+                  you would know.
                 </p>
               </div>
 

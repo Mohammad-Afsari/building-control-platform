@@ -2,7 +2,13 @@ import { useRef, useState } from 'react'
 import type { FormEvent } from 'react'
 import { Link } from 'react-router'
 import { Helmet } from 'react-helmet-async'
-import { ArrowLeft, ArrowRight, CircleAlert, Mail, MailCheck } from 'lucide-react'
+import {
+  ArrowLeft,
+  ArrowRight,
+  CircleAlert,
+  Mail,
+  MailCheck,
+} from 'lucide-react'
 import { cn } from '@/src/lib/utils'
 import { supabase } from '@/src/lib/supabase/client'
 import { AuthCard, AuthShell } from '@/src/components/auth-shell'

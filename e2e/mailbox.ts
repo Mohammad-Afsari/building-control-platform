@@ -65,7 +65,9 @@ export const waitForEmail = async (
     GoTrue's `/auth/v1/verify`, which verifies and redirects to the app. */
 const authActionLinkFrom = (message: MessageDetail): string => {
   const source = `${message.HTML}\n${message.Text}`
-  const match = source.match(/https?:\/\/[^\s"'<>]*\/auth\/v1\/verify[^\s"'<>]*/)
+  const match = source.match(
+    /https?:\/\/[^\s"'<>]*\/auth\/v1\/verify[^\s"'<>]*/,
+  )
 
   if (!match) {
     throw new Error(

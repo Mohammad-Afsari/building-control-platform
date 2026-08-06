@@ -54,9 +54,7 @@ describe('ForgotPasswordPage', () => {
       { route: '/login' },
     )
 
-    await user.click(
-      screen.getByRole('link', { name: /forgot password/i }),
-    )
+    await user.click(screen.getByRole('link', { name: /forgot password/i }))
 
     expect(
       screen.getByRole('heading', { name: /forgot your password/i }),
@@ -85,10 +83,7 @@ describe('ForgotPasswordPage', () => {
     auth.resetPasswordForEmail.mockReturnValue(request.promise)
     renderForgotPassword()
 
-    await user.type(
-      screen.getByLabelText('Email address'),
-      'sarah@example.com',
-    )
+    await user.type(screen.getByLabelText('Email address'), 'sarah@example.com')
     await user.click(screen.getByRole('button', { name: /send reset link/i }))
 
     expect(
@@ -146,10 +141,7 @@ describe('ForgotPasswordPage', () => {
     const user = userEvent.setup()
     renderForgotPassword()
 
-    await user.type(
-      screen.getByLabelText('Email address'),
-      'sarah@example.com',
-    )
+    await user.type(screen.getByLabelText('Email address'), 'sarah@example.com')
     await user.click(screen.getByRole('button', { name: /send reset link/i }))
     await user.click(
       await screen.findByRole('button', { name: /resend the link/i }),
@@ -175,10 +167,7 @@ describe('ForgotPasswordPage', () => {
       .mockResolvedValueOnce({ data: {}, error: null })
     renderForgotPassword()
 
-    await user.type(
-      screen.getByLabelText('Email address'),
-      'sarah@example.com',
-    )
+    await user.type(screen.getByLabelText('Email address'), 'sarah@example.com')
     await user.click(screen.getByRole('button', { name: /send reset link/i }))
     await user.click(
       await screen.findByRole('button', { name: /resend the link/i }),

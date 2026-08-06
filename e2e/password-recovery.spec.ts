@@ -33,11 +33,12 @@ test('an applicant can recover their password from the emailed link', async ({
     await expect(page.getByText(email)).toBeVisible()
   })
 
-  const recoveryLink = await test.step('read the recovery link from Mailpit', async () => {
-    const message = await waitForEmail(email)
-    expect(message.Subject).toMatch(/reset|password/i)
-    return recoveryLinkFrom(message)
-  })
+  const recoveryLink =
+    await test.step('read the recovery link from Mailpit', async () => {
+      const message = await waitForEmail(email)
+      expect(message.Subject).toMatch(/reset|password/i)
+      return recoveryLinkFrom(message)
+    })
 
   await test.step('follow the link and choose a new password', async () => {
     await page.goto(recoveryLink)

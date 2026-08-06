@@ -182,7 +182,9 @@ describe('ResetPasswordPage', () => {
     await user.type(confirm, 'DifferentPass123!')
     await user.click(screen.getByRole('button', { name: /update password/i }))
 
-    expect(await screen.findByText(/passwords don't match/i)).toBeInTheDocument()
+    expect(
+      await screen.findByText(/passwords don't match/i),
+    ).toBeInTheDocument()
     expect(confirm).toHaveFocus()
     expect(auth.updateUser).not.toHaveBeenCalled()
   })
@@ -289,10 +291,10 @@ describe('ResetPasswordPage', () => {
     expect(
       await screen.findByRole('heading', { name: /finish signing out/i }),
     ).toBeInTheDocument()
-    expect(screen.getByRole('alert')).toHaveTextContent(
-      /password was updated/i,
+    expect(screen.getByRole('alert')).toHaveTextContent(/password was updated/i)
+    await user.click(
+      screen.getByRole('button', { name: /finish signing out/i }),
     )
-    await user.click(screen.getByRole('button', { name: /finish signing out/i }))
 
     expect(
       await screen.findByRole('heading', { name: /password updated/i }),
