@@ -1,6 +1,6 @@
 ---
 title: Add password recovery
-status: in-progress
+status: done
 capability: auth-password-recovery
 design: design/Forgot Password.html
 ---
