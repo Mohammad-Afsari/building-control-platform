@@ -53,3 +53,6 @@ time and keep the acceptance criteria intact while implementing.
 - [x] `npm run build`
 - [x] `npm run test:run`
 - [x] `npm run test:e2e`
+
+Local end-to-end verification completed against the repository's Supabase CLI
+2.110.0 stack and Mailpit on 6 August 2026.
