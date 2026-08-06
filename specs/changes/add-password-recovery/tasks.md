@@ -18,7 +18,7 @@ time and keep the acceptance criteria intact while implementing.
   `src/routes/reset-password.tsx`: checking and invalid-link states, recovery
   event plus guarded session fallback, eight-character and matching validation,
   strength guidance, reveal control, focus management, and accessible status.
-- [ ] Complete the reset mutation states in `src/routes/reset-password.tsx`:
+- [x] Complete the reset mutation states in `src/routes/reset-password.tsx`:
   disabled loading control, readable update failure, local-scope session cleanup
   with its own retry path, Password updated success, and `/login` navigation.
 - [ ] Register `/forgot-password` and `/reset-password` as public routes in
