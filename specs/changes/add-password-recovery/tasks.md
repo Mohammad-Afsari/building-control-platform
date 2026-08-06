@@ -42,7 +42,7 @@ time and keep the acceptance criteria intact while implementing.
   the password, signs out with local scope, and shows the login action only after
   cleanup; cleanup failure can retry without another update; title, headings,
   labels, focus, and live status behaviour are accessible.
-- [ ] `e2e/password-recovery.spec.ts` and `e2e/mailbox.ts` — request a real local
+- [x] `e2e/password-recovery.spec.ts` and `e2e/mailbox.ts` — request a real local
   recovery email through the browser, follow its Mailpit link, set a new
   password, verify the recovery session ends, prove the old password is rejected,
   and prove the new password logs in successfully.
