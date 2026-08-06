@@ -10,7 +10,7 @@ time and keep the acceptance criteria intact while implementing.
   controllable recovery request, session, update, sign-out, and auth-event
   behaviour. This supplies deterministic handling for valid, missing, invalid,
   expired, and delayed recovery callbacks without retaining credentials.
-- [ ] Build `src/routes/forgot-password.tsx` with the designed request and
+- [x] Build `src/routes/forgot-password.tsx` with the designed request and
   check-email states: local email validation and focus, in-flight disabling,
   current-origin `/reset-password` redirect, generic non-enumerating copy,
   operational retry, resend announcements, and `/login` navigation.
