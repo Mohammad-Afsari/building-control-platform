@@ -1,6 +1,6 @@
 ---
 title: Add password recovery
-status: proposed
+status: planned
 capability: auth-password-recovery
 design: design/Forgot Password.html
 ---
