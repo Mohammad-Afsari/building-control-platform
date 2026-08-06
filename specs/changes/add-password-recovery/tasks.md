@@ -34,7 +34,7 @@ time and keep the acceptance criteria intact while implementing.
   failures are readable and retryable; resend reuses the address and announces
   success or failure; login links, title, headings, labels, focus, and live
   status behaviour are accessible.
-- [ ] `src/routes/reset-password.test.tsx` — prove only a valid recovery callback
+- [x] `src/routes/reset-password.test.tsx` — prove only a valid recovery callback
   unlocks the form, including delayed event handling; missing, error, expired,
   and ordinary-session visits show request-new-link instead; short and
   mismatched passwords are focused and block updates; strength and reveal work;
