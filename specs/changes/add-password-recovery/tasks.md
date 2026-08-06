@@ -27,7 +27,7 @@ time and keep the acceptance criteria intact while implementing.
 
 ## Tests
 
-- [ ] `src/routes/forgot-password.test.tsx` — prove the login link and request
+- [x] `src/routes/forgot-password.test.tsx` — prove the login link and request
   route render correctly; invalid email is reported and focused without an Auth
   call; loading is exposed; the request uses the submitted address and exact
   current-origin reset URL; accepted requests remain non-enumerating; delivery
