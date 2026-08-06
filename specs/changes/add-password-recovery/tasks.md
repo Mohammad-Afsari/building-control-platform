@@ -49,7 +49,7 @@ time and keep the acceptance criteria intact while implementing.
 
 ## Verification
 
-- [ ] `npm run lint`
-- [ ] `npm run build`
-- [ ] `npm run test:run`
-- [ ] `npm run test:e2e`
+- [x] `npm run lint`
+- [x] `npm run build`
+- [x] `npm run test:run`
+- [x] `npm run test:e2e`
