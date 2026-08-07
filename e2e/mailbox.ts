@@ -61,12 +61,13 @@ export const waitForEmail = async (
   )
 }
 
-/** Pull the Supabase verification link out of a confirmation email.
-    It points at the local GoTrue `/auth/v1/verify`, which verifies and
-    then redirects to the app's own confirmation route. */
-export const confirmationLinkFrom = (message: MessageDetail): string => {
+/** Pull a Supabase action link out of an auth email. It points at local
+    GoTrue's `/auth/v1/verify`, which verifies and redirects to the app. */
+const authActionLinkFrom = (message: MessageDetail): string => {
   const source = `${message.HTML}\n${message.Text}`
-  const match = source.match(/https?:\/\/[^\s"'<>]*\/auth\/v1\/verify[^\s"'<>]*/)
+  const match = source.match(
+    /https?:\/\/[^\s"'<>]*\/auth\/v1\/verify[^\s"'<>]*/,
+  )
 
   if (!match) {
     throw new Error(
@@ -75,4 +76,12 @@ export const confirmationLinkFrom = (message: MessageDetail): string => {
   }
 
   return match[0].replace(/&amp;/g, '&')
+}
+
+export const confirmationLinkFrom = (message: MessageDetail): string => {
+  return authActionLinkFrom(message)
+}
+
+export const recoveryLinkFrom = (message: MessageDetail): string => {
+  return authActionLinkFrom(message)
 }

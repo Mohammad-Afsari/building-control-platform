@@ -7,6 +7,8 @@ import { HomePage } from '@/src/routes/home'
 import { LoginPage } from '@/src/routes/login'
 import { SignupPage } from '@/src/routes/signup'
 import { AuthConfirmPage } from '@/src/routes/auth-confirm'
+import { ForgotPasswordPage } from '@/src/routes/forgot-password'
+import { ResetPasswordPage } from '@/src/routes/reset-password'
 import { NotFoundPage } from '@/src/routes/not-found'
 import { ApplicationsListPage } from '@/src/routes/applications/list'
 import { NewApplicationPage } from '@/src/routes/applications/new'
@@ -25,6 +27,8 @@ function App() {
               <Route path="/login" element={<LoginPage />} />
               <Route path="/signup" element={<SignupPage />} />
               <Route path="/auth/confirm" element={<AuthConfirmPage />} />
+              <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+              <Route path="/reset-password" element={<ResetPasswordPage />} />
               <Route
                 path="/applications"
                 element={
